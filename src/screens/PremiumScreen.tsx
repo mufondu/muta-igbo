@@ -46,7 +46,7 @@ export default function PremiumScreen({ onBack, onUnlocked }: Props) {
           <Text style={s.heroEmoji}>🌟</Text>
           <Text style={s.heroTitle}>Go Premium</Text>
           <Text style={s.heroSub}>
-            Unlock everything Kaira and Zara need{'\n'}to master the Igbo language
+            Unlock every lesson, game, story, and song{'\n'}in Mụta Igbo
           </Text>
         </View>
 

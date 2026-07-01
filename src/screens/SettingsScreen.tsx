@@ -269,7 +269,7 @@ export default function SettingsScreen({ onBack }: Props) {
 
         <Text style={s.footer}>
           Mụta Igbo v2.0.0{'\n'}
-          Made with ❤️ for Ije, Kaira & Zara{'\n'}
+          Made with ❤️ for Zara, Kaira, Ije, and every child growing up with Igbo.{"\n"}A MekaOps Edu product{"\n"}© 2026 MekaOps. All rights reserved.{"\n"}
           © 2025 Mụta Igbo
         </Text>
       </ScrollView>
