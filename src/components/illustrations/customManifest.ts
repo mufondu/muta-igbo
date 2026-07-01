@@ -8,6 +8,7 @@ export const CUSTOM_ILLUSTRATIONS: Record<string, ImageSourcePropType> = {
   'family:father': require('../../../assets/illustrations/custom/family/father.png'),
   'family:brother': require('../../../assets/illustrations/custom/family/brother.png'),
   'family:sister': require('../../../assets/illustrations/custom/family/sister.png'),
+  'family:child': require('../../../assets/illustrations/custom/family/child.png'),
   'family:children': require('../../../assets/illustrations/custom/family/children.png'),
   'family:uncle': require('../../../assets/illustrations/custom/family/uncle.png'),
   'family:aunt': require('../../../assets/illustrations/custom/family/aunt.png'),
