@@ -351,7 +351,7 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
       </ScrollView>
 
       {/* Level cards */}
-      <Text style={sh.sectionLabel}>Continue Learning</Text>
+      <Text style={sh.sectionLabel}>MekaOps Edu Paths</Text>
       {ALL_LEVELS.map((level, i) => {
         const lc = LEVEL_COLOR[level.id];
         const progress = activeProfile?.levelProgress[level.id] ?? 0;
@@ -1507,7 +1507,7 @@ const sh = StyleSheet.create({
     fontSize: FONT.xs,
     fontWeight: '900',
     textTransform: 'uppercase',
-    letterSpacing: 1.1,
+    letterSpacing: 0.8,
     marginBottom: 4,
   },
   levelName: {
