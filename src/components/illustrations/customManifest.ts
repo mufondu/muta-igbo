@@ -19,7 +19,13 @@ export const CUSTOM_ILLUSTRATIONS: Record<string, ImageSourcePropType> = {
   'body:eye': require('../../../assets/illustrations/custom/body/eye.png'),
   'body:eyebrow': require('../../../assets/illustrations/custom/body/eyebrow.png'),
   'body:mouth': require('../../../assets/illustrations/custom/body/mouth.png'),
+  'body:hand': require('../../../assets/illustrations/custom/body/hand.png'),
+  'body:leg': require('../../../assets/illustrations/custom/body/leg.png'),
+  'body:ear': require('../../../assets/illustrations/custom/body/ear.png'),
   'body:nose': require('../../../assets/illustrations/custom/body/nose.png'),
+  'body:toes': require('../../../assets/illustrations/custom/body/toes.png'),
+  'body:tongue': require('../../../assets/illustrations/custom/body/tongue.png'),
+  'body:teeth': require('../../../assets/illustrations/custom/body/teeth.png'),
 
   // animals
 

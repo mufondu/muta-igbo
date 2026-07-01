@@ -1,26 +1,26 @@
 # Mụta Igbo Body Illustration Standard
 
-This is the approved visual direction for Body Parts.
+Approved app body-part assets should be simple, isolated, kid-friendly cartoon close-ups.
 
-## Approved Style
+## Approved Beginner Body Parts
 
-- Premium playful cartoon close-up
-- Clear single body-part concept
-- Friendly, kid-safe, not medical-looking
-- Soft cream/pastel background
-- Readable at 74px lesson-card size
-- No sprite-sheet board, labels, or unrelated scene background in final app cards
+- Head
+- Eyes
+- Eyebrows
+- Nose
+- Mouth
+- Ear
+- Hand
+- Leg
+- Toes
+- Tongue
+- Teeth
 
-## Current Body Asset Mapping
+## Excluded From Beginner Flow
 
-| App Role | Required Asset |
-|---|---|
-| Head / Isi | body/head.png |
-| Eye / Anya | body/eye.png |
-| Eyebrow / Nku anya | body/eyebrow.png |
-| Nose / Imi | body/nose.png |
-| Mouth / Ọnụ | body/mouth.png |
+- Chest
+- Stomach
+- Back
+- Nails
 
-## Product Rule
-
-Each body-part card must use one isolated asset. Do not use the full reference board directly in the app.
+These can be revisited later only if the visuals are age-appropriate and the lesson context requires them.
