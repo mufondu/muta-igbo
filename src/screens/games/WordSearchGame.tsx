@@ -1,178 +1,301 @@
-// ─── Game 5: Word Search ─────────────────────────────────────────────────────
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { COLOR, FONT, IS_TABLET, RADIUS, SPACE } from '../../utils/tokens';
-import { Difficulty, DifficultyPicker, GameOver, ScoreBanner } from './GameUtils';
+import { buildQuizPool } from '../../data/lessons';
+import { COLOR, FONT, RADIUS, SPACE } from '../../utils/tokens';
+import {
+  Difficulty,
+  DifficultyPicker,
+  FeedbackFlash,
+  GameOver,
+  ScoreBanner,
+} from './GameUtils';
 
-interface Props { onBack: () => void; }
+interface Props {
+  onBack: () => void;
+  isPremium?: boolean;
+}
 
-// Word lists by difficulty
-const WORD_BANKS = {
-  easy: [
-    { word: 'ISI',   meaning: 'Head',    emoji: '👤' },
-    { word: 'EWU',   meaning: 'Goat',    emoji: '🐐' },
-    { word: 'NWA',   meaning: 'Child',   emoji: '👶🏿' },
-    { word: 'AZU',   meaning: 'Fish',    emoji: '🐟' },
-    { word: 'MBE',   meaning: 'Tortoise',emoji: '🐢' },
-  ],
-  medium: [
-    { word: 'ANYA',  meaning: 'Eyes',    emoji: '👀' },
-    { word: 'ODUM',  meaning: 'Lion',    emoji: '🦁' },
-    { word: 'NKITA', meaning: 'Dog',     emoji: '🐕' },
-    { word: 'NNUNU', meaning: 'Bird',    emoji: '🦅' },
-    { word: 'EGWU',  meaning: 'Music',   emoji: '🎵' },
-    { word: 'MMIRI', meaning: 'Water',   emoji: '💧' },
-  ],
-  hard: [
-    { word: 'ANYANWU', meaning: 'Sun',      emoji: '☀️' },
-    { word: 'NWANNE',  meaning: 'Sibling',  emoji: '👫🏿' },
-    { word: 'AKWUKWO', meaning: 'Book',     emoji: '📖' },
-    { word: 'UBOCHI',  meaning: 'Day',      emoji: '📅' },
-    { word: 'NNANNA',  meaning: 'Grandpa',  emoji: '👴🏿' },
-    { word: 'ONWA',    meaning: 'Moon',     emoji: '🌙' },
-    { word: 'ABALI',   meaning: 'Night',    emoji: '🌙' },
-  ],
+type SearchItem = {
+  igbo: string;
+  english: string;
+  emoji?: string;
 };
 
-const GRID_SIZE = { easy: 8, medium: 10, hard: 12 };
-const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-interface GridCell {
-  letter: string;
-  wordId: number | null;
+type Cell = {
+  id: string;
   row: number;
   col: number;
+  letter: string;
+  target: boolean;
+};
+
+type Direction = {
+  dr: number;
+  dc: number;
+};
+
+const IGBO_FILLERS = ['A', 'B', 'D', 'E', 'G', 'I', 'Ị', 'K', 'L', 'M', 'N', 'O', 'Ọ', 'R', 'S', 'T', 'U', 'Ụ', 'W', 'Y'];
+
+const DIRECTIONS: Direction[] = [
+  { dr: 0, dc: 1 },
+  { dr: 1, dc: 0 },
+  { dr: 1, dc: 1 },
+];
+
+function shuffle<T>(items: T[]): T[] {
+  return [...items].sort(() => Math.random() - 0.5);
 }
 
-interface PlacedWord {
-  id: number;
-  word: string;
-  meaning: string;
-  emoji: string;
-  cells: [number, number][];
-  found: boolean;
+function splitLetters(word: string): string[] {
+  return Array.from(word.normalize('NFC').toUpperCase());
 }
 
-function buildGrid(difficulty: Difficulty): { grid: GridCell[][]; words: PlacedWord[] } {
-  const size = GRID_SIZE[difficulty];
-  const wordList = WORD_BANKS[difficulty];
-  const grid: GridCell[][] = Array.from({ length: size }, (_, r) =>
-    Array.from({ length: size }, (_, c) => ({ letter: '', wordId: null, row: r, col: c }))
+function pointsForDifficulty(difficulty: Difficulty): number {
+  if (difficulty === 'easy') return 1;
+  if (difficulty === 'medium') return 2;
+  return 3;
+}
+
+function gridSize(difficulty: Difficulty): number {
+  if (difficulty === 'easy') return 4;
+  if (difficulty === 'medium') return 5;
+  return 6;
+}
+
+function maxWordLength(difficulty: Difficulty): number {
+  if (difficulty === 'easy') return 5;
+  if (difficulty === 'medium') return 7;
+  return 9;
+}
+
+function isCleanSearchItem(item: SearchItem, difficulty: Difficulty): boolean {
+  const igbo = String(item.igbo || '').trim();
+  const english = String(item.english || '').trim();
+
+  if (!igbo || !english) return false;
+  if (igbo.includes(' ') || english.includes('/')) return false;
+  if (igbo.includes('/') || igbo.includes('—') || igbo.includes('-')) return false;
+  if (/[0-9]/.test(igbo) || /[0-9]/.test(english)) return false;
+
+  const letters = splitLetters(igbo);
+  if (letters.length < 2) return false;
+  if (letters.length > maxWordLength(difficulty)) return false;
+
+  return true;
+}
+
+function getPool(difficulty: Difficulty, isPremium: boolean): SearchItem[] {
+  const pool = buildQuizPool(isPremium)
+    .map(item => ({
+      igbo: String(item.igbo || '').trim(),
+      english: String(item.english || '').trim(),
+      emoji: item.emoji,
+    }))
+    .filter(item => isCleanSearchItem(item, difficulty));
+
+  const fallback: SearchItem[] = [
+    { igbo: 'Nwa', english: 'Child', emoji: '🧒' },
+    { igbo: 'Ụlọ', english: 'House', emoji: '🏠' },
+    { igbo: 'Mmiri', english: 'Water', emoji: '💧' },
+    { igbo: 'Aka', english: 'Hand', emoji: '✋' },
+    { igbo: 'Anya', english: 'Eye', emoji: '👁️' },
+    { igbo: 'Nri', english: 'Food', emoji: '🍲' },
+    { igbo: 'Azụ', english: 'Fish', emoji: '🐟' },
+    { igbo: 'Ọkụ', english: 'Fire', emoji: '🔥' },
+  ].filter(item => isCleanSearchItem(item, difficulty));
+
+  return pool.length > 0 ? pool : fallback;
+}
+
+function buildGrid(item: SearchItem, difficulty: Difficulty): Cell[][] {
+  const size = gridSize(difficulty);
+  const letters = splitLetters(item.igbo);
+  const empty = Array.from({ length: size }, () => Array.from({ length: size }, () => ''));
+
+  let placed = false;
+  let attempts = 0;
+
+  while (!placed && attempts < 40) {
+    attempts += 1;
+
+    const direction = shuffle(DIRECTIONS)[0];
+    const maxRow = size - 1 - direction.dr * (letters.length - 1);
+    const maxCol = size - 1 - direction.dc * (letters.length - 1);
+
+    if (maxRow < 0 || maxCol < 0) continue;
+
+    const startRow = Math.floor(Math.random() * (maxRow + 1));
+    const startCol = Math.floor(Math.random() * (maxCol + 1));
+
+    for (let i = 0; i < letters.length; i += 1) {
+      empty[startRow + direction.dr * i][startCol + direction.dc * i] = letters[i];
+    }
+
+    placed = true;
+  }
+
+  if (!placed) {
+    letters.slice(0, size).forEach((letter, index) => {
+      empty[0][index] = letter;
+    });
+  }
+
+  return empty.map((row, rowIndex) =>
+    row.map((letter, colIndex) => {
+      const finalLetter = letter || IGBO_FILLERS[Math.floor(Math.random() * IGBO_FILLERS.length)];
+
+      return {
+        id: `${rowIndex}-${colIndex}`,
+        row: rowIndex,
+        col: colIndex,
+        letter: finalLetter,
+        target: Boolean(letter),
+      };
+    })
   );
-  const placed: PlacedWord[] = [];
-  const directions = [[0,1],[1,0],[1,1],[0,-1],[-1,0]]; // horiz, vert, diag, reverse
-
-  wordList.forEach((item, idx) => {
-    const word = item.word;
-    let success = false;
-    for (let attempt = 0; attempt < 100 && !success; attempt++) {
-      const dir = directions[Math.floor(Math.random() * directions.length)];
-      const [dr, dc] = dir;
-      const maxR = dr === 0 ? size - 1 : dr > 0 ? size - word.length : word.length - 1;
-      const maxC = dc === 0 ? size - 1 : dc > 0 ? size - word.length : word.length - 1;
-      if (maxR < 0 || maxC < 0) continue;
-      const startR = Math.floor(Math.random() * (maxR + 1));
-      const startC = Math.floor(Math.random() * (maxC + 1));
-      const cells: [number, number][] = [];
-      let fits = true;
-      for (let i = 0; i < word.length; i++) {
-        const r = startR + i * dr;
-        const c = startC + i * dc;
-        if (r < 0 || r >= size || c < 0 || c >= size) { fits = false; break; }
-        if (grid[r][c].letter !== '' && grid[r][c].letter !== word[i]) { fits = false; break; }
-        cells.push([r, c]);
-      }
-      if (fits) {
-        cells.forEach(([r, c], i) => {
-          grid[r][c].letter = word[i];
-          grid[r][c].wordId = idx;
-        });
-        placed.push({ id: idx, word, meaning: item.meaning, emoji: item.emoji, cells, found: false });
-        success = true;
-      }
-    }
-  });
-
-  // Fill empty cells
-  for (let r = 0; r < size; r++) {
-    for (let c = 0; c < size; c++) {
-      if (!grid[r][c].letter) {
-        grid[r][c].letter = ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
-      }
-    }
-  }
-
-  return { grid, words: placed };
 }
 
-export default function WordSearchGame({ onBack }: Props) {
-  const [difficulty, setDifficulty]   = useState<Difficulty>('easy');
-  const [grid, setGrid]               = useState<GridCell[][]>([]);
-  const [words, setWords]             = useState<PlacedWord[]>([]);
-  const [selected, setSelected]       = useState<[number, number][]>([]);
-  const [selecting, setSelecting]     = useState(false);
-  const [score, setScore]             = useState(0);
-  const [streak, setStreak]           = useState(0);
-  const [gameOver, setGameOver]       = useState(false);
-  const [started, setStarted]         = useState(false);
-  const [lastFound, setLastFound]     = useState<string | null>(null);
+export default function WordSearchGame({ onBack, isPremium = true }: Props) {
+  const [difficulty, setDifficulty] = useState<Difficulty>('easy');
+  const [started, setStarted] = useState(false);
+  const [target, setTarget] = useState<SearchItem | null>(null);
+  const [grid, setGrid] = useState<Cell[][]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
+  const [round, setRound] = useState(1);
+  const [score, setScore] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState(0);
+  const [feedback, setFeedback] = useState<{ text: string; correct: boolean } | null>(null);
+  const [gameOver, setGameOver] = useState(false);
+  const [locked, setLocked] = useState(false);
 
-  function start(d: Difficulty) {
-    const { grid: g, words: w } = buildGrid(d);
-    setGrid(g); setWords(w);
-    setSelected([]); setSelecting(false);
-    setScore(0); setStreak(0); setGameOver(false);
-    setStarted(true); setLastFound(null);
+  const MAX_ROUNDS = 6;
+
+  const targetLetters = useMemo(() => splitLetters(target?.igbo || ''), [target]);
+
+  const next = useCallback((selectedDifficulty: Difficulty) => {
+    const pool = getPool(selectedDifficulty, isPremium);
+    const nextTarget = pool[Math.floor(Math.random() * pool.length)];
+
+    setTarget(nextTarget);
+    setGrid(buildGrid(nextTarget, selectedDifficulty));
+    setSelectedIds([]);
+    setSelectedLetters([]);
+    setFeedback(null);
+    setLocked(false);
+  }, [isPremium]);
+
+  function start(selectedDifficulty: Difficulty) {
+    setDifficulty(selectedDifficulty);
+    setStarted(true);
+    setGameOver(false);
+    setRound(1);
+    setScore(0);
+    setStreak(0);
+    setBestStreak(0);
+    setSelectedIds([]);
+    setSelectedLetters([]);
+    setFeedback(null);
+    setLocked(false);
+    next(selectedDifficulty);
   }
 
-  function touchCell(row: number, col: number) {
-    if (!selecting) {
-      setSelecting(true);
-      setSelected([[row, col]]);
+  function selectCell(cell: Cell) {
+    if (!target || locked || selectedIds.includes(cell.id)) return;
+
+    const expected = targetLetters[selectedLetters.length];
+
+    if (cell.letter !== expected) {
+      setFeedback({
+        correct: false,
+        text: `Look for "${expected}" next.`,
+      });
       return;
     }
-    const newSel = [...selected, [row, col] as [number, number]];
-    setSelected(newSel);
-    checkSelection(newSel);
-  }
 
-  function checkSelection(sel: [number, number][]) {
-    const letters = sel.map(([r, c]) => grid[r][c].letter).join('');
-    const match = words.find(w => !w.found && (w.word === letters || w.word === letters.split('').reverse().join('')));
-    if (match) {
-      const ns = streak + 1;
-      setStreak(ns); setScore(s => s + 5 + Math.floor(ns / 2));
-      setLastFound(`${match.emoji} ${match.word} = ${match.meaning}!`);
-      const updated = words.map(w => w.id === match.id ? { ...w, found: true } : w);
-      setWords(updated);
-      setSelected([]); setSelecting(false);
-      if (updated.every(w => w.found)) setTimeout(() => setGameOver(true), 1000);
-    } else if (sel.length >= 10) {
-      setSelected([]); setSelecting(false);
+    const nextSelectedIds = [...selectedIds, cell.id];
+    const nextSelectedLetters = [...selectedLetters, cell.letter];
+
+    setSelectedIds(nextSelectedIds);
+    setSelectedLetters(nextSelectedLetters);
+    setFeedback(null);
+
+    if (nextSelectedLetters.join('') === targetLetters.join('')) {
+      finishRound();
     }
   }
 
-  const cellSize = IS_TABLET ? 38 : GRID_SIZE[difficulty] === 8 ? 36 : GRID_SIZE[difficulty] === 10 ? 30 : 26;
+  function finishRound() {
+    if (!target || locked) return;
+
+    setLocked(true);
+
+    const newStreak = streak + 1;
+    const nextRound = round + 1;
+
+    setScore(current => current + pointsForDifficulty(difficulty));
+    setStreak(newStreak);
+    setBestStreak(current => Math.max(current, newStreak));
+    setFeedback({
+      correct: true,
+      text: newStreak >= 4 ? `Excellent. ${newStreak} words found!` : 'You found the word.',
+    });
+
+    setTimeout(() => {
+      if (round >= MAX_ROUNDS) {
+        setGameOver(true);
+        setLocked(false);
+        return;
+      }
+
+      setRound(nextRound);
+      next(difficulty);
+    }, 900);
+  }
+
+  function clearSelection() {
+    if (locked) return;
+
+    setSelectedIds([]);
+    setSelectedLetters([]);
+    setFeedback(null);
+  }
 
   if (!started) {
     return (
       <View style={s.root}>
         <View style={s.header}>
-          <Text style={s.backText} onPress={onBack}>⬅</Text>
-          <View>
-            <Text style={s.headerTitle}>Word Search 🔍</Text>
-            <Text style={s.headerSub}>Find Igbo words in the grid</Text>
+          <TouchableOpacity onPress={onBack} style={s.backBtn}>
+            <Text style={s.backText}>‹</Text>
+          </TouchableOpacity>
+
+          <View style={s.headerCopy}>
+            <Text style={s.headerKicker}>Mụta Challenge</Text>
+            <Text style={s.headerTitle}>Word Search</Text>
           </View>
         </View>
-        <ScrollView contentContainerStyle={s.setupPad}>
-          <Text style={s.instrEmoji}>🔍</Text>
-          <Text style={s.instrTitle}>Word Search</Text>
+
+        <ScrollView contentContainerStyle={s.setupPad} showsVerticalScrollIndicator={false}>
+          <View style={s.friendCard}>
+            <View style={s.friendFace}>
+              <Text style={s.friendInitial}>K</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={s.friendName}>Kaira says</Text>
+              <Text style={s.friendText}>Find Igbo words hidden inside colorful letter tiles.</Text>
+            </View>
+          </View>
+
+          <Text style={s.instrTitle}>Find the hidden word</Text>
           <Text style={s.instrBody}>
-            Find the Igbo words hidden in the letter grid. Tap the first letter, then tap each letter in sequence to select the word! 🌍
+            Tap the letters in order. Each round teaches one clear Igbo word.
           </Text>
+
           <DifficultyPicker value={difficulty} onChange={setDifficulty} />
-          <TouchableOpacity style={s.startBtn} onPress={() => start(difficulty)} activeOpacity={0.85}>
-            <Text style={s.startBtnText}>Start Game 🚀</Text>
+
+          <TouchableOpacity style={s.startBtn} onPress={() => start(difficulty)} activeOpacity={0.86}>
+            <Text style={s.startBtnText}>Start Challenge</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -181,72 +304,86 @@ export default function WordSearchGame({ onBack }: Props) {
 
   if (gameOver) {
     return (
-      <ScrollView style={s.root} contentContainerStyle={{ flex: 1, justifyContent: 'center' }}>
+      <ScrollView style={s.root} contentContainerStyle={s.gameOverPad}>
         <View style={s.header}>
-          <Text style={s.backText} onPress={onBack}>⬅</Text>
-          <Text style={s.headerTitle}>Word Search 🔍</Text>
+          <TouchableOpacity onPress={onBack} style={s.backBtn}>
+            <Text style={s.backText}>‹</Text>
+          </TouchableOpacity>
+          <Text style={s.headerTitle}>Word Search</Text>
         </View>
-        <GameOver score={score} streak={streak} difficulty={difficulty}
-          onReplay={() => start(difficulty)} onHome={onBack} />
+
+        <GameOver
+          score={score}
+          streak={bestStreak}
+          difficulty={difficulty}
+          onReplay={() => start(difficulty)}
+          onHome={onBack}
+        />
       </ScrollView>
     );
   }
 
-  const foundCount = words.filter(w => w.found).length;
+  if (!target) return null;
+
+  const cellSize = difficulty === 'easy' ? 68 : difficulty === 'medium' ? 58 : 50;
 
   return (
     <View style={s.root}>
       <View style={s.header}>
-        <Text style={s.backText} onPress={onBack}>⬅</Text>
-        <Text style={s.headerTitle}>Word Search 🔍</Text>
-        <Text style={s.roundText}>{foundCount}/{words.length}</Text>
+        <TouchableOpacity onPress={onBack} style={s.backBtn}>
+          <Text style={s.backText}>‹</Text>
+        </TouchableOpacity>
+
+        <View style={s.headerCopy}>
+          <Text style={s.headerKicker}>Word Search</Text>
+          <Text style={s.headerTitle}>Find the word</Text>
+        </View>
+
+        <Text style={s.roundText}>{round}/{MAX_ROUNDS}</Text>
       </View>
-      <ScrollView contentContainerStyle={s.gamePad}>
+
+      <ScrollView contentContainerStyle={s.gamePad} showsVerticalScrollIndicator={false}>
         <ScoreBanner score={score} streak={streak} difficulty={difficulty} />
 
-        {lastFound && (
-          <View style={s.foundBanner}>
-            <Text style={s.foundText}>Found: {lastFound} ✅</Text>
+        <View style={s.promptCard}>
+          <View style={s.promptIcon}>
+            <Text style={s.promptEmoji}>{target.emoji || '🔎'}</Text>
           </View>
-        )}
 
-        {/* Word list to find */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}
-          contentContainerStyle={s.wordListRow}>
-          {words.map(w => (
-            <View key={w.id} style={[s.wordChip, w.found && s.wordChipFound]}>
-              <Text style={s.wordChipEmoji}>{w.emoji}</Text>
-              <Text style={[s.wordChipText, w.found && s.wordChipTextFound]}>{w.word}</Text>
-              <Text style={[s.wordChipMeaning, w.found && s.wordChipTextFound]}>{w.meaning}</Text>
-            </View>
-          ))}
-        </ScrollView>
+          <View style={{ flex: 1 }}>
+            <Text style={s.promptLabel}>Find this Igbo word</Text>
+            <Text style={s.promptWord}>{target.igbo}</Text>
+            <Text style={s.promptEnglish}>{target.english}</Text>
+          </View>
+        </View>
 
-        {/* Grid */}
-        <View style={s.grid}>
-          {grid.map((row, r) => (
-            <View key={r} style={s.gridRow}>
-              {row.map((cell, c) => {
-                const isSelected = selected.some(([sr, sc]) => sr === r && sc === c);
-                const foundWord = words.find(w => w.found && w.cells.some(([wr, wc]) => wr === r && wc === c));
+        <View style={s.answerCard}>
+          <Text style={s.answerLabel}>Your letters</Text>
+          <Text style={s.answerText}>
+            {selectedLetters.length > 0 ? selectedLetters.join('') : 'Tap letters below'}
+          </Text>
+        </View>
+
+        {feedback && <FeedbackFlash text={feedback.text} correct={feedback.correct} />}
+
+        <View style={s.gridWrap}>
+          {grid.map((row, rowIndex) => (
+            <View key={rowIndex} style={s.gridRow}>
+              {row.map(cell => {
+                const selected = selectedIds.includes(cell.id);
+
                 return (
                   <TouchableOpacity
-                    key={c}
+                    key={cell.id}
                     style={[
                       s.cell,
                       { width: cellSize, height: cellSize },
-                      isSelected && s.cellSelected,
-                      foundWord && s.cellFound,
+                      selected && s.cellSelected,
                     ]}
-                    onPress={() => touchCell(r, c)}
-                    activeOpacity={0.7}
+                    onPress={() => selectCell(cell)}
+                    activeOpacity={selected ? 1 : 0.78}
                   >
-                    <Text style={[
-                      s.cellLetter,
-                      { fontSize: cellSize * 0.45 },
-                      isSelected && s.cellLetterSelected,
-                      foundWord && s.cellLetterFound,
-                    ]}>
+                    <Text style={[s.cellText, selected && s.cellTextSelected]}>
                       {cell.letter}
                     </Text>
                   </TouchableOpacity>
@@ -256,8 +393,8 @@ export default function WordSearchGame({ onBack }: Props) {
           ))}
         </View>
 
-        <TouchableOpacity style={s.resetBtn} onPress={() => { setSelected([]); setSelecting(false); }}>
-          <Text style={s.resetBtnText}>✕ Clear selection</Text>
+        <TouchableOpacity style={s.clearBtn} onPress={clearSelection} activeOpacity={0.82}>
+          <Text style={s.clearText}>Clear letters</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -265,56 +402,241 @@ export default function WordSearchGame({ onBack }: Props) {
 }
 
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: COLOR.bg },
+  root: {
+    flex: 1,
+    backgroundColor: COLOR.bg,
+  },
   header: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: COLOR.forestDark, paddingVertical: 14, paddingHorizontal: SPACE.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: COLOR.forestDark,
+    paddingVertical: 14,
+    paddingHorizontal: SPACE.md,
   },
-  backText:    { fontSize: FONT.xl, color: COLOR.gold, paddingRight: 4 },
-  headerTitle: { fontSize: FONT.lg, fontWeight: '800', color: COLOR.textCream, flex: 1 },
-  headerSub:   { fontSize: FONT.xs, color: '#7AB897' },
-  roundText:   { fontSize: FONT.sm, color: COLOR.gold, fontWeight: '700' },
-
-  setupPad:    { padding: SPACE.lg, alignItems: 'center' },
-  instrEmoji:  { fontSize: 56, marginBottom: SPACE.sm },
-  instrTitle:  { fontSize: FONT.xxl, fontWeight: '900', color: COLOR.textPrimary, marginBottom: SPACE.sm },
-  instrBody:   { fontSize: FONT.md, color: COLOR.textSecond, textAlign: 'center', lineHeight: 22, marginBottom: SPACE.xl },
-  startBtn:    { backgroundColor: COLOR.forest, borderRadius: RADIUS.pill, paddingVertical: 14, paddingHorizontal: 40, marginTop: SPACE.sm },
-  startBtnText:{ fontSize: FONT.lg, fontWeight: '800', color: COLOR.textWhite },
-
-  gamePad: { padding: SPACE.sm, paddingBottom: 60, alignItems: 'center' },
-
-  foundBanner: {
-    backgroundColor: COLOR.successLight, borderRadius: RADIUS.md,
-    padding: SPACE.sm, marginBottom: SPACE.sm,
-    borderWidth: 1, borderColor: COLOR.success, width: '100%',
+  backBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.08)',
   },
-  foundText: { fontSize: FONT.sm, fontWeight: '700', color: COLOR.success, textAlign: 'center' },
-
-  wordListRow: { paddingHorizontal: SPACE.sm, gap: SPACE.sm, marginBottom: SPACE.md },
-  wordChip: {
-    alignItems: 'center', paddingHorizontal: 12, paddingVertical: 8,
-    backgroundColor: COLOR.card, borderRadius: RADIUS.md,
-    borderWidth: 1.5, borderColor: COLOR.border, minWidth: 70,
+  backText: {
+    fontSize: 34,
+    lineHeight: 34,
+    color: COLOR.gold,
+    fontWeight: '800',
   },
-  wordChipFound:      { backgroundColor: COLOR.successLight, borderColor: COLOR.success },
-  wordChipEmoji:      { fontSize: 20, marginBottom: 2 },
-  wordChipText:       { fontSize: FONT.xs, fontWeight: '800', color: COLOR.textPrimary },
-  wordChipTextFound:  { color: COLOR.success, textDecorationLine: 'line-through' },
-  wordChipMeaning:    { fontSize: FONT.xs, color: COLOR.textSecond },
-
-  grid: { backgroundColor: COLOR.card, borderRadius: RADIUS.md, padding: SPACE.xs, borderWidth: 1, borderColor: COLOR.border },
-  gridRow: { flexDirection: 'row' },
+  headerCopy: {
+    flex: 1,
+  },
+  headerKicker: {
+    fontSize: FONT.xs,
+    color: COLOR.gold,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  headerTitle: {
+    fontSize: FONT.lg,
+    fontWeight: '900',
+    color: COLOR.textCream,
+    flexShrink: 1,
+  },
+  roundText: {
+    fontSize: FONT.sm,
+    color: COLOR.gold,
+    fontWeight: '900',
+  },
+  setupPad: {
+    padding: SPACE.lg,
+    paddingBottom: 80,
+  },
+  friendCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACE.md,
+    backgroundColor: COLOR.card,
+    borderRadius: RADIUS.xl,
+    padding: SPACE.md,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+    marginBottom: SPACE.xl,
+  },
+  friendFace: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    backgroundColor: '#FFE8D6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#C05621',
+  },
+  friendInitial: {
+    fontSize: 34,
+    color: '#C05621',
+    fontWeight: '900',
+  },
+  friendName: {
+    fontSize: FONT.sm,
+    color: '#C05621',
+    fontWeight: '900',
+    marginBottom: 2,
+  },
+  friendText: {
+    fontSize: FONT.md,
+    color: COLOR.textPrimary,
+    fontWeight: '800',
+    lineHeight: 22,
+  },
+  instrTitle: {
+    fontSize: FONT.xxl,
+    fontWeight: '900',
+    color: COLOR.textPrimary,
+    marginBottom: SPACE.sm,
+    textAlign: 'center',
+  },
+  instrBody: {
+    fontSize: FONT.md,
+    color: COLOR.textSecond,
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: SPACE.xl,
+  },
+  startBtn: {
+    backgroundColor: COLOR.forest,
+    borderRadius: RADIUS.pill,
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    marginTop: SPACE.lg,
+    alignItems: 'center',
+  },
+  startBtnText: {
+    fontSize: FONT.lg,
+    fontWeight: '900',
+    color: COLOR.textWhite,
+  },
+  gameOverPad: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  gamePad: {
+    padding: SPACE.md,
+    paddingBottom: 80,
+  },
+  promptCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACE.md,
+    backgroundColor: '#FFE8D6',
+    borderRadius: RADIUS.xl,
+    borderWidth: 1,
+    borderColor: '#F6C8A8',
+    padding: SPACE.md,
+    marginBottom: SPACE.md,
+  },
+  promptIcon: {
+    width: 74,
+    height: 74,
+    borderRadius: 24,
+    backgroundColor: COLOR.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  promptEmoji: {
+    fontSize: 40,
+  },
+  promptLabel: {
+    fontSize: FONT.xs,
+    color: '#C05621',
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 0.7,
+    marginBottom: 3,
+  },
+  promptWord: {
+    fontSize: FONT.xxl,
+    color: COLOR.textPrimary,
+    fontWeight: '900',
+    marginBottom: 2,
+  },
+  promptEnglish: {
+    fontSize: FONT.sm,
+    color: COLOR.textSecond,
+    fontWeight: '800',
+  },
+  answerCard: {
+    backgroundColor: COLOR.card,
+    borderRadius: RADIUS.xl,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+    padding: SPACE.md,
+    marginBottom: SPACE.md,
+  },
+  answerLabel: {
+    fontSize: FONT.xs,
+    color: COLOR.textHint,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 0.7,
+    marginBottom: 4,
+  },
+  answerText: {
+    fontSize: FONT.lg,
+    color: COLOR.textPrimary,
+    fontWeight: '900',
+  },
+  gridWrap: {
+    alignItems: 'center',
+    gap: SPACE.sm,
+    backgroundColor: COLOR.card,
+    borderRadius: 30,
+    padding: SPACE.md,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    elevation: 4,
+  },
+  gridRow: {
+    flexDirection: 'row',
+    gap: SPACE.sm,
+  },
   cell: {
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 0.5, borderColor: COLOR.border,
+    borderRadius: 20,
+    backgroundColor: '#EAF5FF',
+    borderWidth: 2,
+    borderColor: '#BBDCFB',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  cellSelected:       { backgroundColor: COLOR.gold + '44' },
-  cellFound:          { backgroundColor: COLOR.successLight },
-  cellLetter:         { fontWeight: '700', color: COLOR.textPrimary },
-  cellLetterSelected: { color: COLOR.clay, fontWeight: '900' },
-  cellLetterFound:    { color: COLOR.success, fontWeight: '900' },
-
-  resetBtn: { marginTop: SPACE.md, paddingVertical: 8, paddingHorizontal: 20, backgroundColor: COLOR.clayLight, borderRadius: RADIUS.pill, borderWidth: 1, borderColor: '#E8B090' },
-  resetBtnText: { fontSize: FONT.xs, color: COLOR.clay, fontWeight: '700' },
+  cellSelected: {
+    backgroundColor: COLOR.forest,
+    borderColor: COLOR.forest,
+  },
+  cellText: {
+    fontSize: FONT.lg,
+    color: '#2B6CB0',
+    fontWeight: '900',
+  },
+  cellTextSelected: {
+    color: COLOR.textWhite,
+  },
+  clearBtn: {
+    marginTop: SPACE.md,
+    backgroundColor: COLOR.goldLight,
+    borderRadius: RADIUS.pill,
+    borderWidth: 1,
+    borderColor: COLOR.goldBorder,
+    paddingVertical: 13,
+    alignItems: 'center',
+  },
+  clearText: {
+    color: COLOR.clay,
+    fontSize: FONT.md,
+    fontWeight: '900',
+  },
 });
