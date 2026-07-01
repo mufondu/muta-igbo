@@ -28,6 +28,7 @@ import PremiumScreen from '../screens/PremiumScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import { COLOR, FONT, IS_TABLET, LEVEL_COLOR, RADIUS, SPACE } from '../utils/tokens';
 
+const APP_ICON = require('../../assets/icon.png');
 // ─── Audio (optional, gracefully degraded) ───────────────────────────────────
 let Audio: any = null;
 try { Audio = require('expo-av').Audio; } catch (_) {}
@@ -281,7 +282,7 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
       <View style={sh.featureHeaderRow}>
         <View>
           <Text style={sh.sectionLabel}>Play Zone</Text>
-          <Text style={sh.featureHeaderTitle}>Choose an activity</Text>
+          <Text style={sh.featureHeaderTitle}>Choose activity</Text>
         </View>
       </View>
 
@@ -1995,14 +1996,14 @@ const sh = StyleSheet.create({
   },
 
   featureHeaderRow: {
-    marginTop: SPACE.sm,
-    marginBottom: SPACE.sm,
+    marginTop: SPACE.xs,
+    marginBottom: 6,
   },
   featureHeaderTitle: {
-    fontSize: FONT.md,
+    fontSize: FONT.sm,
     color: COLOR.textPrimary,
     fontWeight: '900',
-    letterSpacing: -0.2,
+    letterSpacing: -0.1,
   },
   featureRailScroll: {
     marginHorizontal: -SPACE.md,
@@ -2013,21 +2014,21 @@ const sh = StyleSheet.create({
     gap: SPACE.md,
   },
   featureCard: {
-    width: 152,
-    minHeight: 176,
-    borderRadius: 34,
+    width: 142,
+    minHeight: 158,
+    borderRadius: 30,
     borderWidth: 2,
     padding: SPACE.md,
     justifyContent: 'space-between',
     shadowColor: '#000',
-    shadowOpacity: 0.10,
-    shadowRadius: 16,
-    elevation: 5,
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    elevation: 4,
   },
   featureIconBubble: {
-    width: 72,
-    height: 72,
-    borderRadius: 28,
+    width: 64,
+    height: 64,
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: SPACE.sm,
@@ -2038,17 +2039,17 @@ const sh = StyleSheet.create({
     fontSize: 36,
   },
   featureTitle: {
-    fontSize: FONT.lg,
+    fontSize: FONT.md,
     color: COLOR.textPrimary,
     fontWeight: '900',
     marginTop: 2,
-    letterSpacing: -0.3,
+    letterSpacing: -0.2,
   },
   featureSub: {
-    fontSize: FONT.sm,
+    fontSize: FONT.xs,
     color: COLOR.textSecond,
     fontWeight: '800',
-    lineHeight: 19,
+    lineHeight: 17,
     marginTop: 4,
   },
 
@@ -2355,6 +2356,11 @@ const sh = StyleSheet.create({
     color: COLOR.textSecond,
     fontWeight: '700',
     lineHeight: 20,
+  },
+
+  logoImage: {
+    width: '100%',
+    height: '100%',
   },
 
 });
