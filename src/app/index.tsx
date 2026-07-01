@@ -597,7 +597,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
             {section.items.map((item, i) => {
               const numbers = isNumberLessonItem(levelId, item.english);
               const grammar = isGrammarLevel(levelId);
-              const textOnly = levelId === '4A' && section.title === 'Body Parts';
+              const textOnly = false;
               const singularPlural = grammar && isSingularPluralSection(section.title);
               const [igboLeft, igboRight] = splitLessonPair(item.igbo);
               const [englishLeft, englishRight] = splitLessonPair(item.english);
