@@ -31,6 +31,17 @@ import { COLOR, FONT, IS_TABLET, LEVEL_COLOR, RADIUS, SPACE } from '../utils/tok
 
 const MUTA_LOGO = require('../../assets/brand/muta-igbo-logo.png');
 const APP_ICON = require('../../assets/muta-logo.png');
+
+const LEVEL_ICONS: Record<string, any> = {
+  '7A': require('../../assets/illustrations/custom/levels/alphabet-sounds.png'),
+  '6A': require('../../assets/illustrations/custom/levels/greetings-phrases.png'),
+  '5A': require('../../assets/illustrations/custom/levels/numbers-counting.png'),
+  '4A': require('../../assets/illustrations/custom/levels/body-family.png'),
+  '3A': require('../../assets/illustrations/custom/levels/home-food.png'),
+  '2A': require('../../assets/illustrations/custom/levels/animals-nature.png'),
+  '1A': require('../../assets/illustrations/custom/levels/verbs-actions.png'),
+};
+
 // ─── Audio (optional, gracefully degraded) ───────────────────────────────────
 let Audio: any = null;
 try { Audio = require('expo-av').Audio; } catch (_) {}
@@ -365,7 +376,11 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
               activeOpacity={0.8}
             >
               <View style={[sh.levelPip, { backgroundColor: lc.bg }]}>
-                <Text style={{ fontSize: 22 }}>{level.emoji}</Text>
+                {LEVEL_ICONS[level.id] ? (
+                  <Image source={LEVEL_ICONS[level.id]} style={sh.levelPipImage} resizeMode="contain" />
+                ) : (
+                  <Text style={[sh.featureIcon, { color: lc.pip }]}>{level.level}</Text>
+                )}
               </View>
               <View style={{ flex: 1 }}>
                 <View style={sh.levelTopRow}>
@@ -1502,6 +1517,10 @@ const sh = StyleSheet.create({
     elevation: 4,
   },
   levelCardLocked: { opacity: 0.65 },
+  levelPipImage: {
+    width: '100%',
+    height: '100%',
+  },
   levelPip: {
     width: 76,
     height: 76,
