@@ -353,13 +353,13 @@ const LEVEL_1A: Level = {
     {
       id: 'parts_of_speech', title: 'Parts of Speech', igboTitle: 'Akụkụ Okwu',
       items: [
-        { igbo: 'Aha (Noun)', english: 'Noun — names a person, place or thing', emoji: '🏷️', example: 'Nwa, ụlọ, mmiri' },
+        { igbo: 'Aha (Noun)', english: 'Noun — names a person, place or thing', emoji: '🧸', example: 'Nwa, ụlọ, mmiri' },
         { igbo: 'Ngwaa (Verb)', english: 'Verb — shows action or state', emoji: '🏃🏾', example: 'Rie, gaa, nọ' },
-        { igbo: 'Nkọwa aha (Adjective)', english: 'Adjective — describes a noun', emoji: '🎨', example: 'Ọcha, ukwu, mma' },
-        { igbo: 'Nkọwa ngwaa (Adverb)', english: 'Adverb — describes a verb', emoji: '⚡', example: 'Ngwa ngwa (quickly), nke ọma (well)' },
-        { igbo: 'Ihe nchọpụta (Pronoun)', english: 'Pronoun — replaces a noun', emoji: '👤', example: 'Ya (him/her/it), Ha (them)' },
-        { igbo: 'Ihe njikọ (Conjunction)', english: 'Conjunction — joins words', emoji: '🔗', example: 'Na (and), ma (but/or)' },
-        { igbo: 'Ihe ntinye (Preposition)', english: 'Preposition — shows position', emoji: '📍', example: 'N\'ime (inside), n\'elu (on top)' },
+        { igbo: 'Nkọwa aha (Adjective)', english: 'Adjective — describes a noun', emoji: '🌈', example: 'Ọcha, ukwu, mma' },
+        { igbo: 'Nkọwa ngwaa (Adverb)', english: 'Adverb — describes a verb', emoji: '🚀', example: 'Ngwa ngwa (quickly), nke ọma (well)' },
+        { igbo: 'Ihe nchọpụta (Pronoun)', english: 'Pronoun — replaces a noun', emoji: '🙋🏾', example: 'Ya (him/her/it), Ha (them)' },
+        { igbo: 'Ihe njikọ (Conjunction)', english: 'Conjunction — joins words', emoji: '��', example: 'Na (and), ma (but/or)' },
+        { igbo: 'Ihe ntinye (Preposition)', english: 'Preposition — shows position', emoji: '🏠', example: 'N\'ime (inside), n\'elu (on top)' },
       ],
     },
     {
@@ -378,14 +378,14 @@ const LEVEL_1A: Level = {
     {
       id: 'opposites', title: 'Words & Opposites', igboTitle: 'Okwu na Ntụgharị Ha',
       items: [
-        { igbo: 'Ọma / Njọ', english: 'Good / Bad', emoji: '✅❌' },
-        { igbo: 'Ukwu / Obere', english: 'Big / Small', emoji: '🐘🐭' },
+        { igbo: 'Ọma / Njọ', english: 'Good / Bad', emoji: '🙂' },
+        { igbo: 'Ukwu / Obere', english: 'Big / Small', emoji: '🧸' },
         { igbo: 'Ọcha / Ruru unyi', english: 'Clean / Dirty', emoji: '✨🪣', partOfSpeech: 'other', verified: true },
-        { igbo: 'Ọhụrụ / Ochie', english: 'New / Old', emoji: '🆕🕰️' },
+        { igbo: 'Ọhụrụ / Ochie', english: 'New / Old', emoji: '🎁' },
         { igbo: 'Ìhè / Ọchịchịrị', english: 'Light / Dark', emoji: '☀️🌑', partOfSpeech: 'other', verified: true },
         { igbo: 'Ogologo / Mkpụmkpụ', english: 'Long / Short', emoji: '📏📌', partOfSpeech: 'other', verified: true },
         { igbo: 'Elu / Ala', english: 'High / Low', emoji: '⬆️⬇️', partOfSpeech: 'other', verified: true },
-        { igbo: 'Ngwa / Nwayọ', english: 'Fast / Slow', emoji: '🐆🐢' },
+        { igbo: 'Ngwa / Nwayọ', english: 'Fast / Slow', emoji: '🚗' },
         { igbo: 'Ike / Mfe', english: 'Hard / Easy', emoji: '💪🏾😌', partOfSpeech: 'other', verified: true },
         { igbo: 'Mbụ / Ikpeazụ', english: 'First / Last', emoji: '🥇🏁', partOfSpeech: 'other', verified: true },
       ],
