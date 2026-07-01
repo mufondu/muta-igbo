@@ -448,6 +448,11 @@ function isNumbersLevel(levelId: string): boolean {
   return levelId === '5A';
 }
 
+function isNumberLessonItem(levelId: string, english: string): boolean {
+  if (isNumbersLevel(levelId)) return true;
+  return /^\d+\s*[—-]/.test(String(english || '').trim());
+}
+
 function getNumberValue(english: string): string {
   const match = String(english || '').match(/^(\d+)/);
   return match ? match[1] : '#';
@@ -587,7 +592,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
             <Text style={sh.sectionSubHeading}>{section.igboTitle}</Text>
 
             {section.items.map((item, i) => {
-              const numbers = isNumbersLevel(levelId);
+              const numbers = isNumberLessonItem(levelId, item.english);
               const grammar = isGrammarLevel(levelId);
               const singularPlural = grammar && isSingularPluralSection(section.title);
               const [igboLeft, igboRight] = splitLessonPair(item.igbo);
@@ -614,7 +619,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                         <Text style={sh.numberEnglish}>{getNumberEnglish(item.english)}</Text>
                         <View style={[sh.numberMiniPill, { backgroundColor: numberColor.bg }]}>
                           <Text style={[sh.numberMiniText, { color: numberColor.accent }]}>
-                            Tap to hear it
+                            Listen & repeat
                           </Text>
                         </View>
                       </View>
