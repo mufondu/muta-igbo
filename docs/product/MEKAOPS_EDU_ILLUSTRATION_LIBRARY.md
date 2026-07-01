@@ -188,3 +188,25 @@ Approved style:
 - Simple visual cue for time/action
 - No embedded text in final app tiles
 - Reusable across MekaOps Edu products
+
+
+## No Generic Icon Rule
+
+MekaOps Edu products should not ship generic emoji/icons as final lesson visuals.
+
+Allowed visual states:
+
+1. Approved custom illustration asset.
+2. Clean text badge fallback until the custom illustration exists.
+
+Not allowed as final production UI:
+
+- Generic emoji lesson icons
+- Random system emoji
+- Placeholder stock icons
+- Mixed icon styles
+- Duplicated role images
+- Cropped sprite sheets
+- Embedded text inside illustration assets
+
+All new lesson categories should receive a reusable custom illustration pack before release.

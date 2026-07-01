@@ -133,6 +133,10 @@ function isTextFallback(value: string): boolean {
   return /^[A-Za-z ]+$/.test(value);
 }
 
+function hasCustomAsset(assetKey?: string): boolean {
+  return Boolean(assetKey && CUSTOM_ILLUSTRATIONS[assetKey]);
+}
+
 function isBodyAsset(assetKey?: string): boolean {
   return Boolean(assetKey && assetKey.startsWith('body:'));
 }
@@ -150,8 +154,8 @@ export default function LessonIllustration({
     : undefined;
 
   const bodyAsset = isBodyAsset(entry?.assetKey);
-  const fallback = entry?.fallback || emoji || '✨';
   const label = entry?.label || english || igbo;
+  const fallback = entry?.fallback || label;
   const imageResizeMode = bodyAsset ? 'contain' : 'cover';
   const imageBackgroundColor = bodyAsset ? '#FFF8EE' : 'transparent';
 
