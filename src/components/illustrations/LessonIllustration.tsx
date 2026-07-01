@@ -116,6 +116,25 @@ const FAMILY_ROLES: Record<string, FamilyRole> = {
   },
 };
 
+const CUSTOM_ILLUSTRATIONS: Record<string, ImageSourcePropType> = {
+  // Family
+  // grandmother: require('../../../assets/illustrations/custom/family/grandmother.png'),
+  // grandfather: require('../../../assets/illustrations/custom/family/grandfather.png'),
+  // mother: require('../../../assets/illustrations/custom/family/mother.png'),
+  // father: require('../../../assets/illustrations/custom/family/father.png'),
+  // brother: require('../../../assets/illustrations/custom/family/brother.png'),
+  // sister: require('../../../assets/illustrations/custom/family/sister.png'),
+
+  // Body
+  // head: require('../../../assets/illustrations/custom/body/head.png'),
+  // eye: require('../../../assets/illustrations/custom/body/eye.png'),
+  // mouth: require('../../../assets/illustrations/custom/body/mouth.png'),
+  // hand: require('../../../assets/illustrations/custom/body/hand.png'),
+  // leg: require('../../../assets/illustrations/custom/body/leg.png'),
+  // ear: require('../../../assets/illustrations/custom/body/ear.png'),
+  // nose: require('../../../assets/illustrations/custom/body/nose.png'),
+};
+
 const ILLUSTRATIONS: IllustrationEntry[] = [
   { keys: ['dog', 'nkịta', 'nkita'], fallback: '🐶' },
   { keys: ['cat', 'nwamba'], fallback: '🐱' },
