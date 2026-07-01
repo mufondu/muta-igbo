@@ -32,8 +32,8 @@ const GAMES: {
     color: '#F0EAFC', pip: '#7030C8', premium: false,
   },
   {
-    id: 'listen', emoji: '👂', title: 'Listen & Tap',     igboTitle: 'Nụ & Kụọ',
-    desc: 'See an Igbo word and tap the correct picture',
+    id: 'listen', emoji: '👂', title: 'Find It!',     igboTitle: 'Nụ & Kụọ',
+    desc: 'Find the picture that matches the Igbo word',
     color: '#FDF0E8', pip: '#E8732A', premium: false,
   },
   {
