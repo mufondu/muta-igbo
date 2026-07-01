@@ -277,25 +277,78 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
         <View style={sh.quizBadge}><Text style={{ fontSize: 32 }}>🌟</Text></View>
       </TouchableOpacity>
 
-      {/* Lab row */}
-      <View style={sh.labRow}>
-        {[
-          { emoji: '🗣️', title: 'Say It Back', sub: 'Speaking practice', bg: COLOR.clayLight, action: () => openInner('sayItBack') },
-          { emoji: '🧠', title: 'Translator',  sub: 'Enuani dialect',     bg: COLOR.skyLight,  action: () => openInner('translator') },
-          { emoji: '📚', title: 'Folktales',   sub: 'Igbo stories',       bg: COLOR.forestLight, action: () => openInner('folktales') },
-          { emoji: '🌍', title: 'History',     sub: 'Igbo heritage',      bg: COLOR.tealLight,   action: () => openInner('history') },
-          { emoji: '🎮', title: 'Games',       sub: '5 fun games',        bg: COLOR.purpleLight, action: () => openInner('games') },
-        ].map(card => (
-          <TouchableOpacity key={card.title} style={[sh.labCard, { backgroundColor: card.bg }]}
-            onPress={card.action} activeOpacity={0.8}>
-            <Text style={sh.labEmoji}>{card.emoji}</Text>
-            <Text style={sh.labTitle}>{card.title}</Text>
-            <Text style={sh.labSub}>{card.sub}</Text>
-          </TouchableOpacity>
-        ))}
+      {/* Feature rail */}
+      <View style={sh.featureHeaderRow}>
+        <View>
+          <Text style={sh.sectionLabel}>Play & Practice</Text>
+          <Text style={sh.featureHeaderTitle}>Choose your next activity</Text>
+        </View>
       </View>
 
-      {/* Level cards */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={sh.featureRail}
+        style={sh.featureRailScroll}
+      >
+        {[
+          {
+            icon: '🎙️',
+            title: 'Speak',
+            sub: 'Say it back',
+            bg: '#FFF1EA',
+            accent: '#D4571F',
+            action: () => openInner('sayItBack'),
+          },
+          {
+            icon: '💬',
+            title: 'Translate',
+            sub: 'Enuani words',
+            bg: '#EAF5FF',
+            accent: '#2B6CB0',
+            action: () => openInner('translator'),
+          },
+          {
+            icon: '📖',
+            title: 'Stories',
+            sub: 'Folktales',
+            bg: '#E8F6EC',
+            accent: '#087443',
+            action: () => openInner('folktales'),
+          },
+          {
+            icon: '🌍',
+            title: 'History',
+            sub: 'Culture',
+            bg: '#E6FAFA',
+            accent: '#0B7F83',
+            action: () => openInner('history'),
+          },
+          {
+            icon: '🎮',
+            title: 'Games',
+            sub: 'Play & learn',
+            bg: '#F0E7FF',
+            accent: '#6B46C1',
+            action: () => openInner('games' as InnerView),
+          },
+        ].map(card => (
+          <TouchableOpacity
+            key={card.title}
+            style={[sh.featureCard, { backgroundColor: card.bg, borderColor: card.accent + '33' }]}
+            onPress={card.action}
+            activeOpacity={0.84}
+          >
+            <View style={[sh.featureIconBubble, { backgroundColor: card.accent }]}>
+              <Text style={sh.featureIcon}>{card.icon}</Text>
+            </View>
+            <Text style={sh.featureTitle} numberOfLines={1}>{card.title}</Text>
+            <Text style={sh.featureSub} numberOfLines={2}>{card.sub}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      {/* Level cards */}      {/* Level cards */}
       <Text style={sh.sectionLabel}>Learning Paths</Text>
       {ALL_LEVELS.map((level, i) => {
         const lc = LEVEL_COLOR[level.id];
@@ -1105,15 +1158,33 @@ const sh = StyleSheet.create({
   navLabel: { fontSize: FONT.xs, color: COLOR.textSecond },
   navLabelActive: { color: COLOR.forest, fontWeight: '700' },
 
-  homeScroll: { padding: IS_TABLET ? SPACE.xl : SPACE.md, paddingBottom: 40, maxWidth: IS_TABLET ? 720 : undefined, alignSelf: IS_TABLET ? 'center' as const : undefined, width: '100%' },
+  homeScroll: {
+    paddingHorizontal: SPACE.md,
+    paddingTop: SPACE.md,
+    paddingBottom: 110,
+  },
 
   greetBanner: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: COLOR.forestLight,
-    borderRadius: RADIUS.md, padding: SPACE.md,
-    marginBottom: SPACE.md, borderWidth: 1, borderColor: '#B0D8BE',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACE.md,
+    backgroundColor: '#D7F8E5',
+    borderRadius: RADIUS.xl,
+    padding: SPACE.md,
+    marginBottom: SPACE.md,
+    borderWidth: 1,
+    borderColor: '#94DDB4',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    elevation: 4,
   },
-  greetName: { fontSize: FONT.lg, fontWeight: '800', color: COLOR.forest },
+  greetName: {
+    fontSize: FONT.xl,
+    fontWeight: '900',
+    color: COLOR.forest,
+    marginBottom: 4,
+  },
   streakRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 2 },
   streakText: { fontSize: FONT.sm, color: COLOR.textSecond },
   premiumChip: {
@@ -1123,16 +1194,48 @@ const sh = StyleSheet.create({
   premiumChipText: { fontSize: FONT.xs, color: COLOR.clay, fontWeight: '700' },
 
   quizHero: {
-    backgroundColor: COLOR.forest, borderRadius: RADIUS.lg,
-    padding: SPACE.md, flexDirection: 'row',
-    alignItems: 'center', justifyContent: 'space-between', marginBottom: SPACE.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: COLOR.forest,
+    borderRadius: 28,
+    padding: SPACE.lg,
+    marginBottom: SPACE.lg,
+    borderWidth: 1,
+    borderColor: '#1F6A3B',
+    shadowColor: '#000',
+    shadowOpacity: 0.14,
+    shadowRadius: 18,
+    elevation: 6,
   },
-  quizTag: { fontSize: FONT.xs, color: '#7AB897', textTransform: 'uppercase', letterSpacing: 1 },
-  quizTitle: { fontSize: FONT.xl, fontWeight: '800', color: COLOR.textCream, marginTop: 2 },
-  quizSub: { fontSize: FONT.sm, color: '#7AB897', marginTop: 2 },
+  quizTag: {
+    fontSize: FONT.xs,
+    color: COLOR.gold,
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
+    fontWeight: '900',
+  },
+  quizTitle: {
+    fontSize: FONT.xxl,
+    fontWeight: '900',
+    color: COLOR.textCream,
+    marginTop: 4,
+  },
+  quizSub: {
+    fontSize: FONT.md,
+    color: '#A9DCC1',
+    marginTop: 4,
+    fontWeight: '700',
+  },
   quizBadge: {
-    width: 52, height: 52, borderRadius: 26,
-    backgroundColor: COLOR.gold, alignItems: 'center', justifyContent: 'center',
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: COLOR.gold,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 4,
+    borderColor: 'rgba(255,255,255,0.25)',
   },
 
   labRow: { flexDirection: 'row', gap: SPACE.sm, marginBottom: SPACE.md },
@@ -1145,29 +1248,66 @@ const sh = StyleSheet.create({
   labSub: { fontSize: FONT.xs, color: COLOR.textSecond, textAlign: 'center', marginTop: 2 },
 
   sectionLabel: {
-    fontSize: FONT.xs, color: COLOR.textHint,
-    textTransform: 'uppercase', letterSpacing: 1,
-    marginBottom: SPACE.sm, marginTop: 4,
+    fontSize: FONT.xs,
+    color: COLOR.textHint,
+    textTransform: 'uppercase',
+    letterSpacing: 1.4,
+    marginBottom: SPACE.xs,
+    marginTop: 2,
+    fontWeight: '900',
   },
 
   levelCard: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: COLOR.card, borderRadius: RADIUS.md,
-    borderWidth: 1, borderColor: COLOR.border,
-    padding: SPACE.md, marginBottom: SPACE.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    backgroundColor: COLOR.card,
+    borderRadius: RADIUS.xl,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+    padding: SPACE.md,
+    marginBottom: SPACE.md,
+    minHeight: 116,
+    shadowColor: '#000',
+    shadowOpacity: 0.07,
+    shadowRadius: 14,
+    elevation: 3,
   },
   levelCardLocked: { opacity: 0.65 },
   levelPip: {
-    width: 46, height: 46, borderRadius: RADIUS.sm,
-    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+    width: 64,
+    height: 64,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
   },
   levelTopRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
-  levelBadge: { fontSize: FONT.xs, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8 },
-  levelName: { fontSize: FONT.lg, fontWeight: '800', color: COLOR.textPrimary },
-  levelSub: { fontSize: FONT.xs, color: COLOR.textSecond, marginTop: 1 },
+  levelBadge: {
+    fontSize: FONT.xs,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 0.9,
+  },
+  levelName: {
+    fontSize: FONT.xl,
+    fontWeight: '900',
+    color: COLOR.textPrimary,
+    marginBottom: 2,
+  },
+  levelSub: {
+    fontSize: FONT.sm,
+    color: COLOR.textSecond,
+    marginTop: 1,
+    lineHeight: 19,
+    fontWeight: '700',
+  },
   progressTrack: {
-    height: 4, backgroundColor: COLOR.border,
-    borderRadius: 2, marginTop: 6, overflow: 'hidden',
+    height: 7,
+    backgroundColor: COLOR.border,
+    borderRadius: 4,
+    marginTop: 10,
+    overflow: 'hidden',
   },
   progressFill: { height: '100%', borderRadius: 2 },
   chevron: { fontSize: 22, color: COLOR.textHint },
@@ -1628,6 +1768,60 @@ const sh = StyleSheet.create({
   vocabAudio: {
     fontSize: 18,
     alignSelf: 'center',
+  },
+
+  featureHeaderRow: {
+    marginTop: SPACE.sm,
+    marginBottom: SPACE.sm,
+  },
+  featureHeaderTitle: {
+    fontSize: FONT.lg,
+    color: COLOR.textPrimary,
+    fontWeight: '900',
+  },
+  featureRailScroll: {
+    marginHorizontal: -SPACE.md,
+    marginBottom: SPACE.lg,
+  },
+  featureRail: {
+    paddingHorizontal: SPACE.md,
+    gap: SPACE.md,
+  },
+  featureCard: {
+    width: 136,
+    minHeight: 158,
+    borderRadius: 26,
+    borderWidth: 1,
+    padding: SPACE.md,
+    justifyContent: 'space-between',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  featureIconBubble: {
+    width: 58,
+    height: 58,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACE.sm,
+  },
+  featureIcon: {
+    fontSize: 30,
+  },
+  featureTitle: {
+    fontSize: FONT.md,
+    color: COLOR.textPrimary,
+    fontWeight: '900',
+    marginTop: 2,
+  },
+  featureSub: {
+    fontSize: FONT.xs,
+    color: COLOR.textSecond,
+    fontWeight: '800',
+    lineHeight: 17,
+    marginTop: 2,
   },
 
 });
