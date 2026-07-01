@@ -1,6 +1,6 @@
 // ─── Game 4: Find It! (Tap the right picture) ────────────────────────────
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { buildQuizPool } from '../../data/lessons';
 import { COLOR, FONT, IS_TABLET, RADIUS, SPACE } from '../../utils/tokens';
 import {
@@ -149,7 +149,11 @@ export default function ListenTapGame({ onBack, isPremium }: Props) {
               onPress={() => tap(opt)}
               activeOpacity={0.75}
             >
-              <Text style={{ fontSize: optSize * 0.45 }}>{opt.emoji}</Text>
+              <Image
+  source={require('../../../assets/images/placeholders/' + opt.igbo + '.png')}
+  style={{ width: optSize * 0.75, height: optSize * 0.75 }}
+  resizeMode="contain"
+/>
             </TouchableOpacity>
           ))}
         </View>
