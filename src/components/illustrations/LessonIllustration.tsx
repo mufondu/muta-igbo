@@ -19,8 +19,8 @@ type IllustrationEntry = {
 };
 
 const ILLUSTRATIONS: IllustrationEntry[] = [
-  { keys: ['grandmother', 'nne ochie'], assetKey: 'family:grandmother', fallback: 'Grandma', label: 'Grandma' },
-  { keys: ['grandfather', 'nna ochie'], assetKey: 'family:grandfather', fallback: 'Grandpa', label: 'Grandpa' },
+  { keys: ['grandmother', 'nne nne'], assetKey: 'family:grandmother', fallback: 'Grandma', label: 'Grandma' },
+  { keys: ['grandfather', 'nna nna'], assetKey: 'family:grandfather', fallback: 'Grandpa', label: 'Grandpa' },
   { keys: ['mother', 'nne'], assetKey: 'family:mother', fallback: 'Mother', label: 'Mother' },
   { keys: ['father', 'nna'], assetKey: 'family:father', fallback: 'Father', label: 'Father' },
   { keys: ['brother', 'nwanne nwoke'], assetKey: 'family:brother', fallback: 'Brother', label: 'Brother' },
