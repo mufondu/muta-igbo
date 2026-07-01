@@ -22,8 +22,8 @@ This is the approved visual direction for Family Members.
 | Grandmother / Nne ochie | older woman in burgundy headwrap |
 | Brother / Nwanne nwoke | boy in red cap |
 | Sister / Nwanne nwanyị | girl with bow |
-| Uncle / Nna nna | adult man in brown cap |
-| Aunt / Nne nne | adult woman in colorful headwrap |
+| Uncle / Nwanne nna or Nwanne nne | adult man in brown cap |
+| Aunt / Nwanne nna or Nwanne nne | adult woman in colorful headwrap |
 | Children / Ụmụ | group image |
 | Child / Nwa | young child portrait in Igbo attire |
 | Cousin / Ibe | child/young relative portrait, not reused mother/father art |

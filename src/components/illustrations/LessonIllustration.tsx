@@ -66,7 +66,7 @@ function normalize(value: string): string {
 function findIllustration(igbo: string, english: string): IllustrationEntry | undefined {
   const normalizedIgbo = normalize(igbo);
   const normalizedEnglish = normalize(english);
-  const combined = ;
+  const combined = normalizedIgbo + " " + normalizedEnglish;
 
   // Role-first matching prevents Nwanne from being mistaken for Nne / Mother.
   if (normalizedEnglish.includes('grandfather')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:grandfather');
