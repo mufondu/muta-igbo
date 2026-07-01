@@ -799,13 +799,23 @@ function isQuizNumberItem(item: { english?: string }): boolean {
   return /^\d+\s*[—-]/.test(String(item.english || '').trim());
 }
 
+
+function isQuizNumberItem(item: { english?: string }): boolean {
+  return /^\d+\s*[—-]/.test(String(item.english || '').trim());
+}
+
+function getQuizOptionLabel(item: { english?: string }): string {
+  return isQuizNumberItem(item) ? getNumberEnglish(String(item.english || '')) : String(item.english || '');
+}
+
 // ─── QUIZ SCREEN ──────────────────────────────────────────────────────────────
 function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () => void }) {
   const { state, updateQuizBest, addWordsLearned } = useApp();
   const pool = buildQuizPool(state.isPremium);
   const [question, setQuestion] = useState<VocabItem | null>(null);
-  const [options, setOptions]   = useState<VocabItem[]>([]);
-  const [streak, setStreak]     = useState(0);
+  const [options, setOptions] = useState<VocabItem[]>([]);
+  const [streak, setStreak] = useState(0);
+  const [round, setRound] = useState(1);
   const [feedback, setFeedback] = useState<{ text: string; correct: boolean } | null>(null);
   const wiggle = useWiggle();
 
@@ -813,11 +823,11 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
     const correct = randomFrom(pool);
     const numberQuestion = isQuizNumberItem(correct);
 
-    const sameFamilyWrong = pool.filter(i =>
-      i.igbo !== correct.igbo && isQuizNumberItem(i) === numberQuestion
+    const sameFamilyWrong = pool.filter(item =>
+      item.igbo !== correct.igbo && isQuizNumberItem(item) === numberQuestion
     );
 
-    const fallbackWrong = pool.filter(i => i.igbo !== correct.igbo);
+    const fallbackWrong = pool.filter(item => item.igbo !== correct.igbo);
     const wrongSource = sameFamilyWrong.length >= 3 ? sameFamilyWrong : fallbackWrong;
     const wrong = shuffle(wrongSource).slice(0, 3);
 
@@ -826,90 +836,143 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
     setFeedback(null);
   }, [pool]);
 
-  useEffect(() => { next(); }, []);
+  useEffect(() => {
+    next();
+  }, []);
 
   function check(sel: VocabItem) {
     if (!question) return;
+
     if (sel.igbo === question.igbo) {
-      const ns = streak + 1;
-      setStreak(ns);
-      updateQuizBest(ns);
+      const nextStreak = streak + 1;
+      setStreak(nextStreak);
+      setRound(current => current + 1);
+      updateQuizBest(nextStreak);
       addWordsLearned(1);
-      setFeedback({ text: 'Nnukwu! Correct! 🌟', correct: true });
+      setFeedback({ text: 'Correct. Keep going!', correct: true });
       wiggle.trigger();
-      setTimeout(next, 1400);
-    } else {
-      setStreak(0);
-      setFeedback({ text: `Ewoo! That is ${sel.english}. Try again! 💪`, correct: false });
+      setTimeout(next, 950);
+      return;
     }
+
+    setStreak(0);
+    setFeedback({
+      text: `Almost. That means ${getQuizOptionLabel(sel)}.`,
+      correct: false,
+    });
   }
 
   if (!question) return null;
 
+  const numberQuestion = isQuizNumberItem(question);
+  const promptColor = numberQuestion ? getNumberCardColor(round) : { bg: '#F0E7FF', accent: COLOR.purple };
+
   return (
-    <View style={{ flex: 1, backgroundColor: COLOR.bg }}>
-      <InnerHeader title="Quiz Mode 🎯" onBack={onBack} accent={COLOR.purple} />
-      <View style={sh.gamePad}>
-        <Animated.View style={[sh.streakBanner, { backgroundColor: COLOR.purpleLight }, wiggle.style]}>
-          <Text style={[sh.streakText, { fontSize: FONT.lg, color: COLOR.purple }]}>🌟 Streak: {streak}</Text>
+    <View style={sh.quizModeRoot}>
+      <View style={sh.quizModeHeader}>
+        <TouchableOpacity onPress={onBack} style={sh.quizBackBtn} accessibilityLabel="Go back">
+          <Text style={sh.quizBackText}>‹</Text>
+        </TouchableOpacity>
+
+        <View style={{ flex: 1 }}>
+          <Text style={sh.quizKicker}>Daily Challenge</Text>
+          <Text style={sh.quizModeTitle}>Quiz Mode</Text>
+        </View>
+
+        <View style={sh.quizRoundPill}>
+          <Text style={sh.quizRoundText}>Round {round}</Text>
+        </View>
+      </View>
+
+      <ScrollView contentContainerStyle={sh.quizModePad} showsVerticalScrollIndicator={false}>
+        <Animated.View style={[sh.quizStreakCard, wiggle.style]}>
+          <View style={sh.quizStreakIcon}>
+            <Text style={sh.quizStreakIconText}>⭐</Text>
+          </View>
+          <View>
+            <Text style={sh.quizStreakLabel}>Current streak</Text>
+            <Text style={sh.quizStreakValue}>{streak}</Text>
+          </View>
         </Animated.View>
 
-        <View style={[sh.promptCard, { backgroundColor: COLOR.purpleLight, borderColor: COLOR.purpleBorder }]}>
-          <Text style={sh.promptSpeaker}>Find the match for:</Text>
-          <Text style={{ fontSize: 32, fontWeight: '800', color: COLOR.purple, marginTop: 6 }}>{question.igbo}</Text>
+        <View style={[sh.quizPromptPremium, { backgroundColor: promptColor.bg, borderColor: promptColor.accent + '55' }]}>
+          <Text style={[sh.quizPromptLabel, { color: promptColor.accent }]}>
+            Find the match for
+          </Text>
+
+          {numberQuestion && (
+            <View style={[sh.quizPromptNumberBadge, { backgroundColor: COLOR.card }]}>
+              <Text style={[sh.quizPromptNumberDigit, { color: promptColor.accent }]}>
+                {getNumberValue(question.english)}
+              </Text>
+            </View>
+          )}
+
+          <Text style={[sh.quizPromptWord, { color: promptColor.accent }]}>
+            {question.igbo}
+          </Text>
+
+          <Text style={sh.quizPromptHint}>
+            Choose the correct meaning below.
+          </Text>
         </View>
 
         {feedback && (
-          <Text style={[sh.feedbackText, feedback.correct ? sh.feedbackGood : sh.feedbackBad]}>
-            {feedback.text}
-          </Text>
+          <View style={[sh.quizFeedbackCard, feedback.correct ? sh.quizFeedbackGood : sh.quizFeedbackBad]}>
+            <Text style={sh.quizFeedbackText}>{feedback.text}</Text>
+          </View>
         )}
 
-        <View style={sh.quizGrid}>
+        <View style={sh.quizPremiumGrid}>
           {options.map((opt, i) => {
             const numberOption = isQuizNumberItem(opt);
-            const numberColor = getNumberCardColor(i);
+            const optionColor = numberOption ? getNumberCardColor(i) : getNumberCardColor(i + round);
+            const label = getQuizOptionLabel(opt);
 
             return (
               <TouchableOpacity
-                key={i}
+                key={`${opt.igbo}-${i}`}
                 style={[
-                  sh.quizOpt,
-                  numberOption && { borderColor: numberColor.accent + '55', backgroundColor: numberColor.bg },
+                  sh.quizPremiumOption,
+                  { backgroundColor: optionColor.bg, borderColor: optionColor.accent + '55' },
                 ]}
                 onPress={() => check(opt)}
-                accessibilityLabel={opt.english}
-                activeOpacity={0.75}
+                accessibilityLabel={label}
+                activeOpacity={0.82}
               >
-                {numberOption ? (
-                  <>
-                    <View style={[sh.quizNumberBadge, { backgroundColor: COLOR.card }]}>
-                      <Text style={[sh.quizNumberDigit, { color: numberColor.accent }]}>
-                        {getNumberValue(opt.english)}
-                      </Text>
-                    </View>
-                    <Text style={sh.quizOptLabel}>{getNumberEnglish(opt.english)}</Text>
-                  </>
-                ) : (
-                  <>
-                    <Text style={sh.quizOptEmoji}>{opt.emoji ?? '❓'}</Text>
-                    <Text style={sh.quizOptLabel}>{getNumberEnglish(opt.english)}</Text>
-                  </>
-                )}
+                <View style={[sh.quizOptionIconBubble, { backgroundColor: COLOR.card }]}>
+                  {numberOption ? (
+                    <Text style={[sh.quizOptionNumber, { color: optionColor.accent }]}>
+                      {getNumberValue(opt.english)}
+                    </Text>
+                  ) : (
+                    <Text style={sh.quizOptionEmoji}>{opt.emoji ?? '❓'}</Text>
+                  )}
+                </View>
+
+                <Text style={sh.quizOptionLabel} numberOfLines={2}>
+                  {label}
+                </Text>
+
+                <Text style={[sh.quizOptionTap, { color: optionColor.accent }]}>
+                  Tap answer
+                </Text>
               </TouchableOpacity>
             );
           })}
         </View>
 
         {!state.isPremium && (
-          <TouchableOpacity style={sh.premiumNudge} onPress={onPremium}>
-            <Text style={sh.premiumNudgeText}>🔒 Unlock 100+ more words with Premium</Text>
+          <TouchableOpacity style={sh.quizPremiumNudge} onPress={onPremium} activeOpacity={0.86}>
+            <Text style={sh.quizPremiumNudgeTitle}>Unlock more quiz words</Text>
+            <Text style={sh.quizPremiumNudgeText}>Premium adds more lessons, games, stories, and songs.</Text>
           </TouchableOpacity>
         )}
-      </View>
+      </ScrollView>
     </View>
   );
 }
+
 
 // ─── TRANSLATOR SCREEN ────────────────────────────────────────────────────────
 function TranslatorScreen({ onBack }: { onBack: () => void }) {
@@ -2010,6 +2073,230 @@ const sh = StyleSheet.create({
   quizNumberDigit: {
     fontSize: 30,
     fontWeight: '900',
+  },
+
+  quizModeRoot: {
+    flex: 1,
+    backgroundColor: COLOR.bg,
+  },
+  quizModeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACE.md,
+    backgroundColor: COLOR.forestDark,
+    paddingHorizontal: SPACE.md,
+    paddingVertical: 18,
+  },
+  quizBackBtn: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.10)',
+  },
+  quizBackText: {
+    fontSize: 36,
+    lineHeight: 36,
+    color: COLOR.gold,
+    fontWeight: '900',
+  },
+  quizKicker: {
+    fontSize: FONT.xs,
+    color: COLOR.gold,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 3,
+  },
+  quizModeTitle: {
+    fontSize: FONT.xxl,
+    color: COLOR.textCream,
+    fontWeight: '900',
+  },
+  quizRoundPill: {
+    backgroundColor: COLOR.gold,
+    borderRadius: RADIUS.pill,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  quizRoundText: {
+    color: COLOR.forestDark,
+    fontSize: FONT.xs,
+    fontWeight: '900',
+  },
+  quizModePad: {
+    padding: SPACE.md,
+    paddingBottom: 90,
+  },
+  quizStreakCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    gap: SPACE.sm,
+    backgroundColor: '#F0E7FF',
+    borderRadius: 28,
+    borderWidth: 1,
+    borderColor: '#D8C2FF',
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    marginBottom: SPACE.md,
+  },
+  quizStreakIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: COLOR.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quizStreakIconText: {
+    fontSize: 24,
+  },
+  quizStreakLabel: {
+    fontSize: FONT.xs,
+    color: COLOR.textHint,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+  },
+  quizStreakValue: {
+    fontSize: FONT.xl,
+    color: COLOR.purple,
+    fontWeight: '900',
+  },
+  quizPromptPremium: {
+    borderRadius: 30,
+    borderWidth: 2,
+    padding: SPACE.lg,
+    alignItems: 'center',
+    marginBottom: SPACE.md,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    elevation: 4,
+  },
+  quizPromptLabel: {
+    fontSize: FONT.sm,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 0.7,
+    marginBottom: SPACE.sm,
+  },
+  quizPromptNumberBadge: {
+    width: 78,
+    height: 78,
+    borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACE.sm,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+  },
+  quizPromptNumberDigit: {
+    fontSize: 36,
+    fontWeight: '900',
+  },
+  quizPromptWord: {
+    fontSize: 42,
+    fontWeight: '900',
+    textAlign: 'center',
+    marginBottom: 6,
+  },
+  quizPromptHint: {
+    fontSize: FONT.sm,
+    color: COLOR.textSecond,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  quizFeedbackCard: {
+    borderRadius: RADIUS.xl,
+    padding: SPACE.md,
+    marginBottom: SPACE.md,
+    borderWidth: 1,
+  },
+  quizFeedbackGood: {
+    backgroundColor: COLOR.successLight,
+    borderColor: COLOR.success,
+  },
+  quizFeedbackBad: {
+    backgroundColor: COLOR.errorLight,
+    borderColor: COLOR.error,
+  },
+  quizFeedbackText: {
+    fontSize: FONT.md,
+    color: COLOR.textPrimary,
+    fontWeight: '900',
+    textAlign: 'center',
+  },
+  quizPremiumGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: SPACE.md,
+    justifyContent: 'center',
+  },
+  quizPremiumOption: {
+    width: '47%',
+    minHeight: 178,
+    borderRadius: 28,
+    borderWidth: 2,
+    padding: SPACE.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    elevation: 4,
+  },
+  quizOptionIconBubble: {
+    width: 74,
+    height: 74,
+    borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACE.sm,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+  },
+  quizOptionNumber: {
+    fontSize: 32,
+    fontWeight: '900',
+  },
+  quizOptionEmoji: {
+    fontSize: 38,
+  },
+  quizOptionLabel: {
+    fontSize: FONT.md,
+    color: COLOR.textPrimary,
+    fontWeight: '900',
+    textAlign: 'center',
+    lineHeight: 21,
+    minHeight: 42,
+  },
+  quizOptionTap: {
+    fontSize: FONT.xs,
+    fontWeight: '900',
+    marginTop: SPACE.sm,
+  },
+  quizPremiumNudge: {
+    marginTop: SPACE.lg,
+    backgroundColor: COLOR.goldLight,
+    borderRadius: RADIUS.xl,
+    borderWidth: 1,
+    borderColor: COLOR.goldBorder,
+    padding: SPACE.lg,
+  },
+  quizPremiumNudgeTitle: {
+    fontSize: FONT.md,
+    color: COLOR.clay,
+    fontWeight: '900',
+    marginBottom: 4,
+  },
+  quizPremiumNudgeText: {
+    fontSize: FONT.sm,
+    color: COLOR.textSecond,
+    fontWeight: '700',
+    lineHeight: 20,
   },
 
 });
