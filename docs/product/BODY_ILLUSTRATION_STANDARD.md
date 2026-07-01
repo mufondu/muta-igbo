@@ -11,3 +11,17 @@ Style:
 - no sprite sheets
 - no adult/anatomical torso art
 - readable at 74px
+
+
+## Approved Production Rule
+
+Production body-part images must be textless. The app UI owns the Igbo and English labels.
+
+Approved image style:
+
+- Textless icon tile
+- Soft cream background
+- Rounded-square image composition
+- Kid-safe body-part art
+- No sprite sheet leftovers
+- No embedded Igbo or English text

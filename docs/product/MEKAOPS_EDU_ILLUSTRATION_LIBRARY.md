@@ -105,3 +105,36 @@ packages/mekaops-edu-assets/
   home/
   numbers/
   brand/
+
+
+## Current Approved Body Pack
+
+The approved reusable body-part icons are the corrected textless versions.
+
+Location:
+
+assets/illustrations/custom/body/
+
+Approved assets:
+
+- head.png
+- eye.png
+- eyebrow.png
+- nose.png
+- mouth.png
+- ear.png
+- hand.png
+- leg.png
+- toes.png
+- tongue.png
+- teeth.png
+
+Rules:
+
+- No embedded text inside the image.
+- The app renders Igbo and English labels separately.
+- Use clean, friendly, kid-safe body-part illustrations.
+- Use soft cream tile backgrounds.
+- Keep art readable at 74px.
+- Do not reuse sprite sheets or reference boards directly.
+- Do not use exposed torso/chest/stomach/back art in the beginner kids lesson.
