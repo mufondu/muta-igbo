@@ -1,4 +1,4 @@
-// ─── Game 4: Listen & Tap (Tap the right picture) ────────────────────────────
+// ─── Game 4: Find It! (Tap the right picture) ────────────────────────────
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { buildQuizPool } from '../../data/lessons';
@@ -61,18 +61,18 @@ export default function ListenTapGame({ onBack, isPremium }: Props) {
     if (opt.igbo === question.igbo) {
       const ns = streak + 1;
       setStreak(ns); setScore(s => s + 1 + Math.floor(ns / 3));
-      setFeedback({ text: ns >= 3 ? `🔥 Ọkachamara! ${ns} in a row!` : 'Nnukwu! Correct! ✅', correct: true });
+      setFeedback({ text: ns >= 3 ? `🔥 Ọkachamara! ${ns} in a row!` : 'Ị mere nke ọma! ✅', correct: true });
       const newRound = round + 1;
       setRound(newRound);
       if (newRound >= MAX_ROUNDS) { setTimeout(() => setGameOver(true), 1200); return; }
       setTimeout(() => next(difficulty), 1200);
     } else {
       setStreak(0);
-      setFeedback({ text: `Ewoo! That is ${opt.english}. Try again! 💪`, correct: false });
+      setFeedback({ text: `Good try. That is ${opt.english}. Ka anyị nwaa ọzọ.`, correct: false });
     }
   }
 
-  const optSize = IS_TABLET ? 120 : difficulty === 'easy' ? 130 : difficulty === 'medium' ? 100 : 85;
+  const optSize = IS_TABLET ? 128 : difficulty === 'easy' ? 132 : difficulty === 'medium' ? 108 : 92;
 
   if (!started) {
     return (
@@ -80,20 +80,20 @@ export default function ListenTapGame({ onBack, isPremium }: Props) {
         <View style={s.header}>
           <Text style={s.backText} onPress={onBack}>⬅</Text>
           <View>
-            <Text style={s.headerTitle}>Listen & Tap 👂</Text>
-            <Text style={s.headerSub}>Tap the correct picture</Text>
+            <Text style={s.headerTitle}>Mụta Challenge 🎯</Text>
+            <Text style={s.headerSub}>Find the right picture</Text>
           </View>
         </View>
         <ScrollView contentContainerStyle={s.setupPad}>
           <Text style={s.instrEmoji}>👂</Text>
-          <Text style={s.instrTitle}>Listen & Tap</Text>
+          <Text style={s.instrTitle}>Find It!</Text>
           <Text style={s.instrBody}>
-            You will see an Igbo word. Tap the correct picture that matches it!
+            You will see an Igbo word. Find the right picture that matches it!
             Harder levels have more pictures to choose from. 🌍
           </Text>
           <DifficultyPicker value={difficulty} onChange={setDifficulty} />
           <TouchableOpacity style={s.startBtn} onPress={() => start(difficulty)} activeOpacity={0.85}>
-            <Text style={s.startBtnText}>Start Game 🚀</Text>
+            <Text style={s.startBtnText}>Start Challenge 🚀</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -105,7 +105,7 @@ export default function ListenTapGame({ onBack, isPremium }: Props) {
       <ScrollView style={s.root} contentContainerStyle={{ flex: 1, justifyContent: 'center' }}>
         <View style={s.header}>
           <Text style={s.backText} onPress={onBack}>⬅</Text>
-          <Text style={s.headerTitle}>Listen & Tap 👂</Text>
+          <Text style={s.headerTitle}>Mụta Challenge 🎯</Text>
         </View>
         <GameOver score={score} streak={streak} difficulty={difficulty}
           onReplay={() => start(difficulty)} onHome={onBack} />
@@ -119,7 +119,7 @@ export default function ListenTapGame({ onBack, isPremium }: Props) {
     <View style={s.root}>
       <View style={s.header}>
         <Text style={s.backText} onPress={onBack}>⬅</Text>
-        <Text style={s.headerTitle}>Listen & Tap 👂</Text>
+        <Text style={s.headerTitle}>Mụta Challenge 🎯</Text>
         <Text style={s.roundText}>{round}/{MAX_ROUNDS}</Text>
       </View>
       <ScrollView contentContainerStyle={s.gamePad}>
@@ -131,10 +131,10 @@ export default function ListenTapGame({ onBack, isPremium }: Props) {
 
         {/* Word prompt */}
         <View style={s.promptCard}>
-          <Text style={s.promptLabel}>Tap the picture for:</Text>
+          <Text style={s.promptLabel}>Can you find:</Text>
           <Text style={s.promptIgbo}>{question.igbo}</Text>
           <TouchableOpacity onPress={() => setShowEnglish(v => !v)} style={s.hintBtn}>
-            <Text style={s.hintBtnText}>{showEnglish ? `"${question.english}"` : '💡 Show English hint'}</Text>
+            <Text style={s.hintBtnText}>{showEnglish ? `"${question.english}"` : '💡 Need a hint?'}</Text>
           </TouchableOpacity>
         </View>
 
@@ -169,19 +169,19 @@ const s = StyleSheet.create({
   headerSub:   { fontSize: FONT.xs, color: '#7AB897' },
   roundText:   { fontSize: FONT.sm, color: COLOR.gold, fontWeight: '700' },
 
-  setupPad:    { padding: SPACE.lg, alignItems: 'center' },
+  setupPad:    { padding: SPACE.lg, paddingBottom: 80, alignItems: 'center' },
   instrEmoji:  { fontSize: 56, marginBottom: SPACE.sm },
   instrTitle:  { fontSize: FONT.xxl, fontWeight: '900', color: COLOR.textPrimary, marginBottom: SPACE.sm },
   instrBody:   { fontSize: FONT.md, color: COLOR.textSecond, textAlign: 'center', lineHeight: 22, marginBottom: SPACE.xl },
   startBtn:    { backgroundColor: COLOR.forest, borderRadius: RADIUS.pill, paddingVertical: 14, paddingHorizontal: 40, marginTop: SPACE.sm },
   startBtnText:{ fontSize: FONT.lg, fontWeight: '800', color: COLOR.textWhite },
 
-  gamePad: { padding: SPACE.md, paddingBottom: 60 },
+  gamePad: { padding: SPACE.md, paddingBottom: 80 },
   progressTrack: { height: 6, backgroundColor: COLOR.border, borderRadius: 3, marginBottom: SPACE.md, overflow: 'hidden' },
   progressFill:  { height: '100%', backgroundColor: COLOR.forest, borderRadius: 3 },
 
   promptCard: {
-    backgroundColor: COLOR.forestLight, borderRadius: RADIUS.lg,
+    backgroundColor: COLOR.forestLight, borderRadius: RADIUS.xl,
     borderWidth: 1, borderColor: '#B0D8BE',
     padding: SPACE.lg, alignItems: 'center', marginBottom: SPACE.md,
   },
@@ -190,10 +190,10 @@ const s = StyleSheet.create({
   hintBtn:     { marginTop: SPACE.sm, paddingVertical: 6, paddingHorizontal: 14, backgroundColor: COLOR.goldLight, borderRadius: RADIUS.pill, borderWidth: 1, borderColor: COLOR.goldBorder },
   hintBtnText: { fontSize: FONT.xs, color: COLOR.clay, fontWeight: '700' },
 
-  pictureGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: SPACE.md },
+  pictureGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: SPACE.md, paddingTop: SPACE.sm },
   pictureOpt: {
     backgroundColor: COLOR.card, borderRadius: RADIUS.lg,
-    borderWidth: 2, borderColor: COLOR.border,
+    borderWidth: 2, borderColor: COLOR.border, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 10, elevation: 3,
     alignItems: 'center', justifyContent: 'center',
   },
 });
