@@ -800,7 +800,7 @@ function isQuizNumberItem(item: { english?: string }): boolean {
 }
 
 
-function isQuizNumberItem(item: { english?: string }): boolean {
+): boolean {
   return /^\d+\s*[—-]/.test(String(item.english || '').trim());
 }
 
