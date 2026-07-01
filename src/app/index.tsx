@@ -379,6 +379,23 @@ function getIgboAlphabetExample(letter: string, fallback: string): string {
   return IGBO_ALPHABET_EXAMPLES[String(letter).trim().toLowerCase()] || fallback;
 }
 
+
+function splitLessonPair(value: string): [string, string] {
+  const normalized = String(value || '').replace(' / ', ' — ');
+  const parts = normalized.split('—').map(part => part.trim()).filter(Boolean);
+
+  if (parts.length >= 2) return [parts[0], parts.slice(1).join(' — ')];
+  return [normalized.trim(), ''];
+}
+
+function isGrammarLevel(levelId: string): boolean {
+  return levelId === '1A';
+}
+
+function isSingularPluralSection(title: string): boolean {
+  return title.toLowerCase().includes('singular') || title.toLowerCase().includes('plural');
+}
+
 // ─── LEVEL DETAIL SCREEN ──────────────────────────────────────────────────────
 function LevelDetailScreen({ levelId, onBack, onPremium }: {
   levelId: string; onBack: () => void; onPremium: () => void;
@@ -483,32 +500,90 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
             <Text style={sh.sectionHeading}>{section.title}</Text>
             <Text style={sh.sectionSubHeading}>{section.igboTitle}</Text>
 
-            {section.items.map((item, i) => (
-              <BounceIn key={i} delay={i * 30}>
-                <TouchableOpacity
-                  style={sh.vocabCard}
-                  onPress={() => playSoundFallback(item.igbo)}
-                  accessibilityLabel={`${item.igbo}, ${item.english}`}
-                  activeOpacity={0.8}
-                >
-                  <View style={[sh.vocabEmojiWrap, { backgroundColor: lc.bg }]}>
-                    {levelId === '7A' ? (
-                      <Text style={[sh.alphaLetter, { color: lc.pip }]}>{item.igbo}</Text>
-                    ) : (
-                      <Text style={sh.vocabEmoji}>{item.emoji}</Text>
-                    )}
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={sh.vocabIgbo}>{item.igbo}</Text>
-                    <Text style={sh.vocabEn}>{item.english}</Text>
-                    {item.example && (
-                      <Text style={sh.vocabExample}>e.g. {item.example}</Text>
-                    )}
-                  </View>
-                  <Text style={{ fontSize: 18 }}>🔊</Text>
-                </TouchableOpacity>
-              </BounceIn>
-            ))}
+            {section.items.map((item, i) => {
+              const grammar = isGrammarLevel(levelId);
+              const singularPlural = grammar && isSingularPluralSection(section.title);
+              const [igboLeft, igboRight] = splitLessonPair(item.igbo);
+              const [englishLeft, englishRight] = splitLessonPair(item.english);
+
+              if (singularPlural) {
+                return (
+                  <BounceIn key={i} delay={i * 30}>
+                    <TouchableOpacity
+                      style={sh.pairCard}
+                      onPress={() => playSoundFallback(item.igbo)}
+                      accessibilityLabel={`${item.igbo}, ${item.english}`}
+                      activeOpacity={0.8}
+                    >
+                      <View style={sh.pairColumn}>
+                        <Text style={sh.pairLabel}>One</Text>
+                        <Text style={sh.pairIgbo}>{igboLeft}</Text>
+                        <Text style={sh.pairEnglish}>{englishLeft}</Text>
+                      </View>
+
+                      <View style={sh.pairDivider} />
+
+                      <View style={sh.pairColumn}>
+                        <Text style={sh.pairLabel}>Many</Text>
+                        <Text style={sh.pairIgbo}>{igboRight || igboLeft}</Text>
+                        <Text style={sh.pairEnglish}>{englishRight || englishLeft}</Text>
+                      </View>
+
+                      <Text style={sh.vocabAudio}>🔊</Text>
+                    </TouchableOpacity>
+                  </BounceIn>
+                );
+              }
+
+              if (grammar) {
+                return (
+                  <BounceIn key={i} delay={i * 30}>
+                    <TouchableOpacity
+                      style={sh.grammarTextCard}
+                      onPress={() => playSoundFallback(item.igbo)}
+                      accessibilityLabel={`${item.igbo}, ${item.english}`}
+                      activeOpacity={0.8}
+                    >
+                      <View style={{ flex: 1 }}>
+                        <Text style={sh.vocabIgbo}>{item.igbo}</Text>
+                        <Text style={sh.vocabEn}>{item.english}</Text>
+                        {item.example && (
+                          <Text style={sh.vocabExample}>e.g. {item.example}</Text>
+                        )}
+                      </View>
+                      <Text style={sh.vocabAudio}>🔊</Text>
+                    </TouchableOpacity>
+                  </BounceIn>
+                );
+              }
+
+              return (
+                <BounceIn key={i} delay={i * 30}>
+                  <TouchableOpacity
+                    style={sh.vocabCard}
+                    onPress={() => playSoundFallback(item.igbo)}
+                    accessibilityLabel={`${item.igbo}, ${item.english}`}
+                    activeOpacity={0.8}
+                  >
+                    <View style={[sh.vocabEmojiWrap, { backgroundColor: lc.bg }]}>
+                      {levelId === '7A' ? (
+                        <Text style={[sh.alphaLetter, { color: lc.pip }]}>{item.igbo}</Text>
+                      ) : (
+                        <Text style={sh.vocabEmoji}>{item.emoji}</Text>
+                      )}
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={sh.vocabIgbo}>{item.igbo}</Text>
+                      <Text style={sh.vocabEn}>{item.english}</Text>
+                      {item.example && (
+                        <Text style={sh.vocabExample}>e.g. {item.example}</Text>
+                      )}
+                    </View>
+                    <Text style={sh.vocabAudio}>🔊</Text>
+                  </TouchableOpacity>
+                </BounceIn>
+              );
+            })}
           </>
         )}
       </ScrollView>
@@ -1426,6 +1501,69 @@ const sh = StyleSheet.create({
     marginBottom: SPACE.md,
     fontStyle: 'italic',
     fontWeight: '700',
+  },
+
+  grammarTextCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACE.md,
+    backgroundColor: COLOR.card,
+    borderRadius: RADIUS.xl,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+    padding: SPACE.lg,
+    minHeight: 110,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 2,
+  },
+  pairCard: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    backgroundColor: COLOR.card,
+    borderRadius: RADIUS.xl,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+    padding: SPACE.md,
+    minHeight: 126,
+    marginBottom: SPACE.md,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 2,
+  },
+  pairColumn: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  pairDivider: {
+    width: 1,
+    backgroundColor: COLOR.border,
+    marginHorizontal: SPACE.md,
+  },
+  pairLabel: {
+    fontSize: FONT.xs,
+    color: COLOR.textHint,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+    marginBottom: 4,
+  },
+  pairIgbo: {
+    fontSize: FONT.lg,
+    color: COLOR.textPrimary,
+    fontWeight: '900',
+    marginBottom: 4,
+  },
+  pairEnglish: {
+    fontSize: FONT.sm,
+    color: COLOR.textSecond,
+    fontWeight: '700',
+  },
+  vocabAudio: {
+    fontSize: 18,
+    alignSelf: 'center',
   },
 
 });
