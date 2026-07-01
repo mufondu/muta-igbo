@@ -28,6 +28,7 @@ import PremiumScreen from '../screens/PremiumScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import { COLOR, FONT, IS_TABLET, LEVEL_COLOR, RADIUS, SPACE } from '../utils/tokens';
 
+const MUTA_LOGO = require('../../assets/brand/muta-igbo-logo.png');
 const APP_ICON = require('../../assets/muta-logo.png');
 // ─── Audio (optional, gracefully degraded) ───────────────────────────────────
 let Audio: any = null;
@@ -184,7 +185,7 @@ export default function MutaIgboApp() {
       {/* App header */}
       <View style={sh.appHeader}>
         <View style={sh.appHeaderLeft}>
-          <View style={sh.logoBadge}><Text style={{ fontSize: 20 }}>🌿</Text></View>
+          <View style={sh.appLogoBox}><Image source={MUTA_LOGO} style={sh.appLogoImage} resizeMode="cover" /></View>
           <View>
             <Text style={sh.appTitle}>Mụta Igbo</Text>
             <Text style={sh.appSub}>Central Igbo / Enuani Edition</Text>
@@ -1013,7 +1014,7 @@ function TranslatorScreen({ onBack }: { onBack: () => void }) {
           <Text style={[sh.streakText, { color: COLOR.sky }]}>🧠 Dialect streak: {streak}</Text>
         </Animated.View>
         <View style={[sh.promptCard, { backgroundColor: COLOR.skyLight, borderColor: COLOR.skyBorder }]}>
-          <Text style={sh.promptSpeaker}>How do we say this in Ogwashi-Ukwu Enuani? 🌿</Text>
+          <Text style={sh.promptSpeaker}>How do we say this in Ogwashi-Ukwu Enuani? </Text>
           <Text style={{ fontSize: 26, fontWeight: '800', color: COLOR.sky, marginTop: 6 }}>{question.central}</Text>
         </View>
         {feedback && (
@@ -2359,6 +2360,24 @@ const sh = StyleSheet.create({
   },
 
   logoImage: {
+    width: '100%',
+    height: '100%',
+  },
+
+  appLogoBox: {
+    width: 58,
+    height: 58,
+    borderRadius: 18,
+    backgroundColor: COLOR.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOpacity: 0.16,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  appLogoImage: {
     width: '100%',
     height: '100%',
   },
