@@ -281,7 +281,7 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
       <View style={sh.featureHeaderRow}>
         <View>
           <Text style={sh.sectionLabel}>Play Zone</Text>
-          <Text style={sh.featureHeaderTitle}>Pick a fun activity</Text>
+          <Text style={sh.featureHeaderTitle}>Choose an activity</Text>
         </View>
       </View>
 
@@ -1999,10 +1999,10 @@ const sh = StyleSheet.create({
     marginBottom: SPACE.sm,
   },
   featureHeaderTitle: {
-    fontSize: FONT.xl,
+    fontSize: FONT.md,
     color: COLOR.textPrimary,
     fontWeight: '900',
-    letterSpacing: -0.4,
+    letterSpacing: -0.2,
   },
   featureRailScroll: {
     marginHorizontal: -SPACE.md,
