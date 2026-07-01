@@ -348,7 +348,7 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
         ))}
       </ScrollView>
 
-      {/* Level cards */}      {/* Level cards */}
+      {/* Level cards */}
       <Text style={sh.sectionLabel}>Learning Paths</Text>
       {ALL_LEVELS.map((level, i) => {
         const lc = LEVEL_COLOR[level.id];
