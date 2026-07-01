@@ -380,6 +380,12 @@ function getIgboAlphabetExample(letter: string, fallback: string): string {
 }
 
 
+
+function getManyPicture(emoji?: string): string {
+  const safe = emoji || '●';
+  return `${safe} ${safe} ${safe}`;
+}
+
 function splitLessonPair(value: string): [string, string] {
   const normalized = String(value || '').replace(' / ', ' — ');
   const parts = normalized.split('—').map(part => part.trim()).filter(Boolean);
@@ -515,18 +521,34 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                       accessibilityLabel={`${item.igbo}, ${item.english}`}
                       activeOpacity={0.8}
                     >
-                      <View style={sh.pairColumn}>
-                        <Text style={sh.pairLabel}>One</Text>
-                        <Text style={sh.pairIgbo}>{igboLeft}</Text>
-                        <Text style={sh.pairEnglish}>{englishLeft}</Text>
+                      <View style={sh.pairPictureRow}>
+                        <View style={sh.pairPictureBox}>
+                          <Text style={sh.pairPicture}>{item.emoji || '●'}</Text>
+                        </View>
+
+                        <View style={sh.pairArrowBox}>
+                          <Text style={sh.pairArrow}>→</Text>
+                        </View>
+
+                        <View style={sh.pairPictureBox}>
+                          <Text style={sh.pairManyPicture}>{getManyPicture(item.emoji)}</Text>
+                        </View>
                       </View>
 
-                      <View style={sh.pairDivider} />
+                      <View style={sh.pairWordRow}>
+                        <View style={sh.pairColumn}>
+                          <Text style={sh.pairLabel}>One</Text>
+                          <Text style={sh.pairIgbo}>{igboLeft}</Text>
+                          <Text style={sh.pairEnglish}>{englishLeft}</Text>
+                        </View>
 
-                      <View style={sh.pairColumn}>
-                        <Text style={sh.pairLabel}>Many</Text>
-                        <Text style={sh.pairIgbo}>{igboRight || igboLeft}</Text>
-                        <Text style={sh.pairEnglish}>{englishRight || englishLeft}</Text>
+                        <View style={sh.pairDivider} />
+
+                        <View style={sh.pairColumn}>
+                          <Text style={sh.pairLabel}>Many</Text>
+                          <Text style={sh.pairIgbo}>{igboRight || igboLeft}</Text>
+                          <Text style={sh.pairEnglish}>{englishRight || englishLeft}</Text>
+                        </View>
                       </View>
 
                       <Text style={sh.vocabAudio}>🔊</Text>
@@ -1519,14 +1541,12 @@ const sh = StyleSheet.create({
     elevation: 2,
   },
   pairCard: {
-    flexDirection: 'row',
-    alignItems: 'stretch',
     backgroundColor: COLOR.card,
     borderRadius: RADIUS.xl,
     borderWidth: 1,
     borderColor: COLOR.border,
     padding: SPACE.md,
-    minHeight: 126,
+    minHeight: 210,
     marginBottom: SPACE.md,
     shadowColor: '#000',
     shadowOpacity: 0.06,
@@ -1536,6 +1556,50 @@ const sh = StyleSheet.create({
   pairColumn: {
     flex: 1,
     justifyContent: 'center',
+  },
+  pairPictureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACE.sm,
+    marginBottom: SPACE.md,
+  },
+  pairPictureBox: {
+    flex: 1,
+    minHeight: 86,
+    borderRadius: RADIUS.lg,
+    backgroundColor: '#EAFBF9',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#BFEDEA',
+  },
+  pairPicture: {
+    fontSize: 46,
+    textAlign: 'center',
+  },
+  pairManyPicture: {
+    fontSize: 30,
+    textAlign: 'center',
+    lineHeight: 38,
+  },
+  pairArrowBox: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: COLOR.goldLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: COLOR.goldBorder,
+  },
+  pairArrow: {
+    color: COLOR.clay,
+    fontSize: FONT.lg,
+    fontWeight: '900',
+  },
+  pairWordRow: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
   },
   pairDivider: {
     width: 1,
