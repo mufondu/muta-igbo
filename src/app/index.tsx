@@ -339,11 +339,12 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
 function LevelDetailScreen({ levelId, onBack, onPremium }: {
   levelId: string; onBack: () => void; onPremium: () => void;
 }) {
-  const { state, updateProgress } = useApp();
+  const { state, activeProfile, updateProgress } = useApp();
   const level = ALL_LEVELS.find(l => l.id === levelId)!;
   const lc = LEVEL_COLOR[levelId];
   const [activeSection, setActiveSection] = useState(0);
   const section = level.sections[activeSection];
+  const isAlphabet = levelId === '7A' && section.id === 'alphabet';
 
   useEffect(() => {
     const currentProfile = state.profiles.find(p => p.id === state.activeProfileId);
@@ -351,98 +352,112 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
     if (current < 0.1) updateProgress(levelId, 0.1);
   }, []);
 
-  // Section emoji map for tab icons
-  const SECTION_EMOJI: Record<string, string> = {
-    alphabet: '🔤', vowels: '🗣️', consonants: '🔊',
-    greetings: '👋🏿', useful_phrases: '💬',
-    numbers_1_10: '🔢', numbers_11_20: '🔢', numbers_big: '💯',
-    body: '🧍🏿', family: '👨🏿‍👩🏿‍👧🏿',
-    animals: '🦁', colours: '🎨',
-    basic_verbs: '🏃🏿', tenses: '⏳',
-    parts_of_speech: '📖', singular_plural: '2️⃣',
-    opposites: '↔️', clauses: '📝',
-    punctuation: '❗', vocab_dev: '📚',
-  };
-
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAF7F0' }}>
-
-      {/* ── Hero header ── */}
-      <View style={ld.header}>
-        <TouchableOpacity onPress={onBack} style={ld.backBtn} accessibilityLabel="Go back">
-          <Text style={ld.backText}>←</Text>
+    <View style={{ flex: 1, backgroundColor: COLOR.bg }}>
+      <View style={[sh.lessonHero, { backgroundColor: lc.pip }]}>
+        <TouchableOpacity onPress={onBack} style={sh.lessonBackBtn} accessibilityLabel="Go back">
+          <Text style={sh.lessonBackText}>‹</Text>
         </TouchableOpacity>
-        <View style={ld.headerText}>
-          <Text style={ld.headerTitle}>{level.title}</Text>
-          <Text style={ld.headerIgbo}>{level.igboTitle}</Text>
+
+        <View style={sh.lessonHeroCopy}>
+          <Text style={sh.lessonEyebrow}>{level.level}</Text>
+          <Text style={sh.lessonHeroTitle}>{level.title}</Text>
+          <Text style={sh.lessonHeroSub}>{level.igboTitle}</Text>
         </View>
-        <Image
-          source={require('../../assets/images/igbo-boy.png')}
-          style={ld.heroKid}
-          resizeMode="contain"
-        />
+
+        <View style={sh.lessonAvatarWrap}>
+          <ProfileImage avatar={activeProfile?.avatar ?? '👦🏾'} size={86} />
+        </View>
       </View>
 
-      {/* ── Section tabs ── */}
       {level.sections.length > 1 && (
-        <View style={ld.tabsWrap}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}
-            contentContainerStyle={ld.tabsRow}>
-            {level.sections.map((sec, i) => {
-              const active = activeSection === i;
-              return (
-                <TouchableOpacity
-                  key={sec.id}
-                  style={[ld.tab, active && { borderColor: lc.pip, backgroundColor: '#fff' }]}
-                  onPress={() => setActiveSection(i)}
-                  activeOpacity={0.8}
-                >
-                  <Text style={ld.tabEmoji}>{SECTION_EMOJI[sec.id] ?? level.emoji}</Text>
-                  <Text style={[ld.tabText, active && { color: lc.pip, fontWeight: '800' }]}>
-                    {sec.title}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={sh.sectionTabs}
+          style={{ flexGrow: 0 }}
+        >
+          {level.sections.map((sec, i) => (
+            <TouchableOpacity
+              key={sec.id}
+              style={[sh.sectionTab, activeSection === i && { backgroundColor: lc.pip, borderColor: lc.pip }]}
+              onPress={() => setActiveSection(i)}
+              activeOpacity={0.84}
+            >
+              <Text style={[sh.sectionTabText, activeSection === i && { color: COLOR.textWhite }]}>
+                {sec.title}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       )}
 
-      {/* ── Section heading ── */}
-      <ScrollView contentContainerStyle={ld.listPad}>
-        <Text style={ld.secTitle}>{section.title}</Text>
-        <Text style={[ld.secIgbo, { color: lc.pip }]}>{section.igboTitle}</Text>
-
-        {section.items.map((item, i) => (
-          <BounceIn key={i} delay={i * 25}>
-            <TouchableOpacity
-              style={ld.card}
-              onPress={() => playSoundFallback(item.igbo)}
-              accessibilityLabel={`${item.igbo}, ${item.english}`}
-              activeOpacity={0.75}
-            >
-              {/* Emoji tile */}
-              <View style={[ld.tile, { backgroundColor: lc.bg }]}>
-                <Text style={ld.tileEmoji}>{item.emoji}</Text>
-              </View>
-
-              {/* Text */}
+      <ScrollView contentContainerStyle={sh.listPad} showsVerticalScrollIndicator={false}>
+        {isAlphabet ? (
+          <>
+            <View style={sh.alphaIntroCard}>
+              <Text style={sh.alphaIntroIcon}>abc</Text>
               <View style={{ flex: 1 }}>
-                <Text style={ld.igboWord}>{item.igbo}</Text>
-                <Text style={ld.engWord}>{item.english}</Text>
-                {item.example && (
-                  <Text style={[ld.example, { color: lc.pip }]}>"{item.example}"</Text>
-                )}
+                <Text style={sh.alphaIntroTitle}>Tap, listen, repeat</Text>
+                <Text style={sh.alphaIntroBody}>
+                  Learn Igbo letters like building blocks. Start with the sound, then say it out loud.
+                </Text>
               </View>
+            </View>
 
-              {/* Sound button */}
-              <View style={[ld.soundBtn, { backgroundColor: lc.pip }]}>
-                <Text style={ld.soundIcon}>🔊</Text>
-              </View>
-            </TouchableOpacity>
-          </BounceIn>
-        ))}
-        <View style={{ height: 40 }} />
+            <Text style={sh.sectionHeading}>Igbo Alphabet</Text>
+            <Text style={sh.sectionSubHeading}>Mkpụrụ Edemede</Text>
+
+            <View style={sh.alphaGrid}>
+              {section.items.map((item, i) => (
+                <BounceIn key={`${item.igbo}-${i}`} delay={i * 18}>
+                  <TouchableOpacity
+                    style={[sh.alphaTile, { borderColor: lc.pip }]}
+                    onPress={() => playSoundFallback(item.igbo)}
+                    accessibilityLabel={`${item.igbo}, ${item.english}`}
+                    activeOpacity={0.82}
+                  >
+                    <View style={[sh.alphaLetterBubble, { backgroundColor: lc.bg }]}>
+                      <Text style={[sh.alphaLetter, { color: lc.pip }]}>{item.igbo}</Text>
+                    </View>
+                    <Text style={sh.alphaSound} numberOfLines={2}>{item.english}</Text>
+                    <View style={[sh.alphaListenBtn, { backgroundColor: lc.pip }]}>
+                      <Text style={sh.alphaListenText}>Listen</Text>
+                    </View>
+                  </TouchableOpacity>
+                </BounceIn>
+              ))}
+            </View>
+          </>
+        ) : (
+          <>
+            <Text style={sh.sectionHeading}>{section.title}</Text>
+            <Text style={sh.sectionSubHeading}>{section.igboTitle}</Text>
+
+            {section.items.map((item, i) => (
+              <BounceIn key={i} delay={i * 30}>
+                <TouchableOpacity
+                  style={sh.vocabCard}
+                  onPress={() => playSoundFallback(item.igbo)}
+                  accessibilityLabel={`${item.igbo}, ${item.english}`}
+                  activeOpacity={0.8}
+                >
+                  <View style={[sh.vocabEmojiWrap, { backgroundColor: lc.bg }]}>
+                    <Text style={sh.vocabEmoji}>{item.emoji}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={sh.vocabIgbo}>{item.igbo}</Text>
+                    <Text style={sh.vocabEn}>{item.english}</Text>
+                    {item.example && (
+                      <Text style={sh.vocabExample}>e.g. {item.example}</Text>
+                    )}
+                  </View>
+                  <Text style={{ fontSize: 18 }}>🔊</Text>
+                </TouchableOpacity>
+              </BounceIn>
+            ))}
+          </>
+        )}
       </ScrollView>
     </View>
   );
@@ -1036,7 +1051,160 @@ const sh = StyleSheet.create({
     maxWidth: 140,
   },
   sectionTabText: { fontSize: 13, fontWeight: '600', color: COLOR.textSecond, textAlign: 'center' },
-  sectionHeading: { fontSize: FONT.lg, fontWeight: '800', color: COLOR.textPrimary, marginBottom: SPACE.md },
+  sectionHeading: { fontSize: FONT.lg, fontWeight: '900', color: COLOR.textPrimary, marginBottom: 2 },
+  sectionSubHeading: {
+    fontSize: FONT.sm,
+    color: COLOR.textSecond,
+    marginBottom: SPACE.md,
+    fontStyle: 'italic',
+    fontWeight: '700',
+  },
+
+  lessonHero: {
+    minHeight: 132,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: SPACE.md,
+    paddingVertical: SPACE.lg,
+    gap: SPACE.md,
+  },
+  lessonBackBtn: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.14)',
+  },
+  lessonBackText: {
+    fontSize: 38,
+    lineHeight: 38,
+    color: COLOR.textWhite,
+    fontWeight: '900',
+  },
+  lessonHeroCopy: {
+    flex: 1,
+  },
+  lessonEyebrow: {
+    fontSize: FONT.xs,
+    color: COLOR.gold,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: 4,
+  },
+  lessonHeroTitle: {
+    fontSize: FONT.xxl,
+    color: COLOR.textWhite,
+    fontWeight: '900',
+    lineHeight: 30,
+  },
+  lessonHeroSub: {
+    fontSize: FONT.md,
+    color: COLOR.gold,
+    fontWeight: '900',
+    marginTop: 4,
+  },
+  lessonAvatarWrap: {
+    width: 96,
+    height: 96,
+    borderRadius: 26,
+    overflow: 'hidden',
+    borderWidth: 3,
+    borderColor: COLOR.textWhite,
+    backgroundColor: COLOR.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  alphaIntroCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACE.md,
+    backgroundColor: COLOR.card,
+    borderRadius: RADIUS.xl,
+    padding: SPACE.md,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+    marginBottom: SPACE.lg,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 2,
+  },
+  alphaIntroIcon: {
+    width: 62,
+    height: 62,
+    borderRadius: 20,
+    backgroundColor: '#EAF2FF',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    lineHeight: 62,
+    fontSize: FONT.lg,
+    color: COLOR.forest,
+    fontWeight: '900',
+  },
+  alphaIntroTitle: {
+    fontSize: FONT.lg,
+    color: COLOR.textPrimary,
+    fontWeight: '900',
+    marginBottom: 2,
+  },
+  alphaIntroBody: {
+    fontSize: FONT.sm,
+    color: COLOR.textSecond,
+    lineHeight: 20,
+    fontWeight: '700',
+  },
+  alphaGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: SPACE.md,
+  },
+  alphaTile: {
+    width: '47%',
+    backgroundColor: COLOR.card,
+    borderRadius: RADIUS.xl,
+    borderWidth: 2,
+    padding: SPACE.md,
+    alignItems: 'center',
+    minHeight: 178,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  alphaLetterBubble: {
+    width: 78,
+    height: 78,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACE.sm,
+  },
+  alphaLetter: {
+    fontSize: 34,
+    fontWeight: '900',
+  },
+  alphaSound: {
+    fontSize: FONT.sm,
+    color: COLOR.textSecond,
+    fontWeight: '800',
+    textAlign: 'center',
+    lineHeight: 19,
+    minHeight: 40,
+    marginBottom: SPACE.sm,
+  },
+  alphaListenBtn: {
+    borderRadius: RADIUS.pill,
+    paddingVertical: 7,
+    paddingHorizontal: 14,
+  },
+  alphaListenText: {
+    color: COLOR.textWhite,
+    fontSize: FONT.xs,
+    fontWeight: '900',
+  },
 
   vocabCard: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
