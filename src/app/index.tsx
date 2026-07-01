@@ -28,7 +28,7 @@ import PremiumScreen from '../screens/PremiumScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import { COLOR, FONT, IS_TABLET, LEVEL_COLOR, RADIUS, SPACE } from '../utils/tokens';
 
-const APP_ICON = require('../../assets/icon.png');
+const APP_ICON = require('../../assets/muta-logo.png');
 // ─── Audio (optional, gracefully degraded) ───────────────────────────────────
 let Audio: any = null;
 try { Audio = require('expo-av').Audio; } catch (_) {}

@@ -15,11 +15,12 @@
       "package": "com.michaelufondu.mutaigbo",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#12382A"
+        "backgroundColor": "#FFFDF6"
       }
     },
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "favicon": "./assets/icon.png"
     },
     "plugins": [
       "expo-router"
@@ -27,6 +28,11 @@
     "experiments": {
       "typedRoutes": true
     },
-    "scheme": "mutaigbo"
+    "scheme": "mutaigbo",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFDF6"
+    }
   }
 }
