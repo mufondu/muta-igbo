@@ -1,0 +1,45 @@
+[
+  {
+    "id": "drink_verb",
+    "english": "Drink",
+    "centralIgbo": "Ịṅụ",
+    "childFriendlyPhrase": "Ṅụọ mmiri",
+    "example": "Ṅụọ mmiri.",
+    "category": "actions",
+    "partOfSpeech": "verb",
+    "imagePrompt": "Igbo child drinking water from a cup, cheerful kid-friendly cartoon style",
+    "audioFile": "audio/actions/inu.mp3",
+    "verified": true,
+    "reviewStatus": "approved",
+    "reviewedBy": "Michael Ufondu",
+    "notes": "Nwa means child. Do not use Nwa for drink."
+  },
+  {
+    "id": "child",
+    "english": "Child",
+    "centralIgbo": "Nwa",
+    "childFriendlyPhrase": "Nwa",
+    "example": "Nke a bụ nwa.",
+    "category": "family",
+    "partOfSpeech": "noun",
+    "imagePrompt": "Smiling Igbo child in bright cartoon style",
+    "audioFile": "audio/family/nwa.mp3",
+    "verified": true,
+    "reviewStatus": "approved",
+    "reviewedBy": "Michael Ufondu"
+  },
+  {
+    "id": "water",
+    "english": "Water",
+    "centralIgbo": "Mmiri",
+    "childFriendlyPhrase": "Mmiri",
+    "example": "Nke a bụ mmiri.",
+    "category": "food_drink",
+    "partOfSpeech": "noun",
+    "imagePrompt": "Clear cup of water on a table in a Nigerian home, kid-friendly cartoon style",
+    "audioFile": "audio/food_drink/mmiri.mp3",
+    "verified": true,
+    "reviewStatus": "approved",
+    "reviewedBy": "Michael Ufondu"
+  }
+]

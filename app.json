@@ -1,44 +1,29 @@
 {
   "expo": {
-    "name": "igbo-kumon",
-    "slug": "igbo-kumon",
-    "version": "1.0.0",
+    "name": "Mụta Igbo",
+    "slug": "muta-igbo",
+    "version": "2.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "igbokumon",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
+    "newArchEnabled": true,
     "ios": {
-      "icon": "./assets/expo.icon"
+      "supportsTablet": true,
+      "bundleIdentifier": "com.michaelufondu.mutaigbo"
     },
     "android": {
+      "package": "com.michaelufondu.mutaigbo",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
-      "predictiveBackGestureEnabled": false
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#12382A"
+      }
     },
     "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "bundler": "metro"
     },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "backgroundColor": "#208AEF",
-          "android": {
-            "image": "./assets/images/splash-icon.png",
-            "imageWidth": 76
-          }
-        }
-      ]
-    ],
+    "plugins": ["expo-router"],
     "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
+      "typedRoutes": true
     }
   }
 }

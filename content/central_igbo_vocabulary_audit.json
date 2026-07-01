@@ -1,0 +1,54 @@
+[
+  {
+    "english": "Nine",
+    "oldIgbo": "Itenani",
+    "centralIgbo": "Itoolu",
+    "category": "numbers",
+    "confidence": "high",
+    "note": "Use Central Igbo for the primary learning path. Keep dialect forms only in dialect notes."
+  },
+  {
+    "english": "Nineteen",
+    "oldIgbo": "Iri na itenani",
+    "centralIgbo": "Iri na itoolu",
+    "category": "numbers",
+    "confidence": "high"
+  },
+  {
+    "english": "Ninety",
+    "oldIgbo": "Iri itenani",
+    "centralIgbo": "Iri itoolu",
+    "category": "numbers",
+    "confidence": "high"
+  },
+  {
+    "english": "Good evening",
+    "oldIgbo": "Anyasị ọma",
+    "centralIgbo": "Mgbede ọma",
+    "category": "greetings",
+    "confidence": "medium",
+    "note": "Anyasị ọma can remain as a variant, but Mgbede ọma is friendlier for the Central Igbo primary path."
+  },
+  {
+    "english": "Good night",
+    "oldIgbo": "Ka ọ bọọ",
+    "centralIgbo": "Ka chi fo",
+    "category": "greetings",
+    "confidence": "medium",
+    "note": "Needs native Central Igbo review before audio generation."
+  },
+  {
+    "english": "Thank you very much",
+    "oldIgbo": "Daalu nnọọ",
+    "centralIgbo": "Daalụ nke ukwuu",
+    "category": "greetings",
+    "confidence": "high"
+  },
+  {
+    "english": "I am fine",
+    "oldIgbo": "Adị m mma",
+    "centralIgbo": "Ọ dị m mma",
+    "category": "useful_phrases",
+    "confidence": "high"
+  }
+]
