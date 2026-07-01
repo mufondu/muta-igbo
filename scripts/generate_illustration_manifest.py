@@ -9,7 +9,7 @@ PACKS = {
         "child", "children", "uncle", "aunt", "cousin",
     ],
     "body": [
-        "head", "eye", "mouth", "hand", "leg", "ear", "nose",
+        "head", "eye", "eyebrow", "mouth", "hand", "leg", "ear", "nose",
     ],
     "animals": [
         "dog", "cat", "chicken", "goat", "fish", "bird", "leopard",

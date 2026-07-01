@@ -32,7 +32,8 @@ const ILLUSTRATIONS: IllustrationEntry[] = [
   { keys: ['cousin', 'ibe'], assetKey: 'family:cousin', fallback: 'Cousin', label: 'Cousin' },
 
   { keys: ['head', 'isi'], assetKey: 'body:head', fallback: 'Head', label: 'Head' },
-  { keys: ['eye', 'anya'], assetKey: 'body:eye', fallback: 'Eye', label: 'Eye' },
+  { keys: ['eyebrow', 'eyebrows', 'nku anya'], assetKey: 'body:eyebrow', fallback: 'Eyebrow', label: 'Eyebrow' },
+  { keys: ['eye', 'eyes', 'anya'], assetKey: 'body:eye', fallback: 'Eye', label: 'Eye' },
   { keys: ['mouth', 'ọnụ', 'onu'], assetKey: 'body:mouth', fallback: 'Mouth', label: 'Mouth' },
   { keys: ['hand', 'aka'], assetKey: 'body:hand', fallback: 'Hand', label: 'Hand' },
   { keys: ['leg', 'ụkwụ', 'ukwu'], assetKey: 'body:leg', fallback: 'Leg', label: 'Leg' },
@@ -61,6 +62,16 @@ function normalize(value: string): string {
     .replace(/[ụ]/g, 'u')
     .replace(/[ọ]/g, 'o')
     .replace(/[ṅ]/g, 'n');
+}
+
+function tokenIncludes(combined: string, key: string): boolean {
+  const normalizedKey = normalize(key);
+
+  if (normalizedKey.includes(' ')) {
+    return combined.includes(normalizedKey);
+  }
+
+  return combined.split(/\s+/).includes(normalizedKey);
 }
 
 function findIllustration(igbo: string, english: string): IllustrationEntry | undefined {

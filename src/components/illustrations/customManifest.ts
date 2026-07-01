@@ -15,6 +15,11 @@ export const CUSTOM_ILLUSTRATIONS: Record<string, ImageSourcePropType> = {
   'family:cousin': require('../../../assets/illustrations/custom/family/cousin.png'),
 
   // body
+  'body:head': require('../../../assets/illustrations/custom/body/head.png'),
+  'body:eye': require('../../../assets/illustrations/custom/body/eye.png'),
+  'body:eyebrow': require('../../../assets/illustrations/custom/body/eyebrow.png'),
+  'body:mouth': require('../../../assets/illustrations/custom/body/mouth.png'),
+  'body:nose': require('../../../assets/illustrations/custom/body/nose.png'),
 
   // animals
 
