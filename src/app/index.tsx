@@ -274,7 +274,7 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
         <View>
           <Text style={sh.quizTag}>DAILY CHALLENGE</Text>
           <Text style={sh.quizTitle}>Quiz Mode 🎯</Text>
-          <Text style={sh.quizSub}>Play, match, and build your streak!</Text>
+          <Text style={sh.quizSub}>Play today and keep your streak glowing!</Text>
         </View>
         <View style={sh.quizBadge}><Text style={{ fontSize: 32 }}>🌟</Text></View>
       </TouchableOpacity>
@@ -283,7 +283,7 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
       <View style={sh.featureHeaderRow}>
         <View>
           <Text style={sh.sectionLabel}>Play Zone</Text>
-          <Text style={sh.featureHeaderTitle}>Choose activity</Text>
+          <Text style={sh.featureHeaderTitle}>Pick your next adventure</Text>
         </View>
       </View>
 
@@ -351,7 +351,7 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
       </ScrollView>
 
       {/* Level cards */}
-      <Text style={sh.sectionLabel}>Learning Paths</Text>
+      <Text style={sh.sectionLabel}>Continue Learning</Text>
       {ALL_LEVELS.map((level, i) => {
         const lc = LEVEL_COLOR[level.id];
         const progress = activeProfile?.levelProgress[level.id] ?? 0;
@@ -1293,15 +1293,13 @@ const sh = StyleSheet.create({
   root: { flex: 1, backgroundColor: COLOR.bg },
 
   appHeader: {
-    paddingTop: 16,
+    paddingTop: 18,
     paddingBottom: 18,
     paddingHorizontal: SPACE.md,
     backgroundColor: COLOR.forestDark,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.08)',
   },
   appHeaderLeft: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   logoBadge: {
@@ -1312,12 +1310,12 @@ const sh = StyleSheet.create({
     fontSize: FONT.xl,
     fontWeight: '900',
     color: COLOR.textCream,
-    letterSpacing: -0.5,
+    letterSpacing: -0.4,
   },
   appSub: {
     fontSize: FONT.sm,
-    color: '#9EDDBB',
-    fontWeight: '700',
+    color: '#AEE7C7',
+    fontWeight: '800',
     marginTop: 2,
   },
   headerRight: { flexDirection: 'row', alignItems: 'center', gap: SPACE.sm },
@@ -1351,8 +1349,8 @@ const sh = StyleSheet.create({
     borderColor: COLOR.border,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingTop: 10,
-    paddingBottom: 22,
+    paddingTop: 12,
+    paddingBottom: 24,
     shadowColor: '#000',
     shadowOpacity: 0.12,
     shadowRadius: 18,
@@ -1372,8 +1370,8 @@ const sh = StyleSheet.create({
 
   homeScroll: {
     paddingHorizontal: SPACE.md,
-    paddingTop: SPACE.md,
-    paddingBottom: 120,
+    paddingTop: SPACE.lg,
+    paddingBottom: 128,
     backgroundColor: '#FFFDF6',
   },
 
@@ -1381,14 +1379,14 @@ const sh = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: SPACE.md,
-    backgroundColor: '#D8FFE9',
-    borderRadius: 32,
+    backgroundColor: '#D9FFE9',
+    borderRadius: 34,
     padding: SPACE.md,
-    marginBottom: SPACE.md,
+    marginBottom: SPACE.lg,
     borderWidth: 2,
-    borderColor: '#7DE0A8',
+    borderColor: '#56E59A',
     shadowColor: '#087443',
-    shadowOpacity: 0.14,
+    shadowOpacity: 0.12,
     shadowRadius: 18,
     elevation: 6,
   },
@@ -1397,7 +1395,7 @@ const sh = StyleSheet.create({
     fontWeight: '900',
     color: COLOR.forest,
     marginBottom: 4,
-    letterSpacing: -0.5,
+    letterSpacing: -0.6,
   },
   streakRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 2 },
   streakText: { fontSize: FONT.sm, color: COLOR.textSecond },
@@ -1412,15 +1410,16 @@ const sh = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: COLOR.forest,
-    borderRadius: 34,
-    padding: SPACE.lg,
+    borderRadius: 36,
+    paddingVertical: SPACE.xl,
+    paddingHorizontal: SPACE.lg,
     marginBottom: SPACE.xl,
     borderWidth: 2,
-    borderColor: '#1F8A50',
+    borderColor: '#16864D',
     shadowColor: '#064C2C',
-    shadowOpacity: 0.22,
-    shadowRadius: 22,
-    elevation: 8,
+    shadowOpacity: 0.24,
+    shadowRadius: 24,
+    elevation: 9,
   },
   quizTag: {
     fontSize: FONT.xs,
@@ -1428,34 +1427,35 @@ const sh = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1.5,
     fontWeight: '900',
+    marginBottom: 4,
   },
   quizTitle: {
-    fontSize: 34,
+    fontSize: 38,
     fontWeight: '900',
     color: COLOR.textCream,
-    marginTop: 4,
-    letterSpacing: -0.8,
+    marginTop: 2,
+    letterSpacing: -1,
   },
   quizSub: {
     fontSize: FONT.md,
-    color: '#B8EACD',
-    marginTop: 6,
-    fontWeight: '800',
+    color: '#BCEED1',
+    marginTop: 8,
+    fontWeight: '900',
     lineHeight: 22,
   },
   quizBadge: {
-    width: 82,
-    height: 82,
-    borderRadius: 41,
+    width: 88,
+    height: 88,
+    borderRadius: 44,
     backgroundColor: COLOR.gold,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 6,
-    borderColor: 'rgba(255,255,255,0.24)',
+    borderWidth: 7,
+    borderColor: 'rgba(255,255,255,0.25)',
     shadowColor: '#000',
-    shadowOpacity: 0.14,
-    shadowRadius: 12,
-    elevation: 6,
+    shadowOpacity: 0.16,
+    shadowRadius: 14,
+    elevation: 7,
   },
 
   labRow: { flexDirection: 'row', gap: SPACE.sm, marginBottom: SPACE.md },
@@ -1469,10 +1469,10 @@ const sh = StyleSheet.create({
 
   sectionLabel: {
     fontSize: FONT.xs,
-    color: COLOR.textHint,
+    color: '#9A9587',
     textTransform: 'uppercase',
-    letterSpacing: 1.6,
-    marginBottom: SPACE.xs,
+    letterSpacing: 1.8,
+    marginBottom: 4,
     marginTop: 2,
     fontWeight: '900',
   },
@@ -1482,12 +1482,12 @@ const sh = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
     backgroundColor: COLOR.card,
-    borderRadius: 30,
+    borderRadius: 32,
     borderWidth: 1.5,
     borderColor: COLOR.border,
     padding: SPACE.md,
     marginBottom: SPACE.md,
-    minHeight: 128,
+    minHeight: 126,
     shadowColor: '#000',
     shadowOpacity: 0.08,
     shadowRadius: 16,
@@ -1497,7 +1497,7 @@ const sh = StyleSheet.create({
   levelPip: {
     width: 76,
     height: 76,
-    borderRadius: 26,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
@@ -1507,8 +1507,8 @@ const sh = StyleSheet.create({
     fontSize: FONT.xs,
     fontWeight: '900',
     textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginBottom: 3,
+    letterSpacing: 1.1,
+    marginBottom: 4,
   },
   levelName: {
     fontSize: FONT.xl,
@@ -1998,13 +1998,13 @@ const sh = StyleSheet.create({
 
   featureHeaderRow: {
     marginTop: SPACE.xs,
-    marginBottom: 6,
+    marginBottom: SPACE.sm,
   },
   featureHeaderTitle: {
-    fontSize: FONT.sm,
+    fontSize: FONT.md,
     color: COLOR.textPrimary,
     fontWeight: '900',
-    letterSpacing: -0.1,
+    letterSpacing: -0.2,
   },
   featureRailScroll: {
     marginHorizontal: -SPACE.md,
@@ -2015,8 +2015,8 @@ const sh = StyleSheet.create({
     gap: SPACE.md,
   },
   featureCard: {
-    width: 142,
-    minHeight: 158,
+    width: 136,
+    minHeight: 150,
     borderRadius: 30,
     borderWidth: 2,
     padding: SPACE.md,
@@ -2027,17 +2027,17 @@ const sh = StyleSheet.create({
     elevation: 4,
   },
   featureIconBubble: {
-    width: 64,
-    height: 64,
-    borderRadius: 25,
+    width: 60,
+    height: 60,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: SPACE.sm,
     borderWidth: 4,
-    borderColor: 'rgba(255,255,255,0.45)',
+    borderColor: 'rgba(255,255,255,0.52)',
   },
   featureIcon: {
-    fontSize: 36,
+    fontSize: 32,
   },
   featureTitle: {
     fontSize: FONT.md,
@@ -2051,7 +2051,7 @@ const sh = StyleSheet.create({
     color: COLOR.textSecond,
     fontWeight: '800',
     lineHeight: 17,
-    marginTop: 4,
+    marginTop: 3,
   },
 
   numberCard: {
@@ -2365,17 +2365,19 @@ const sh = StyleSheet.create({
   },
 
   appLogoBox: {
-    width: 58,
-    height: 58,
-    borderRadius: 18,
+    width: 60,
+    height: 60,
+    borderRadius: 20,
     backgroundColor: COLOR.card,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.28)',
     shadowColor: '#000',
     shadowOpacity: 0.16,
-    shadowRadius: 10,
-    elevation: 5,
+    shadowRadius: 12,
+    elevation: 6,
   },
   appLogoImage: {
     width: '100%',
