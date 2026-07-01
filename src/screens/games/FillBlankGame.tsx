@@ -44,8 +44,52 @@ function pointsForDifficulty(difficulty: Difficulty): number {
   return 3;
 }
 
+function isCleanObjectWord(item: BlankItem): boolean {
+  const igbo = String(item.igbo || '').trim();
+  const english = String(item.english || '').trim();
+
+  if (!igbo || !english) return false;
+
+  // Complete It uses: "Nke a bụ ____" so the answer must be a simple noun/object.
+  if (igbo.includes(' ')) return false;
+  if (english.includes(' ')) return false;
+  if (english.includes('/')) return false;
+  if (english.includes(',')) return false;
+  if (english.includes('(') || english.includes(')')) return false;
+  if (english.includes('&')) return false;
+  if (/[0-9]/.test(english) || /[0-9]/.test(igbo)) return false;
+
+  const lowerEnglish = english.toLowerCase();
+
+  const blocked = [
+    'big',
+    'small',
+    'hot',
+    'cold',
+    'fast',
+    'slow',
+    'speak',
+    'speaking',
+    'drink',
+    'run',
+    'running',
+    'walk',
+    'walking',
+    'eat',
+    'eating',
+    'sleep',
+    'sleeping',
+  ];
+
+  if (blocked.includes(lowerEnglish)) return false;
+
+  return true;
+}
+
 function buildQuestion(difficulty: Difficulty, isPremium: boolean): BlankQuestion {
-  const pool = buildQuizPool(isPremium).filter(item => item.igbo && item.english);
+  const pool = buildQuizPool(isPremium)
+    .filter(item => item.igbo && item.english)
+    .filter(item => isCleanObjectWord(item));
 
   const fallback: BlankItem[] = [
     { igbo: 'Nwa', english: 'Child', emoji: '🧒' },
