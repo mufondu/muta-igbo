@@ -59,14 +59,14 @@ export default function GamesHub({ onBack, isPremium }: Props) {
           <Text style={s.backText}>⬅</Text>
         </TouchableOpacity>
         <View>
-          <Text style={s.headerTitle}>Egwu Igbo 🎮</Text>
-          <Text style={s.headerSub}>Igbo Language Games</Text>
+          <Text style={s.headerTitle}>Mụta Challenge 🎮</Text>
+          <Text style={s.headerSub}>Learn Igbo through play</Text>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={s.scroll}>
         <Text style={s.intro}>
-          Learn Igbo through play! Choose a game below. All games have Easy, Medium and Hard levels. 🌍
+          Choose a challenge and help your Mụta Friend practice Igbo. Start simple, build confidence, and celebrate every win. 🌍
         </Text>
 
         {GAMES.map((game, i) => {
@@ -101,7 +101,7 @@ export default function GamesHub({ onBack, isPremium }: Props) {
 
         <View style={s.trophyBox}>
           <Text style={s.trophyEmoji}>🏆</Text>
-          <Text style={s.trophyTitle}>Earn badges as you play!</Text>
+          <Text style={s.trophyTitle}>Earn badges as you learn!</Text>
           <Text style={s.trophyBody}>
             Build streaks, score high and unlock badges like{'\n'}
             "On Fire 🔥", "Igbo Scholar 📚" and "Perfect Score 💯"
