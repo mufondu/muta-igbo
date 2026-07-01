@@ -114,6 +114,10 @@ function isTextFallback(value: string): boolean {
   return /^[A-Za-z ]+$/.test(value);
 }
 
+function isBodyAsset(assetKey?: string): boolean {
+  return Boolean(assetKey && assetKey.startsWith('body:'));
+}
+
 export default function LessonIllustration({
   igbo,
   english,
@@ -126,8 +130,11 @@ export default function LessonIllustration({
     ? CUSTOM_ILLUSTRATIONS[entry.assetKey]
     : undefined;
 
+  const bodyAsset = isBodyAsset(entry?.assetKey);
   const fallback = entry?.fallback || emoji || '✨';
   const label = entry?.label || english || igbo;
+  const imageResizeMode = bodyAsset ? 'contain' : 'cover';
+  const imageBackgroundColor = bodyAsset ? '#FFF8EE' : 'transparent';
 
   return (
     <View
@@ -142,7 +149,7 @@ export default function LessonIllustration({
       ]}
     >
       {source ? (
-        <Image source={source} style={styles.image} resizeMode="cover" />
+        <Image source={source} style={[styles.image, { backgroundColor: imageBackgroundColor }]} resizeMode={imageResizeMode} />
       ) : isTextFallback(fallback) ? (
         <Text style={styles.textFallback} numberOfLines={1}>
           {label.slice(0, 6)}
