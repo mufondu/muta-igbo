@@ -138,3 +138,53 @@ Rules:
 - Keep art readable at 74px.
 - Do not reuse sprite sheets or reference boards directly.
 - Do not use exposed torso/chest/stomach/back art in the beginner kids lesson.
+
+
+### Basic Verbs
+
+Location:
+
+assets/illustrations/custom/verbs/
+
+Current assets:
+
+- greet.png
+- eat.png
+- drink.png
+- read.png
+- write.png
+- run.png
+- walk.png
+- sleep.png
+- point.png
+- give.png
+- clap.png
+- think.png
+
+Approved style:
+
+- Clean kid-friendly action illustration
+- Warm Black child characters
+- Rounded-square tile composition
+- Soft cream background
+- No embedded text
+- App renders Igbo and English labels separately
+
+### Simple Tenses
+
+Location:
+
+assets/illustrations/custom/tenses/
+
+Current assets:
+
+- present.png
+- past.png
+- future.png
+
+Approved style:
+
+- Same clean educational icon direction
+- Simple visual cue for time/action
+- No embedded text in final app tiles
+- Reusable across MekaOps Edu products

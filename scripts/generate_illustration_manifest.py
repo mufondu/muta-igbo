@@ -20,6 +20,13 @@ PACKS = {
     "food": [
         "food",
     ],
+    "verbs": [
+        "greet", "eat", "drink", "read", "write", "run",
+        "walk", "sleep", "point", "give", "clap", "think",
+    ],
+    "tenses": [
+        "present", "past", "future",
+    ],
 }
 
 lines = [

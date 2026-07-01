@@ -55,6 +55,21 @@ const ILLUSTRATIONS: IllustrationEntry[] = [
   { keys: ['water', 'mmiri'], assetKey: 'home:water', fallback: '💧', label: 'Water' },
   { keys: ['book', 'akwụkwọ', 'akwukwo'], assetKey: 'home:book', fallback: '📘', label: 'Book' },
   { keys: ['food', 'nri'], assetKey: 'food:food', fallback: '🍲', label: 'Food' },
+  { keys: ['greet', 'hello', 'salute', 'salụo', 'salute'], assetKey: 'verbs:greet', fallback: 'Greet', label: 'Greet' },
+  { keys: ['eat', 'rie', 'eri'], assetKey: 'verbs:eat', fallback: 'Eat', label: 'Eat' },
+  { keys: ['drink', 'ṅụọ', 'nu', 'ịṅụ'], assetKey: 'verbs:drink', fallback: 'Drink', label: 'Drink' },
+  { keys: ['read', 'gụ', 'agu'], assetKey: 'verbs:read', fallback: 'Read', label: 'Read' },
+  { keys: ['write', 'dee'], assetKey: 'verbs:write', fallback: 'Write', label: 'Write' },
+  { keys: ['run', 'gbaa ọsọ'], assetKey: 'verbs:run', fallback: 'Run', label: 'Run' },
+  { keys: ['walk', 'gaa'], assetKey: 'verbs:walk', fallback: 'Walk', label: 'Walk' },
+  { keys: ['sleep', 'raa'], assetKey: 'verbs:sleep', fallback: 'Sleep', label: 'Sleep' },
+  { keys: ['point', 'chọ'], assetKey: 'verbs:point', fallback: 'Point', label: 'Point' },
+  { keys: ['give', 'nyere'], assetKey: 'verbs:give', fallback: 'Give', label: 'Give' },
+  { keys: ['clap', 'kụọ aka', 'kpo'], assetKey: 'verbs:clap', fallback: 'Clap', label: 'Clap' },
+  { keys: ['think', 'chee'], assetKey: 'verbs:think', fallback: 'Think', label: 'Think' },
+  { keys: ['present tense', 'ugbu a'], assetKey: 'tenses:present', fallback: 'Now', label: 'Now' },
+  { keys: ['past tense', 'oge gara aga'], assetKey: 'tenses:past', fallback: 'Past', label: 'Past' },
+  { keys: ['future tense', 'oge ga-abịa'], assetKey: 'tenses:future', fallback: 'Future', label: 'Future' },
 ];
 
 function normalize(value: string): string {

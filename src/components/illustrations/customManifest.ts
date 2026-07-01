@@ -33,4 +33,23 @@ export const CUSTOM_ILLUSTRATIONS: Record<string, ImageSourcePropType> = {
 
   // food
 
+  // verbs
+  'verbs:greet': require('../../../assets/illustrations/custom/verbs/greet.png'),
+  'verbs:eat': require('../../../assets/illustrations/custom/verbs/eat.png'),
+  'verbs:drink': require('../../../assets/illustrations/custom/verbs/drink.png'),
+  'verbs:read': require('../../../assets/illustrations/custom/verbs/read.png'),
+  'verbs:write': require('../../../assets/illustrations/custom/verbs/write.png'),
+  'verbs:run': require('../../../assets/illustrations/custom/verbs/run.png'),
+  'verbs:walk': require('../../../assets/illustrations/custom/verbs/walk.png'),
+  'verbs:sleep': require('../../../assets/illustrations/custom/verbs/sleep.png'),
+  'verbs:point': require('../../../assets/illustrations/custom/verbs/point.png'),
+  'verbs:give': require('../../../assets/illustrations/custom/verbs/give.png'),
+  'verbs:clap': require('../../../assets/illustrations/custom/verbs/clap.png'),
+  'verbs:think': require('../../../assets/illustrations/custom/verbs/think.png'),
+
+  // tenses
+  'tenses:present': require('../../../assets/illustrations/custom/tenses/present.png'),
+  'tenses:past': require('../../../assets/illustrations/custom/tenses/past.png'),
+  'tenses:future': require('../../../assets/illustrations/custom/tenses/future.png'),
+
 };
