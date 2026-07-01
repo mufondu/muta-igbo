@@ -335,6 +335,50 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
   );
 }
 
+
+const IGBO_ALPHABET_EXAMPLES: Record<string, string> = {
+  a: 'aka',
+  b: 'bịa',
+  ch: 'chi',
+  d: 'dee',
+  e: 'ego',
+  f: 'fere',
+  g: 'gaa',
+  gb: 'gbaa',
+  gh: 'ghọta',
+  gw: 'gwuo',
+  h: 'hụ',
+  i: 'isi',
+  ị: 'ịga',
+  j: 'ji',
+  k: 'kụ',
+  kp: 'kpọ',
+  kw: 'kwuo',
+  l: 'lee',
+  m: 'mmiri',
+  n: 'nwa',
+  ṅ: 'ṅụọ',
+  nw: 'nwee',
+  ny: 'nya',
+  o: 'oke',
+  ọ: 'ọkụ',
+  p: 'pee',
+  r: 'rie',
+  s: 'see',
+  sh: 'sha',
+  t: 'taa',
+  u: 'ude',
+  ụ: 'ụlọ',
+  v: 'votu',
+  w: 'were',
+  y: 'yiri',
+  z: 'zụta',
+};
+
+function getIgboAlphabetExample(letter: string, fallback: string): string {
+  return IGBO_ALPHABET_EXAMPLES[String(letter).trim().toLowerCase()] || fallback;
+}
+
 // ─── LEVEL DETAIL SCREEN ──────────────────────────────────────────────────────
 function LevelDetailScreen({ levelId, onBack, onPremium }: {
   levelId: string; onBack: () => void; onPremium: () => void;
@@ -423,7 +467,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
 
                     <View style={sh.alphaCopy}>
                       <Text style={sh.alphaTitle}>{item.igbo}</Text>
-                      <Text style={sh.alphaSound} numberOfLines={2}>{item.english}</Text>
+                      <Text style={sh.alphaSound} numberOfLines={2}>e.g. {getIgboAlphabetExample(item.igbo, item.igbo)}</Text>
                     </View>
 
                     <View style={[sh.alphaListenBtn, { backgroundColor: lc.pip }]}>
