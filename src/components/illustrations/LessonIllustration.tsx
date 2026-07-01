@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
 import { COLOR, FONT } from '../../utils/tokens';
+import { CUSTOM_ILLUSTRATIONS } from './customManifest';
 
 type Props = {
   igbo: string;
@@ -12,143 +13,44 @@ type Props = {
 
 type IllustrationEntry = {
   keys: string[];
-  source?: ImageSourcePropType;
+  assetKey?: string;
   fallback: string;
-};
-
-type FamilyRole = {
-  label: string;
-  skin: string;
-  hair: string;
-  shirt: string;
-  bg: string;
-  accent: string;
-};
-
-const FAMILY_ROLES: Record<string, FamilyRole> = {
-  grandmother: {
-    label: 'Nne',
-    skin: '#8B4A2F',
-    hair: '#D8D8D8',
-    shirt: '#7C3AED',
-    bg: '#F4ECFF',
-    accent: '#7C3AED',
-  },
-  grandfather: {
-    label: 'Nna',
-    skin: '#8B4A2F',
-    hair: '#D8D8D8',
-    shirt: '#0F766E',
-    bg: '#E6FAF8',
-    accent: '#0F766E',
-  },
-  mother: {
-    label: 'Mama',
-    skin: '#9A5A38',
-    hair: '#3A2418',
-    shirt: '#DB2777',
-    bg: '#FFEAF4',
-    accent: '#DB2777',
-  },
-  father: {
-    label: 'Papa',
-    skin: '#8B4A2F',
-    hair: '#2B1A12',
-    shirt: '#2563EB',
-    bg: '#EAF2FF',
-    accent: '#2563EB',
-  },
-  brother: {
-    label: 'Nwanne',
-    skin: '#9A5A38',
-    hair: '#2B1A12',
-    shirt: '#F97316',
-    bg: '#FFF1EA',
-    accent: '#F97316',
-  },
-  sister: {
-    label: 'Nwanne',
-    skin: '#9A5A38',
-    hair: '#3A2418',
-    shirt: '#16A34A',
-    bg: '#EAFBEF',
-    accent: '#16A34A',
-  },
-  child: {
-    label: 'Nwa',
-    skin: '#9A5A38',
-    hair: '#2B1A12',
-    shirt: '#F59E0B',
-    bg: '#FFF7D6',
-    accent: '#B7791F',
-  },
-  children: {
-    label: 'Ụmụ',
-    skin: '#9A5A38',
-    hair: '#2B1A12',
-    shirt: '#22C55E',
-    bg: '#EAFBEF',
-    accent: '#087443',
-  },
-  uncle: {
-    label: 'Dee',
-    skin: '#8B4A2F',
-    hair: '#2B1A12',
-    shirt: '#0891B2',
-    bg: '#E6FAFA',
-    accent: '#0891B2',
-  },
-  aunt: {
-    label: 'Aunty',
-    skin: '#9A5A38',
-    hair: '#3A2418',
-    shirt: '#9333EA',
-    bg: '#F4ECFF',
-    accent: '#9333EA',
-  },
-  cousin: {
-    label: 'Ibe',
-    skin: '#9A5A38',
-    hair: '#2B1A12',
-    shirt: '#0284C7',
-    bg: '#EAF5FF',
-    accent: '#0284C7',
-  },
-};
-
-const CUSTOM_ILLUSTRATIONS: Record<string, ImageSourcePropType> = {
-  // Family
-  // grandmother: require('../../../assets/illustrations/custom/family/grandmother.png'),
-  // grandfather: require('../../../assets/illustrations/custom/family/grandfather.png'),
-  // mother: require('../../../assets/illustrations/custom/family/mother.png'),
-  // father: require('../../../assets/illustrations/custom/family/father.png'),
-  // brother: require('../../../assets/illustrations/custom/family/brother.png'),
-  // sister: require('../../../assets/illustrations/custom/family/sister.png'),
-
-  // Body
-  // head: require('../../../assets/illustrations/custom/body/head.png'),
-  // eye: require('../../../assets/illustrations/custom/body/eye.png'),
-  // mouth: require('../../../assets/illustrations/custom/body/mouth.png'),
-  // hand: require('../../../assets/illustrations/custom/body/hand.png'),
-  // leg: require('../../../assets/illustrations/custom/body/leg.png'),
-  // ear: require('../../../assets/illustrations/custom/body/ear.png'),
-  // nose: require('../../../assets/illustrations/custom/body/nose.png'),
+  label?: string;
 };
 
 const ILLUSTRATIONS: IllustrationEntry[] = [
-  { keys: ['dog', 'nkịta', 'nkita'], fallback: '🐶' },
-  { keys: ['cat', 'nwamba'], fallback: '🐱' },
-  { keys: ['chicken', 'ọkụkọ', 'okuko'], fallback: '🐓' },
-  { keys: ['goat', 'ewu'], fallback: '🐐' },
-  { keys: ['fish', 'azụ', 'azu'], fallback: '🐟' },
-  { keys: ['bird', 'nnụnụ', 'nnunu'], fallback: '🐦' },
-  { keys: ['leopard', 'tiger', 'agu'], fallback: '🐆' },
-  { keys: ['house', 'ụlọ', 'ulo'], fallback: '🏠' },
-  { keys: ['water', 'mmiri'], fallback: '💧' },
-  { keys: ['food', 'nri'], fallback: '🍲' },
-  { keys: ['book', 'akwụkwọ', 'akwukwo'], fallback: '📘' },
-  { keys: ['hand', 'aka'], fallback: '✋🏾' },
-  { keys: ['eye', 'anya'], fallback: '👁️' },
+  { keys: ['grandmother', 'nne ochie'], assetKey: 'family:grandmother', fallback: '👵🏾', label: 'Grandma' },
+  { keys: ['grandfather', 'nna ochie'], assetKey: 'family:grandfather', fallback: '👴🏾', label: 'Grandpa' },
+  { keys: ['mother', 'nne'], assetKey: 'family:mother', fallback: '👩🏾', label: 'Mother' },
+  { keys: ['father', 'nna'], assetKey: 'family:father', fallback: '👨🏾', label: 'Father' },
+  { keys: ['brother', 'nwanne nwoke'], assetKey: 'family:brother', fallback: '👦🏾', label: 'Brother' },
+  { keys: ['sister', 'nwanne nwanyi'], assetKey: 'family:sister', fallback: '👧🏾', label: 'Sister' },
+  { keys: ['children', 'ụmụ', 'umu'], assetKey: 'family:children', fallback: '🧒🏾', label: 'Children' },
+  { keys: ['child', 'nwa'], assetKey: 'family:child', fallback: '🧒🏾', label: 'Child' },
+  { keys: ['uncle'], assetKey: 'family:uncle', fallback: '👨🏾', label: 'Uncle' },
+  { keys: ['aunt'], assetKey: 'family:aunt', fallback: '👩🏾', label: 'Aunt' },
+  { keys: ['cousin', 'ibe'], assetKey: 'family:cousin', fallback: '🧒🏾', label: 'Cousin' },
+
+  { keys: ['head', 'isi'], assetKey: 'body:head', fallback: 'Head', label: 'Head' },
+  { keys: ['eye', 'anya'], assetKey: 'body:eye', fallback: 'Eye', label: 'Eye' },
+  { keys: ['mouth', 'ọnụ', 'onu'], assetKey: 'body:mouth', fallback: 'Mouth', label: 'Mouth' },
+  { keys: ['hand', 'aka'], assetKey: 'body:hand', fallback: 'Hand', label: 'Hand' },
+  { keys: ['leg', 'ụkwụ', 'ukwu'], assetKey: 'body:leg', fallback: 'Leg', label: 'Leg' },
+  { keys: ['ear', 'ntị', 'nti'], assetKey: 'body:ear', fallback: 'Ear', label: 'Ear' },
+  { keys: ['nose', 'imi'], assetKey: 'body:nose', fallback: 'Nose', label: 'Nose' },
+
+  { keys: ['dog', 'nkịta', 'nkita'], assetKey: 'animals:dog', fallback: '🐶', label: 'Dog' },
+  { keys: ['cat', 'nwamba'], assetKey: 'animals:cat', fallback: '🐱', label: 'Cat' },
+  { keys: ['chicken', 'ọkụkọ', 'okuko'], assetKey: 'animals:chicken', fallback: '🐓', label: 'Chicken' },
+  { keys: ['goat', 'ewu'], assetKey: 'animals:goat', fallback: '🐐', label: 'Goat' },
+  { keys: ['fish', 'azụ', 'azu'], assetKey: 'animals:fish', fallback: '🐟', label: 'Fish' },
+  { keys: ['bird', 'nnụnụ', 'nnunu'], assetKey: 'animals:bird', fallback: '🐦', label: 'Bird' },
+  { keys: ['leopard', 'tiger', 'agu'], assetKey: 'animals:leopard', fallback: '🐆', label: 'Animal' },
+
+  { keys: ['house', 'ụlọ', 'ulo'], assetKey: 'home:house', fallback: '🏠', label: 'Home' },
+  { keys: ['water', 'mmiri'], assetKey: 'home:water', fallback: '💧', label: 'Water' },
+  { keys: ['book', 'akwụkwọ', 'akwukwo'], assetKey: 'home:book', fallback: '📘', label: 'Book' },
+  { keys: ['food', 'nri'], assetKey: 'food:food', fallback: '🍲', label: 'Food' },
 ];
 
 function normalize(value: string): string {
@@ -158,28 +60,7 @@ function normalize(value: string): string {
     .replace(/[ị]/g, 'i')
     .replace(/[ụ]/g, 'u')
     .replace(/[ọ]/g, 'o')
-    .replace(/[ṅ]/g, 'n')
-    .replace(/[āáà]/g, 'a')
-    .replace(/[ēéè]/g, 'e')
-    .replace(/[ōóò]/g, 'o');
-}
-
-function findFamilyRole(igbo: string, english: string): FamilyRole | null {
-  const combined = `${normalize(igbo)} ${normalize(english)}`;
-
-  if (combined.includes('grandmother') || combined.includes('nne ochie')) return FAMILY_ROLES.grandmother;
-  if (combined.includes('grandfather') || combined.includes('nna ochie')) return FAMILY_ROLES.grandfather;
-  if (combined.includes('mother') || combined.includes('nne')) return FAMILY_ROLES.mother;
-  if (combined.includes('father') || combined.includes('nna')) return FAMILY_ROLES.father;
-  if (combined.includes('brother') || combined.includes('nwanne nwoke')) return FAMILY_ROLES.brother;
-  if (combined.includes('sister') || combined.includes('nwanne nwanyi')) return FAMILY_ROLES.sister;
-  if (combined.includes('children') || combined.includes('umu')) return FAMILY_ROLES.children;
-  if (combined.includes('child') || combined === 'nwa child') return FAMILY_ROLES.child;
-  if (combined.includes('uncle')) return FAMILY_ROLES.uncle;
-  if (combined.includes('aunt')) return FAMILY_ROLES.aunt;
-  if (combined.includes('cousin') || combined.includes('ibe')) return FAMILY_ROLES.cousin;
-
-  return null;
+    .replace(/[ṅ]/g, 'n');
 }
 
 function findIllustration(igbo: string, english: string): IllustrationEntry | undefined {
@@ -190,37 +71,8 @@ function findIllustration(igbo: string, english: string): IllustrationEntry | un
   );
 }
 
-function FamilyPortrait({ role, size }: { role: FamilyRole; size: number }) {
-  const faceSize = Math.round(size * 0.42);
-  const hairSize = Math.round(size * 0.5);
-
-  return (
-    <View
-      style={[
-        styles.familyWrap,
-        {
-          width: size,
-          height: size,
-          borderRadius: Math.round(size * 0.32),
-          backgroundColor: role.bg,
-          borderColor: role.accent + '55',
-        },
-      ]}
-    >
-      <View style={[styles.hair, { width: hairSize, height: hairSize, borderRadius: hairSize / 2, backgroundColor: role.hair }]} />
-      <View style={[styles.face, { width: faceSize, height: faceSize, borderRadius: faceSize / 2, backgroundColor: role.skin }]}>
-        <View style={styles.eyeRow}>
-          <View style={styles.eye} />
-          <View style={styles.eye} />
-        </View>
-        <View style={styles.smile} />
-      </View>
-      <View style={[styles.shirt, { backgroundColor: role.shirt }]} />
-      <View style={[styles.rolePill, { backgroundColor: role.accent }]}>
-        <Text style={styles.roleText} numberOfLines={1}>{role.label}</Text>
-      </View>
-    </View>
-  );
+function isTextFallback(value: string): boolean {
+  return /^[A-Za-z ]+$/.test(value);
 }
 
 export default function LessonIllustration({
@@ -230,15 +82,13 @@ export default function LessonIllustration({
   size = 74,
   backgroundColor = '#F2EAFE',
 }: Props) {
-  const familyRole = findFamilyRole(igbo, english);
-
-  if (familyRole) {
-    return <FamilyPortrait role={familyRole} size={size} />;
-  }
-
   const entry = findIllustration(igbo, english);
-  const source = entry?.source;
+  const source: ImageSourcePropType | undefined = entry?.assetKey
+    ? CUSTOM_ILLUSTRATIONS[entry.assetKey]
+    : undefined;
+
   const fallback = entry?.fallback || emoji || '✨';
+  const label = entry?.label || english || igbo;
 
   return (
     <View
@@ -254,8 +104,12 @@ export default function LessonIllustration({
     >
       {source ? (
         <Image source={source} style={styles.image} resizeMode="cover" />
+      ) : isTextFallback(fallback) ? (
+        <Text style={styles.textFallback} numberOfLines={1}>
+          {label.slice(0, 6)}
+        </Text>
       ) : (
-        <Text style={[styles.fallback, { fontSize: Math.round(size * 0.44) }]}>
+        <Text style={[styles.fallback, { fontSize: Math.round(size * 0.42) }]}>
           {fallback}
         </Text>
       )}
@@ -279,60 +133,12 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     textAlign: 'center',
   },
-  familyWrap: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    borderWidth: 1,
-    position: 'relative',
-  },
-  hair: {
-    position: 'absolute',
-    top: 9,
-  },
-  face: {
-    position: 'absolute',
-    top: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  eyeRow: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 7,
-  },
-  eye: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: '#1E1E1E',
-  },
-  smile: {
-    width: 16,
-    height: 7,
-    borderBottomWidth: 2,
-    borderColor: '#1E1E1E',
-    borderRadius: 10,
-  },
-  shirt: {
-    position: 'absolute',
-    bottom: 9,
-    width: '58%',
-    height: '28%',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  rolePill: {
-    position: 'absolute',
-    bottom: 5,
-    borderRadius: 999,
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    maxWidth: '86%',
-  },
-  roleText: {
-    color: COLOR.textWhite,
+  textFallback: {
     fontSize: FONT.xs,
     fontWeight: '900',
+    color: COLOR.textPrimary,
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
   },
 });
