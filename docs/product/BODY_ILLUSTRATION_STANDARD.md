@@ -1,26 +1,7 @@
 # Mụta Igbo Body Illustration Standard
 
-Approved app body-part assets should be simple, isolated, kid-friendly cartoon close-ups.
+Approved direction: custom kid-friendly glossy cartoon body part icons, isolated on soft cream backgrounds, readable at small lesson-card size.
 
-## Approved Beginner Body Parts
+Current approved body assets: head, eye, eyebrow, nose, mouth, ear, hand, leg, toes, tongue, teeth.
 
-- Head
-- Eyes
-- Eyebrows
-- Nose
-- Mouth
-- Ear
-- Hand
-- Leg
-- Toes
-- Tongue
-- Teeth
-
-## Excluded From Beginner Flow
-
-- Chest
-- Stomach
-- Back
-- Nails
-
-These can be revisited later only if the visuals are age-appropriate and the lesson context requires them.
+Do not use adult anatomical torso images, jewelry-heavy hands, or unrelated scene backgrounds for beginner body part cards.
