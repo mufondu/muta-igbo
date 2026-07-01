@@ -64,10 +64,35 @@ function normalize(value: string): string {
 }
 
 function findIllustration(igbo: string, english: string): IllustrationEntry | undefined {
-  const combined = `${normalize(igbo)} ${normalize(english)}`;
+  const normalizedIgbo = normalize(igbo);
+  const normalizedEnglish = normalize(english);
+  const combined = ;
+
+  // Role-first matching prevents Nwanne from being mistaken for Nne / Mother.
+  if (normalizedEnglish.includes('grandfather')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:grandfather');
+  if (normalizedEnglish.includes('grandmother')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:grandmother');
+  if (normalizedEnglish.includes('brother')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:brother');
+  if (normalizedEnglish.includes('sister')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:sister');
+  if (normalizedEnglish.includes('children')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:children');
+  if (normalizedEnglish.includes('child')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:child');
+  if (normalizedEnglish.includes('uncle')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:uncle');
+  if (normalizedEnglish.includes('aunt')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:aunt');
+  if (normalizedEnglish.includes('cousin')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:cousin');
+  if (normalizedEnglish.includes('mother') || normalizedEnglish.includes('mum')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:mother');
+  if (normalizedEnglish.includes('father') || normalizedEnglish.includes('dad')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:father');
+
+  if (normalizedIgbo === 'nne ochie') return ILLUSTRATIONS.find(x => x.assetKey === 'family:grandmother');
+  if (normalizedIgbo === 'nna ochie') return ILLUSTRATIONS.find(x => x.assetKey === 'family:grandfather');
+  if (normalizedIgbo === 'nwanne nwoke') return ILLUSTRATIONS.find(x => x.assetKey === 'family:brother');
+  if (normalizedIgbo === 'nwanne nwanyi') return ILLUSTRATIONS.find(x => x.assetKey === 'family:sister');
+  if (normalizedIgbo === 'umu') return ILLUSTRATIONS.find(x => x.assetKey === 'family:children');
+  if (normalizedIgbo === 'nwa') return ILLUSTRATIONS.find(x => x.assetKey === 'family:child');
+  if (normalizedIgbo === 'ibe') return ILLUSTRATIONS.find(x => x.assetKey === 'family:cousin');
+  if (normalizedIgbo === 'nne') return ILLUSTRATIONS.find(x => x.assetKey === 'family:mother');
+  if (normalizedIgbo === 'nna') return ILLUSTRATIONS.find(x => x.assetKey === 'family:father');
 
   return ILLUSTRATIONS.find(entry =>
-    entry.keys.some(key => combined.includes(normalize(key)))
+    entry.keys.some(key => tokenIncludes(combined, key))
   );
 }
 
