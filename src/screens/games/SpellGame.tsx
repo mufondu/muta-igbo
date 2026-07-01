@@ -1,152 +1,250 @@
-// ─── Game 3: Spell It (Tap Letters to Spell) ─────────────────────────────────
 import React, { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ALL_LEVELS } from '../../data/lessons';
+import { buildQuizPool } from '../../data/lessons';
 import { COLOR, FONT, RADIUS, SPACE } from '../../utils/tokens';
 import {
-  Difficulty, DifficultyPicker, FeedbackFlash,
-  GameOver, ScoreBanner,
+  Difficulty,
+  DifficultyPicker,
+  FeedbackFlash,
+  GameOver,
+  ScoreBanner,
 } from './GameUtils';
 
-interface Props { onBack: () => void; }
+interface Props {
+  onBack: () => void;
+  isPremium?: boolean;
+}
 
-interface SpellQuestion {
+type SpellItem = {
   igbo: string;
   english: string;
-  emoji: string;
-  letters: string[]; // shuffled
+  emoji?: string;
+};
+
+type SpellQuestion = {
+  answer: string;
+  english: string;
+  emoji?: string;
+  letters: string[];
+};
+
+const IGBO_DISTRACTORS = [
+  'a', 'b', 'd', 'e', 'f', 'g', 'h', 'i', 'ị', 'k', 'l', 'm',
+  'n', 'ṅ', 'o', 'ọ', 'p', 'r', 's', 't', 'u', 'ụ', 'w', 'y',
+];
+
+function shuffle<T>(items: T[]): T[] {
+  return [...items].sort(() => Math.random() - 0.5);
 }
 
-function shuffle<T>(arr: T[]): T[] { return [...arr].sort(() => Math.random() - 0.5); }
-
-// Split Igbo word respecting digraphs: ch, gb, gh, gw, kp, kw, nw, ny, sh
-function splitIgbo(word: string): string[] {
-  const digraphs = ['ch', 'gb', 'gh', 'gw', 'kp', 'kw', 'nw', 'ny', 'sh'];
-  const letters: string[] = [];
-  let i = 0;
-  while (i < word.length) {
-    const two = word.slice(i, i + 2).toLowerCase();
-    if (digraphs.includes(two)) {
-      letters.push(word.slice(i, i + 2));
-      i += 2;
-    } else {
-      letters.push(word[i]);
-      i++;
-    }
-  }
-  return letters;
+function pointsForDifficulty(difficulty: Difficulty): number {
+  if (difficulty === 'easy') return 1;
+  if (difficulty === 'medium') return 2;
+  return 3;
 }
 
-function buildSpellQuestion(difficulty: Difficulty): SpellQuestion {
-  const pool: { igbo: string; english: string; emoji: string }[] = [];
-  ALL_LEVELS.forEach(level => {
-    level.sections.forEach(sec => {
-      sec.items.forEach(item => {
-        const w = item.igbo.split(' ')[0]; // single word only
-        if (w.length >= 2 && w.length <= (difficulty === 'easy' ? 4 : difficulty === 'medium' ? 7 : 12)
-          && item.emoji !== '🔡' && item.emoji !== '🔊' && item.emoji !== '🔢') {
-          pool.push({ igbo: w, english: item.english, emoji: item.emoji });
-        }
-      });
-    });
-  });
-  const item = pool[Math.floor(Math.random() * pool.length)];
-  const letters = splitIgbo(item.igbo);
-  // Add decoys based on difficulty
-  const decoyCount = difficulty === 'easy' ? 0 : difficulty === 'medium' ? 2 : 4;
-  const allLetters = 'abdefghiijklmnoprstuvwyz'.split('');
-  const decoys = shuffle(allLetters).slice(0, decoyCount);
+function maxLetters(difficulty: Difficulty): number {
+  if (difficulty === 'easy') return 6;
+  if (difficulty === 'medium') return 9;
+  return 12;
+}
+
+function splitLetters(word: string): string[] {
+  return Array.from(word.normalize('NFC'));
+}
+
+function isCleanSpellItem(item: SpellItem, difficulty: Difficulty): boolean {
+  const igbo = String(item.igbo || '').trim().normalize('NFC');
+  const english = String(item.english || '').trim();
+
+  if (!igbo || !english) return false;
+
+  // Do not teach paired concepts in spelling mode.
+  if (english.includes('/') || igbo.includes('/')) return false;
+  if (english.includes(',') || igbo.includes(',')) return false;
+  if (english.includes('&') || igbo.includes('&')) return false;
+  if (english.toLowerCase().includes(' or ')) return false;
+
+  // Spelling mode should focus on one Igbo answer at a time.
+  if (igbo.includes(' ')) return false;
+
+  // Avoid numbers and symbol prompts in spelling mode.
+  if (/[0-9]/.test(english) || /[0-9]/.test(igbo)) return false;
+
+  const letters = splitLetters(igbo);
+
+  if (letters.length < 2) return false;
+  if (letters.length > maxLetters(difficulty)) return false;
+
+  return true;
+}
+
+function buildQuestion(difficulty: Difficulty, isPremium: boolean): SpellQuestion {
+  const pool = buildQuizPool(isPremium)
+    .filter(item => isCleanSpellItem(item, difficulty))
+    .map(item => ({
+      igbo: String(item.igbo).trim().normalize('NFC'),
+      english: String(item.english).trim(),
+      emoji: item.emoji,
+    }));
+
+  const fallback: SpellItem[] = [
+    { igbo: 'Nwa', english: 'Child', emoji: '🧒' },
+    { igbo: 'Ụlọ', english: 'House', emoji: '🏠' },
+    { igbo: 'Mmiri', english: 'Water', emoji: '💧' },
+    { igbo: 'Aka', english: 'Hand', emoji: '✋' },
+    { igbo: 'Anya', english: 'Eye', emoji: '👁️' },
+    { igbo: 'Nri', english: 'Food', emoji: '🍲' },
+    { igbo: 'Azụ', english: 'Fish', emoji: '🐟' },
+    { igbo: 'Nkịta', english: 'Dog', emoji: '🐕' },
+  ].filter(item => isCleanSpellItem(item, difficulty));
+
+  const safePool = pool.length > 0 ? pool : fallback;
+  const answer = safePool[Math.floor(Math.random() * safePool.length)];
+  const answerLetters = splitLetters(answer.igbo);
+
+  const neededDistractors = difficulty === 'easy' ? 1 : difficulty === 'medium' ? 3 : 5;
+  const distractors = shuffle(IGBO_DISTRACTORS)
+    .filter(letter => !answerLetters.includes(letter))
+    .slice(0, neededDistractors);
+
   return {
-    igbo: item.igbo,
-    english: item.english,
-    emoji: item.emoji,
-    letters: shuffle([...letters, ...decoys]),
+    answer: answer.igbo,
+    english: answer.english,
+    emoji: answer.emoji,
+    letters: shuffle([...answerLetters, ...distractors]),
   };
 }
 
-interface LetterTile { letter: string; id: string; used: boolean; }
+export default function SpellGame({ onBack, isPremium = true }: Props) {
+  const [difficulty, setDifficulty] = useState<Difficulty>('easy');
+  const [started, setStarted] = useState(false);
+  const [question, setQuestion] = useState<SpellQuestion | null>(null);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [usedIndexes, setUsedIndexes] = useState<number[]>([]);
+  const [score, setScore] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState(0);
+  const [feedback, setFeedback] = useState<{ text: string; correct: boolean } | null>(null);
+  const [round, setRound] = useState(1);
+  const [gameOver, setGameOver] = useState(false);
+  const [locked, setLocked] = useState(false);
 
-export default function SpellGame({ onBack }: Props) {
-  const [difficulty, setDifficulty]   = useState<Difficulty>('easy');
-  const [question, setQuestion]       = useState<SpellQuestion | null>(null);
-  const [tiles, setTiles]             = useState<LetterTile[]>([]);
-  const [typed, setTyped]             = useState<{ letter: string; tileId: string }[]>([]);
-  const [score, setScore]             = useState(0);
-  const [streak, setStreak]           = useState(0);
-  const [feedback, setFeedback]       = useState<{ text: string; correct: boolean } | null>(null);
-  const [gameOver, setGameOver]       = useState(false);
-  const [round, setRound]             = useState(0);
-  const [started, setStarted]         = useState(false);
   const MAX_ROUNDS = 8;
 
-  const loadQuestion = useCallback((d: Difficulty) => {
-    const q = buildSpellQuestion(d);
-    setQuestion(q);
-    setTiles(q.letters.map((l, i) => ({ letter: l, id: `tile_${i}_${l}`, used: false })));
-    setTyped([]); setFeedback(null);
-  }, []);
+  const next = useCallback((selectedDifficulty: Difficulty) => {
+    setQuestion(buildQuestion(selectedDifficulty, isPremium));
+    setSelected([]);
+    setUsedIndexes([]);
+    setFeedback(null);
+    setLocked(false);
+  }, [isPremium]);
 
-  function start(d: Difficulty) {
-    setScore(0); setStreak(0); setRound(0);
-    setGameOver(false); setStarted(true);
-    loadQuestion(d);
+  function start(selectedDifficulty: Difficulty) {
+    setDifficulty(selectedDifficulty);
+    setStarted(true);
+    setGameOver(false);
+    setQuestion(buildQuestion(selectedDifficulty, isPremium));
+    setSelected([]);
+    setUsedIndexes([]);
+    setScore(0);
+    setStreak(0);
+    setBestStreak(0);
+    setRound(1);
+    setFeedback(null);
+    setLocked(false);
   }
 
-  function tapLetter(tile: LetterTile) {
-    if (tile.used) return;
-    setTiles(prev => prev.map(t => t.id === tile.id ? { ...t, used: true } : t));
-    setTyped(prev => [...prev, { letter: tile.letter, tileId: tile.id }]);
+  function chooseLetter(letter: string, index: number) {
+    if (!question || locked || usedIndexes.includes(index)) return;
+    if (selected.length >= splitLetters(question.answer).length) return;
+
+    setSelected(current => [...current, letter]);
+    setUsedIndexes(current => [...current, index]);
+    setFeedback(null);
   }
 
-  function removeLast() {
-    if (typed.length === 0) return;
-    const last = typed[typed.length - 1];
-    setTiles(prev => prev.map(t => t.id === last.tileId ? { ...t, used: false } : t));
-    setTyped(prev => prev.slice(0, -1));
+  function deleteLetter() {
+    if (locked) return;
+
+    setSelected(current => current.slice(0, -1));
+    setUsedIndexes(current => current.slice(0, -1));
+    setFeedback(null);
   }
 
-  function checkSpelling() {
-    if (!question) return;
-    const attempt = typed.map(t => t.letter).join('');
-    if (attempt.toLowerCase() === question.igbo.toLowerCase()) {
-      const ns = streak + 1;
-      setStreak(ns); setScore(s => s + 2 + Math.floor(ns / 2));
-      setFeedback({ text: ns >= 3 ? `🔥 Spelling master! ${ns} in a row!` : 'Ọ zuru ezu! Perfect! ✅', correct: true });
-      const newRound = round + 1;
-      setRound(newRound);
-      if (newRound >= MAX_ROUNDS) { setTimeout(() => setGameOver(true), 1400); return; }
-      setTimeout(() => loadQuestion(difficulty), 1400);
+  function checkAnswer() {
+    if (!question || locked) return;
+
+    const guess = selected.join('').normalize('NFC');
+    const answer = question.answer.normalize('NFC');
+    const correct = guess === answer;
+    const nextRound = round + 1;
+
+    setLocked(true);
+
+    if (correct) {
+      const newStreak = streak + 1;
+      setScore(current => current + pointsForDifficulty(difficulty));
+      setStreak(newStreak);
+      setBestStreak(current => Math.max(current, newStreak));
+      setFeedback({
+        correct: true,
+        text: newStreak >= 5 ? `Ọkachamara! ${newStreak} in a row!` : 'Correct spelling.',
+      });
     } else {
       setStreak(0);
-      setFeedback({ text: `Ewoo! The correct spelling is: ${question.igbo} 💪`, correct: false });
-      // Reset tiles
-      setTimeout(() => {
-        setTiles(prev => prev.map(t => ({ ...t, used: false })));
-        setTyped([]);
-        setFeedback(null);
-      }, 2000);
+      setFeedback({
+        correct: false,
+        text: `Almost. Correct spelling: ${question.answer}`,
+      });
     }
+
+    setTimeout(() => {
+      if (round >= MAX_ROUNDS) {
+        setGameOver(true);
+        setLocked(false);
+        return;
+      }
+
+      setRound(nextRound);
+      next(difficulty);
+    }, 850);
   }
 
   if (!started) {
     return (
       <View style={s.root}>
         <View style={s.header}>
-          <Text style={s.backText} onPress={onBack}>⬅</Text>
-          <View>
-            <Text style={s.headerTitle}>Spell It 🔤</Text>
-            <Text style={s.headerSub}>Tap letters to spell Igbo words</Text>
+          <TouchableOpacity onPress={onBack} style={s.backBtn}>
+            <Text style={s.backText}>‹</Text>
+          </TouchableOpacity>
+
+          <View style={s.headerCopy}>
+            <Text style={s.headerKicker}>Mụta Challenge</Text>
+            <Text style={s.headerTitle}>Spell It</Text>
           </View>
         </View>
-        <ScrollView contentContainerStyle={s.setupPad}>
-          <Text style={s.instrEmoji}>🔤</Text>
-          <Text style={s.instrTitle}>Spell It!</Text>
+
+        <ScrollView contentContainerStyle={s.setupPad} showsVerticalScrollIndicator={false}>
+          <View style={s.friendCard}>
+            <View style={s.friendFace}>
+              <Text style={s.friendInitial}>Z</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={s.friendName}>Zara says</Text>
+              <Text style={s.friendText}>Spell one Igbo word at a time. No confusing word pairs.</Text>
+            </View>
+          </View>
+
+          <Text style={s.instrTitle}>Spell the Igbo word</Text>
           <Text style={s.instrBody}>
-            Look at the picture and English clue. Tap the letters in the right order to spell the Igbo word! 🌍
+            Look at the English meaning, then tap the letters in the correct order.
           </Text>
+
           <DifficultyPicker value={difficulty} onChange={setDifficulty} />
-          <TouchableOpacity style={s.startBtn} onPress={() => start(difficulty)} activeOpacity={0.85}>
-            <Text style={s.startBtnText}>Start Game 🚀</Text>
+
+          <TouchableOpacity style={s.startBtn} onPress={() => start(difficulty)} activeOpacity={0.86}>
+            <Text style={s.startBtnText}>Start Challenge</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -155,77 +253,96 @@ export default function SpellGame({ onBack }: Props) {
 
   if (gameOver) {
     return (
-      <ScrollView style={s.root} contentContainerStyle={{ flex: 1, justifyContent: 'center' }}>
+      <ScrollView style={s.root} contentContainerStyle={s.gameOverPad}>
         <View style={s.header}>
-          <Text style={s.backText} onPress={onBack}>⬅</Text>
-          <Text style={s.headerTitle}>Spell It 🔤</Text>
+          <TouchableOpacity onPress={onBack} style={s.backBtn}>
+            <Text style={s.backText}>‹</Text>
+          </TouchableOpacity>
+          <Text style={s.headerTitle}>Spell It</Text>
         </View>
-        <GameOver score={score} streak={streak} difficulty={difficulty}
-          onReplay={() => start(difficulty)} onHome={onBack} />
+
+        <GameOver
+          score={score}
+          streak={bestStreak}
+          difficulty={difficulty}
+          onReplay={() => start(difficulty)}
+          onHome={onBack}
+        />
       </ScrollView>
     );
   }
 
   if (!question) return null;
 
+  const answerLength = splitLetters(question.answer).length;
+  const canCheck = selected.length === answerLength;
+
   return (
     <View style={s.root}>
       <View style={s.header}>
-        <Text style={s.backText} onPress={onBack}>⬅</Text>
-        <Text style={s.headerTitle}>Spell It 🔤</Text>
+        <TouchableOpacity onPress={onBack} style={s.backBtn}>
+          <Text style={s.backText}>‹</Text>
+        </TouchableOpacity>
+
+        <View style={s.headerCopy}>
+          <Text style={s.headerKicker}>Spell It</Text>
+          <Text style={s.headerTitle}>Build the word</Text>
+        </View>
+
         <Text style={s.roundText}>{round}/{MAX_ROUNDS}</Text>
       </View>
-      <ScrollView contentContainerStyle={s.gamePad}>
+
+      <ScrollView contentContainerStyle={s.gamePad} showsVerticalScrollIndicator={false}>
         <ScoreBanner score={score} streak={streak} difficulty={difficulty} />
 
         <View style={s.progressTrack}>
           <View style={[s.progressFill, { width: `${(round / MAX_ROUNDS) * 100}%` as any }]} />
         </View>
 
-        {/* Clue card */}
-        <View style={s.clueCard}>
-          <Text style={s.clueEmoji}>{question.emoji}</Text>
-          <Text style={s.clueEnglish}>{question.english}</Text>
-          <Text style={s.clueHint}>Spell the Igbo word</Text>
+        <View style={s.promptCard}>
+          {!!question.emoji && <Text style={s.promptEmoji}>{question.emoji}</Text>}
+          <Text style={s.promptEnglish}>{question.english}</Text>
+          <Text style={s.promptLabel}>Spell the Igbo word</Text>
         </View>
 
-        {/* Answer slots */}
         <View style={s.answerRow}>
-          {splitIgbo(question.igbo).map((_, i) => (
-            <View key={i} style={[s.answerSlot, typed[i] && s.answerSlotFilled]}>
-              <Text style={s.answerSlotText}>{typed[i]?.letter ?? ''}</Text>
+          {Array.from({ length: answerLength }).map((_, index) => (
+            <View key={index} style={s.answerSlot}>
+              <Text style={s.answerLetter}>{selected[index] || ''}</Text>
             </View>
           ))}
         </View>
 
-        {feedback && <FeedbackFlash text={feedback.text} correct={feedback.correct} />}
+        <View style={s.letterGrid}>
+          {question.letters.map((letter, index) => {
+            const used = usedIndexes.includes(index);
 
-        {/* Letter tiles */}
-        <View style={s.tilesRow}>
-          {tiles.map(tile => (
-            <TouchableOpacity
-              key={tile.id}
-              style={[s.tile, tile.used && s.tileUsed]}
-              onPress={() => tapLetter(tile)}
-              disabled={tile.used}
-              activeOpacity={0.75}
-            >
-              <Text style={[s.tileLetter, tile.used && s.tileLetterUsed]}>{tile.letter}</Text>
-            </TouchableOpacity>
-          ))}
+            return (
+              <TouchableOpacity
+                key={`${letter}-${index}`}
+                style={[s.letterBtn, used && s.letterBtnUsed]}
+                onPress={() => chooseLetter(letter, index)}
+                activeOpacity={used ? 1 : 0.82}
+              >
+                <Text style={[s.letterText, used && s.letterTextUsed]}>{letter}</Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
-        {/* Action buttons */}
+        {feedback && <FeedbackFlash text={feedback.text} correct={feedback.correct} />}
+
         <View style={s.actionRow}>
-          <TouchableOpacity style={s.deleteBtn} onPress={removeLast}>
-            <Text style={s.deleteBtnText}>⌫ Delete</Text>
+          <TouchableOpacity style={s.deleteBtn} onPress={deleteLetter} activeOpacity={0.82}>
+            <Text style={s.deleteText}>Delete</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
-            style={[s.checkBtn, typed.length === 0 && s.checkBtnDisabled]}
-            onPress={checkSpelling}
-            disabled={typed.length === 0}
+            style={[s.checkBtn, !canCheck && s.checkBtnDisabled]}
+            onPress={checkAnswer}
+            activeOpacity={canCheck ? 0.82 : 1}
           >
-            <Text style={s.checkBtnText}>Check ✓</Text>
+            <Text style={[s.checkText, !canCheck && s.checkTextDisabled]}>Check</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -234,66 +351,251 @@ export default function SpellGame({ onBack }: Props) {
 }
 
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: COLOR.bg },
+  root: {
+    flex: 1,
+    backgroundColor: COLOR.bg,
+  },
   header: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: COLOR.forestDark, paddingVertical: 14, paddingHorizontal: SPACE.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: COLOR.forestDark,
+    paddingVertical: 14,
+    paddingHorizontal: SPACE.md,
   },
-  backText:    { fontSize: FONT.xl, color: COLOR.gold, paddingRight: 4 },
-  headerTitle: { fontSize: FONT.lg, fontWeight: '800', color: COLOR.textCream, flex: 1 },
-  headerSub:   { fontSize: FONT.xs, color: '#7AB897' },
-  roundText:   { fontSize: FONT.sm, color: COLOR.gold, fontWeight: '700' },
-
-  setupPad:    { padding: SPACE.lg, alignItems: 'center' },
-  instrEmoji:  { fontSize: 56, marginBottom: SPACE.sm },
-  instrTitle:  { fontSize: FONT.xxl, fontWeight: '900', color: COLOR.textPrimary, marginBottom: SPACE.sm },
-  instrBody:   { fontSize: FONT.md, color: COLOR.textSecond, textAlign: 'center', lineHeight: 22, marginBottom: SPACE.xl },
-  startBtn:    { backgroundColor: COLOR.forest, borderRadius: RADIUS.pill, paddingVertical: 14, paddingHorizontal: 40, marginTop: SPACE.sm },
-  startBtnText:{ fontSize: FONT.lg, fontWeight: '800', color: COLOR.textWhite },
-
-  gamePad: { padding: SPACE.md, paddingBottom: 60 },
-  progressTrack: { height: 6, backgroundColor: COLOR.border, borderRadius: 3, marginBottom: SPACE.md, overflow: 'hidden' },
-  progressFill:  { height: '100%', backgroundColor: COLOR.forest, borderRadius: 3 },
-
-  clueCard: {
-    backgroundColor: COLOR.card, borderRadius: RADIUS.lg,
-    borderWidth: 1, borderColor: COLOR.border,
-    padding: SPACE.lg, alignItems: 'center', marginBottom: SPACE.md,
+  backBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.08)',
   },
-  clueEmoji:   { fontSize: 56, marginBottom: SPACE.sm },
-  clueEnglish: { fontSize: FONT.xxl, fontWeight: '800', color: COLOR.textPrimary },
-  clueHint:    { fontSize: FONT.sm, color: COLOR.textSecond, marginTop: 4, fontStyle: 'italic' },
-
-  answerRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginBottom: SPACE.md },
+  backText: {
+    fontSize: 34,
+    lineHeight: 34,
+    color: COLOR.gold,
+    fontWeight: '800',
+  },
+  headerCopy: {
+    flex: 1,
+  },
+  headerKicker: {
+    fontSize: FONT.xs,
+    color: COLOR.gold,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  headerTitle: {
+    fontSize: FONT.lg,
+    fontWeight: '900',
+    color: COLOR.textCream,
+    flexShrink: 1,
+  },
+  roundText: {
+    fontSize: FONT.sm,
+    color: COLOR.gold,
+    fontWeight: '900',
+  },
+  setupPad: {
+    padding: SPACE.lg,
+    paddingBottom: 80,
+  },
+  friendCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACE.md,
+    backgroundColor: COLOR.card,
+    borderRadius: RADIUS.xl,
+    padding: SPACE.md,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+    marginBottom: SPACE.xl,
+  },
+  friendFace: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    backgroundColor: '#F0E7FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#6B46C1',
+  },
+  friendInitial: {
+    fontSize: 34,
+    color: '#6B46C1',
+    fontWeight: '900',
+  },
+  friendName: {
+    fontSize: FONT.sm,
+    color: '#6B46C1',
+    fontWeight: '900',
+    marginBottom: 2,
+  },
+  friendText: {
+    fontSize: FONT.md,
+    color: COLOR.textPrimary,
+    fontWeight: '800',
+    lineHeight: 22,
+  },
+  instrTitle: {
+    fontSize: FONT.xxl,
+    fontWeight: '900',
+    color: COLOR.textPrimary,
+    marginBottom: SPACE.sm,
+    textAlign: 'center',
+  },
+  instrBody: {
+    fontSize: FONT.md,
+    color: COLOR.textSecond,
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: SPACE.xl,
+  },
+  startBtn: {
+    backgroundColor: COLOR.forest,
+    borderRadius: RADIUS.pill,
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    marginTop: SPACE.lg,
+    alignItems: 'center',
+  },
+  startBtnText: {
+    fontSize: FONT.lg,
+    fontWeight: '900',
+    color: COLOR.textWhite,
+  },
+  gameOverPad: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  gamePad: {
+    padding: SPACE.md,
+    paddingBottom: 80,
+  },
+  progressTrack: {
+    height: 8,
+    backgroundColor: COLOR.border,
+    borderRadius: 4,
+    marginBottom: SPACE.md,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#6B46C1',
+    borderRadius: 4,
+  },
+  promptCard: {
+    backgroundColor: COLOR.card,
+    borderRadius: RADIUS.xl,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+    padding: SPACE.lg,
+    alignItems: 'center',
+    marginBottom: SPACE.xl,
+  },
+  promptEmoji: {
+    fontSize: 58,
+    marginBottom: SPACE.sm,
+  },
+  promptEnglish: {
+    fontSize: FONT.xxl,
+    color: COLOR.textPrimary,
+    fontWeight: '900',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  promptLabel: {
+    fontSize: FONT.sm,
+    color: COLOR.textSecond,
+    fontStyle: 'italic',
+  },
+  answerRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: SPACE.lg,
+    flexWrap: 'wrap',
+  },
   answerSlot: {
-    minWidth: 40, height: 44, paddingHorizontal: 6,
-    borderBottomWidth: 3, borderBottomColor: COLOR.border,
-    alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 4,
+    width: 38,
+    height: 46,
+    borderBottomWidth: 4,
+    borderColor: COLOR.border,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  answerSlotFilled: { borderBottomColor: COLOR.forest },
-  answerSlotText:   { fontSize: FONT.lg, fontWeight: '800', color: COLOR.forest },
-
-  tilesRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: SPACE.sm, marginBottom: SPACE.md },
-  tile: {
-    minWidth: 44, height: 44, paddingHorizontal: 8,
-    backgroundColor: COLOR.forestDark, borderRadius: RADIUS.sm,
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 2, borderColor: COLOR.forest,
+  answerLetter: {
+    fontSize: FONT.xl,
+    color: COLOR.textPrimary,
+    fontWeight: '900',
   },
-  tileUsed:       { backgroundColor: COLOR.border, borderColor: COLOR.border, opacity: 0.4 },
-  tileLetter:     { fontSize: FONT.lg, fontWeight: '800', color: COLOR.textCream },
-  tileLetterUsed: { color: COLOR.textHint },
-
-  actionRow: { flexDirection: 'row', gap: SPACE.sm },
+  letterGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: SPACE.sm,
+    marginBottom: SPACE.lg,
+  },
+  letterBtn: {
+    minWidth: 58,
+    minHeight: 58,
+    borderRadius: RADIUS.md,
+    backgroundColor: COLOR.forestDark,
+    borderWidth: 2,
+    borderColor: COLOR.forest,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+  },
+  letterBtnUsed: {
+    backgroundColor: COLOR.border,
+    borderColor: COLOR.border,
+  },
+  letterText: {
+    fontSize: FONT.xl,
+    color: COLOR.textCream,
+    fontWeight: '900',
+  },
+  letterTextUsed: {
+    color: COLOR.textHint,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    gap: SPACE.md,
+  },
   deleteBtn: {
-    flex: 1, backgroundColor: COLOR.clayLight, borderRadius: RADIUS.md,
-    paddingVertical: 12, alignItems: 'center', borderWidth: 1, borderColor: '#E8B090',
+    flex: 1,
+    borderRadius: RADIUS.lg,
+    borderWidth: 1,
+    borderColor: COLOR.clay,
+    backgroundColor: '#FFF1EA',
+    paddingVertical: 15,
+    alignItems: 'center',
   },
-  deleteBtnText: { fontSize: FONT.md, fontWeight: '700', color: COLOR.clay },
+  deleteText: {
+    fontSize: FONT.md,
+    color: COLOR.clay,
+    fontWeight: '900',
+  },
   checkBtn: {
-    flex: 2, backgroundColor: COLOR.forest, borderRadius: RADIUS.md,
-    paddingVertical: 12, alignItems: 'center',
+    flex: 2,
+    borderRadius: RADIUS.lg,
+    backgroundColor: COLOR.forest,
+    paddingVertical: 15,
+    alignItems: 'center',
   },
-  checkBtnDisabled: { opacity: 0.4 },
-  checkBtnText: { fontSize: FONT.md, fontWeight: '800', color: COLOR.textWhite },
+  checkBtnDisabled: {
+    backgroundColor: '#9ABDA9',
+  },
+  checkText: {
+    fontSize: FONT.md,
+    color: COLOR.textWhite,
+    fontWeight: '900',
+  },
+  checkTextDisabled: {
+    color: 'rgba(255,255,255,0.58)',
+  },
 });
