@@ -366,7 +366,7 @@ const LEVEL_1A: Level = {
       id: 'singular_plural', title: 'Singular & Plural', igboTitle: 'Otu na Ọtụtụ',
       items: [
         { igbo: 'Nwa — Ụmụ', english: 'Child — Children', emoji: '👶🏾' },
-        { igbo: 'Ọkụkọ — Ụmụ ọkụkọ', english: 'Chicken — Chickens', emoji: '🐓' },
+        { igbo: 'Ọkụkọ', english: 'Chicken — Chickens', emoji: '🐓' },
         { igbo: 'Ewu — Ụmụ ewu', english: 'Goat — Goats', emoji: '🐐' },
         { igbo: 'Nkịta — Ụmụ nkịta', english: 'Dog — Dogs', emoji: '🐕' },
         { igbo: 'Ụlọ — Ụlọ ọtụtụ', english: 'House — Houses', emoji: '🏠' },
