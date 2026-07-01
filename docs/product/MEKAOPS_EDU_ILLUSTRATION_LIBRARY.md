@@ -210,3 +210,28 @@ Not allowed as final production UI:
 - Embedded text inside illustration assets
 
 All new lesson categories should receive a reusable custom illustration pack before release.
+
+
+### Level Icons
+
+Location:
+
+assets/illustrations/custom/levels/
+
+Approved assets to create:
+
+- alphabet-sounds.png
+- greetings-phrases.png
+- numbers-counting.png
+- body-family.png
+- home-food.png
+- animals-nature.png
+- verbs-actions.png
+
+Rules:
+
+- Use custom MekaOps Edu art.
+- No emoji or generic system icons.
+- No embedded text inside icons.
+- App renders level names separately.
+- Icons should feel tactile, bright, warm, and kid-friendly.
