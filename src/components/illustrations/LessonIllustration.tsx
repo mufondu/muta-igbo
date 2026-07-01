@@ -19,17 +19,17 @@ type IllustrationEntry = {
 };
 
 const ILLUSTRATIONS: IllustrationEntry[] = [
-  { keys: ['grandmother', 'nne ochie'], assetKey: 'family:grandmother', fallback: '👵🏾', label: 'Grandma' },
-  { keys: ['grandfather', 'nna ochie'], assetKey: 'family:grandfather', fallback: '👴🏾', label: 'Grandpa' },
-  { keys: ['mother', 'nne'], assetKey: 'family:mother', fallback: '👩🏾', label: 'Mother' },
-  { keys: ['father', 'nna'], assetKey: 'family:father', fallback: '👨🏾', label: 'Father' },
-  { keys: ['brother', 'nwanne nwoke'], assetKey: 'family:brother', fallback: '👦🏾', label: 'Brother' },
-  { keys: ['sister', 'nwanne nwanyi'], assetKey: 'family:sister', fallback: '👧🏾', label: 'Sister' },
-  { keys: ['children', 'ụmụ', 'umu'], assetKey: 'family:children', fallback: '🧒🏾', label: 'Children' },
-  { keys: ['child', 'nwa'], assetKey: 'family:child', fallback: '🧒🏾', label: 'Child' },
-  { keys: ['uncle'], assetKey: 'family:uncle', fallback: '👨🏾', label: 'Uncle' },
-  { keys: ['aunt'], assetKey: 'family:aunt', fallback: '👩🏾', label: 'Aunt' },
-  { keys: ['cousin', 'ibe'], assetKey: 'family:cousin', fallback: '🧒🏾', label: 'Cousin' },
+  { keys: ['grandmother', 'nne ochie'], assetKey: 'family:grandmother', fallback: 'Grandma', label: 'Grandma' },
+  { keys: ['grandfather', 'nna ochie'], assetKey: 'family:grandfather', fallback: 'Grandpa', label: 'Grandpa' },
+  { keys: ['mother', 'nne'], assetKey: 'family:mother', fallback: 'Mother', label: 'Mother' },
+  { keys: ['father', 'nna'], assetKey: 'family:father', fallback: 'Father', label: 'Father' },
+  { keys: ['brother', 'nwanne nwoke'], assetKey: 'family:brother', fallback: 'Brother', label: 'Brother' },
+  { keys: ['sister', 'nwanne nwanyi'], assetKey: 'family:sister', fallback: 'Sister', label: 'Sister' },
+  { keys: ['children', 'ụmụ', 'umu'], assetKey: 'family:children', fallback: 'Children', label: 'Children' },
+  { keys: ['child', 'nwa'], assetKey: 'family:child', fallback: 'Child', label: 'Child' },
+  { keys: ['uncle'], assetKey: 'family:uncle', fallback: 'Uncle', label: 'Uncle' },
+  { keys: ['aunt'], assetKey: 'family:aunt', fallback: 'Aunt', label: 'Aunt' },
+  { keys: ['cousin', 'ibe'], assetKey: 'family:cousin', fallback: 'Cousin', label: 'Cousin' },
 
   { keys: ['head', 'isi'], assetKey: 'body:head', fallback: 'Head', label: 'Head' },
   { keys: ['eye', 'anya'], assetKey: 'body:eye', fallback: 'Eye', label: 'Eye' },
