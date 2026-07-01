@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import LessonIllustration from '../components/illustrations/LessonIllustration';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ALL_LEVELS, buildQuizPool, FOLKTALES, TRANSLATOR_POOL, TranslatorItem, VocabItem } from '../data/lessons';
 import { useApp } from '../hooks/useAppState';
@@ -709,13 +710,19 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                     accessibilityLabel={`${item.igbo}, ${item.english}`}
                     activeOpacity={0.8}
                   >
-                    <View style={[sh.vocabEmojiWrap, { backgroundColor: lc.bg }]}>
-                      {levelId === '7A' ? (
+                    {levelId === '7A' ? (
+                      <View style={[sh.vocabEmojiWrap, { backgroundColor: lc.bg }]}>
                         <Text style={[sh.alphaLetter, { color: lc.pip }]}>{item.igbo}</Text>
-                      ) : (
-                        <Text style={sh.vocabEmoji}>{item.emoji}</Text>
-                      )}
-                    </View>
+                      </View>
+                    ) : (
+                      <LessonIllustration
+                        igbo={item.igbo}
+                        english={item.english}
+                        emoji={item.emoji}
+                        backgroundColor={lc.bg}
+                        size={74}
+                      />
+                    )}
                     <View style={{ flex: 1 }}>
                       <Text style={sh.vocabIgbo}>{item.igbo}</Text>
                       <Text style={sh.vocabEn}>{item.english}</Text>
@@ -1732,14 +1739,30 @@ const sh = StyleSheet.create({
   },
 
   vocabCard: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: COLOR.card, borderRadius: RADIUS.md,
-    borderWidth: 1, borderColor: COLOR.border,
-    padding: SPACE.md, marginBottom: SPACE.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACE.md,
+    backgroundColor: COLOR.card,
+    borderRadius: RADIUS.xl,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+    padding: SPACE.md,
+    marginBottom: SPACE.md,
+    minHeight: 116,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   vocabEmojiWrap: {
-    width: 48, height: 48, borderRadius: RADIUS.sm,
-    alignItems: 'center', justifyContent: 'center',
+    width: 74,
+    height: 74,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: COLOR.border,
   },
   vocabEmoji: { fontSize: 26 },
   vocabIgbo: { fontSize: FONT.lg, fontWeight: '800', color: COLOR.textPrimary },
