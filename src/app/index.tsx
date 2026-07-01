@@ -794,6 +794,11 @@ function ProgressScreen() {
   );
 }
 
+
+function isQuizNumberItem(item: { english?: string }): boolean {
+  return /^\d+\s*[—-]/.test(String(item.english || '').trim());
+}
+
 // ─── QUIZ SCREEN ──────────────────────────────────────────────────────────────
 function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () => void }) {
   const { state, updateQuizBest, addWordsLearned } = useApp();
@@ -806,7 +811,16 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
 
   const next = useCallback(() => {
     const correct = randomFrom(pool);
-    const wrong   = shuffle(pool.filter(i => i.igbo !== correct.igbo)).slice(0, 3);
+    const numberQuestion = isQuizNumberItem(correct);
+
+    const sameFamilyWrong = pool.filter(i =>
+      i.igbo !== correct.igbo && isQuizNumberItem(i) === numberQuestion
+    );
+
+    const fallbackWrong = pool.filter(i => i.igbo !== correct.igbo);
+    const wrongSource = sameFamilyWrong.length >= 3 ? sameFamilyWrong : fallbackWrong;
+    const wrong = shuffle(wrongSource).slice(0, 3);
+
     setQuestion(correct);
     setOptions(shuffle([correct, ...wrong]));
     setFeedback(null);
@@ -852,13 +866,39 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
         )}
 
         <View style={sh.quizGrid}>
-          {options.map((opt, i) => (
-            <TouchableOpacity key={i} style={sh.quizOpt}
-              onPress={() => check(opt)} accessibilityLabel={opt.english} activeOpacity={0.75}>
-              <Text style={sh.quizOptEmoji}>{opt.emoji ?? '❓'}</Text>
-              <Text style={sh.quizOptLabel}>{opt.igbo}</Text>
-            </TouchableOpacity>
-          ))}
+          {options.map((opt, i) => {
+            const numberOption = isQuizNumberItem(opt);
+            const numberColor = getNumberCardColor(i);
+
+            return (
+              <TouchableOpacity
+                key={i}
+                style={[
+                  sh.quizOpt,
+                  numberOption && { borderColor: numberColor.accent + '55', backgroundColor: numberColor.bg },
+                ]}
+                onPress={() => check(opt)}
+                accessibilityLabel={opt.english}
+                activeOpacity={0.75}
+              >
+                {numberOption ? (
+                  <>
+                    <View style={[sh.quizNumberBadge, { backgroundColor: COLOR.card }]}>
+                      <Text style={[sh.quizNumberDigit, { color: numberColor.accent }]}>
+                        {getNumberValue(opt.english)}
+                      </Text>
+                    </View>
+                    <Text style={sh.quizOptLabel}>{getNumberEnglish(opt.english)}</Text>
+                  </>
+                ) : (
+                  <>
+                    <Text style={sh.quizOptEmoji}>{opt.emoji ?? '❓'}</Text>
+                    <Text style={sh.quizOptLabel}>{getNumberEnglish(opt.english)}</Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
         {!state.isPremium && (
@@ -1954,6 +1994,21 @@ const sh = StyleSheet.create({
   numberSoundText: {
     color: COLOR.textWhite,
     fontSize: FONT.md,
+    fontWeight: '900',
+  },
+
+  quizNumberBadge: {
+    width: 66,
+    height: 66,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACE.sm,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+  },
+  quizNumberDigit: {
+    fontSize: 30,
     fontWeight: '900',
   },
 
