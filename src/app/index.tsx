@@ -1366,4 +1366,18 @@ const sh = StyleSheet.create({
     paddingVertical: 12, paddingHorizontal: SPACE.md, marginBottom: SPACE.sm,
   },
   numDigit: { fontSize: 24, fontWeight: '800', color: COLOR.forest, width: 50 },
+  sectionHeading: {
+    fontSize: FONT.lg,
+    fontWeight: '900',
+    color: COLOR.textPrimary,
+    marginBottom: 2,
+  },
+  sectionSubHeading: {
+    fontSize: FONT.sm,
+    color: COLOR.textSecond,
+    marginBottom: SPACE.md,
+    fontStyle: 'italic',
+    fontWeight: '700',
+  },
+
 });
