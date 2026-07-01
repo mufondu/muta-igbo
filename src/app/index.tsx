@@ -434,6 +434,33 @@ function getIgboAlphabetExample(letter: string, fallback: string): string {
 
 
 
+
+const NUMBER_CARD_COLORS = [
+  { bg: '#FFF1EA', accent: '#FF6B00' },
+  { bg: '#EAF5FF', accent: '#2B6CB0' },
+  { bg: '#E8F6EC', accent: '#087443' },
+  { bg: '#F0E7FF', accent: '#6B46C1' },
+  { bg: '#FFF4D6', accent: '#B7791F' },
+  { bg: '#E6FAFA', accent: '#0B7F83' },
+];
+
+function isNumbersLevel(levelId: string): boolean {
+  return levelId === '5A';
+}
+
+function getNumberValue(english: string): string {
+  const match = String(english || '').match(/^(\d+)/);
+  return match ? match[1] : '#';
+}
+
+function getNumberEnglish(english: string): string {
+  return String(english || '').replace(/^\d+\s*[—-]\s*/, '').trim();
+}
+
+function getNumberCardColor(index: number) {
+  return NUMBER_CARD_COLORS[index % NUMBER_CARD_COLORS.length];
+}
+
 function getManyPicture(emoji?: string): string {
   const safe = emoji || '●';
   return `${safe} ${safe} ${safe}`;
@@ -560,10 +587,45 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
             <Text style={sh.sectionSubHeading}>{section.igboTitle}</Text>
 
             {section.items.map((item, i) => {
+              const numbers = isNumbersLevel(levelId);
               const grammar = isGrammarLevel(levelId);
               const singularPlural = grammar && isSingularPluralSection(section.title);
               const [igboLeft, igboRight] = splitLessonPair(item.igbo);
               const [englishLeft, englishRight] = splitLessonPair(item.english);
+              const numberColor = getNumberCardColor(i);
+
+              if (numbers) {
+                return (
+                  <BounceIn key={i} delay={i * 30}>
+                    <TouchableOpacity
+                      style={[sh.numberCard, { borderColor: numberColor.accent + '44' }]}
+                      onPress={() => playSoundFallback(item.igbo)}
+                      accessibilityLabel={`${item.igbo}, ${item.english}`}
+                      activeOpacity={0.84}
+                    >
+                      <View style={[sh.numberBadge, { backgroundColor: numberColor.bg }]}>
+                        <Text style={[sh.numberDigit, { color: numberColor.accent }]}>
+                          {getNumberValue(item.english)}
+                        </Text>
+                      </View>
+
+                      <View style={sh.numberCopy}>
+                        <Text style={sh.numberIgbo}>{item.igbo}</Text>
+                        <Text style={sh.numberEnglish}>{getNumberEnglish(item.english)}</Text>
+                        <View style={[sh.numberMiniPill, { backgroundColor: numberColor.bg }]}>
+                          <Text style={[sh.numberMiniText, { color: numberColor.accent }]}>
+                            Tap to hear it
+                          </Text>
+                        </View>
+                      </View>
+
+                      <View style={[sh.numberSoundBtn, { backgroundColor: numberColor.accent }]}>
+                        <Text style={sh.numberSoundText}>▶</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </BounceIn>
+                );
+              }
 
               if (singularPlural) {
                 return (
@@ -1822,6 +1884,72 @@ const sh = StyleSheet.create({
     fontWeight: '800',
     lineHeight: 17,
     marginTop: 2,
+  },
+
+  numberCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACE.md,
+    backgroundColor: COLOR.card,
+    borderRadius: 28,
+    borderWidth: 2,
+    padding: SPACE.md,
+    minHeight: 118,
+    marginBottom: SPACE.md,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    elevation: 4,
+  },
+  numberBadge: {
+    width: 82,
+    height: 82,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  numberDigit: {
+    fontSize: 34,
+    fontWeight: '900',
+  },
+  numberCopy: {
+    flex: 1,
+  },
+  numberIgbo: {
+    fontSize: FONT.xl,
+    color: COLOR.textPrimary,
+    fontWeight: '900',
+    marginBottom: 2,
+  },
+  numberEnglish: {
+    fontSize: FONT.md,
+    color: COLOR.textSecond,
+    fontWeight: '800',
+    marginBottom: 8,
+  },
+  numberMiniPill: {
+    alignSelf: 'flex-start',
+    borderRadius: RADIUS.pill,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+  },
+  numberMiniText: {
+    fontSize: FONT.xs,
+    fontWeight: '900',
+  },
+  numberSoundBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  numberSoundText: {
+    color: COLOR.textWhite,
+    fontSize: FONT.md,
+    fontWeight: '900',
   },
 
 });
