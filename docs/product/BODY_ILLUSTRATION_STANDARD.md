@@ -1,7 +1,13 @@
-# Mụta Igbo Body Illustration Standard
+# Body Illustration Standard
 
-Approved direction: custom kid-friendly glossy cartoon body part icons, isolated on soft cream backgrounds, readable at small lesson-card size.
+Approved MekaOps Edu body-part assets must not contain embedded text labels.
 
-Current approved body assets: head, eye, eyebrow, nose, mouth, ear, hand, leg, toes, tongue, teeth.
+The app card already displays Igbo and English text, so image files should contain image-only artwork.
 
-Do not use adult anatomical torso images, jewelry-heavy hands, or unrelated scene backgrounds for beginner body part cards.
+Style:
+- clean kid-friendly cartoon icon
+- soft cream background
+- no labels inside PNG
+- no sprite sheets
+- no adult/anatomical torso art
+- readable at 74px
