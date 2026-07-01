@@ -492,7 +492,11 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                   activeOpacity={0.8}
                 >
                   <View style={[sh.vocabEmojiWrap, { backgroundColor: lc.bg }]}>
-                    <Text style={sh.vocabEmoji}>{item.emoji}</Text>
+                    {levelId === '7A' ? (
+                      <Text style={[sh.alphaLetter, { color: lc.pip }]}>{item.igbo}</Text>
+                    ) : (
+                      <Text style={sh.vocabEmoji}>{item.emoji}</Text>
+                    )}
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={sh.vocabIgbo}>{item.igbo}</Text>
