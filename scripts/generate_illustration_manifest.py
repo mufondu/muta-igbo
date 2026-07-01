@@ -27,6 +27,15 @@ PACKS = {
     "tenses": [
         "present", "past", "future",
     ],
+    "levels": [
+        "alphabet-sounds",
+        "greetings-phrases",
+        "numbers-counting",
+        "body-family",
+        "home-food",
+        "animals-nature",
+        "verbs-actions",
+    ],
 }
 
 lines = [

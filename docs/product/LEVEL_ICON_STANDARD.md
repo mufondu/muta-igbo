@@ -1,33 +1,19 @@
 # Mụta Igbo Level Icon Standard
 
-Level icons must use custom MekaOps Edu illustrations, not generic emoji or system icons.
+This patch installs the first reusable custom level icon pack.
 
-## Approved Level Icon Mapping
+Assets:
 
-| Level | Lesson | Custom Icon Direction |
-|---|---|---|
-| Level 1 | Alphabet & Sounds | ABC cube / alphabet block |
-| Level 2 | Greetings & Phrases | waving child / hello card |
-| Level 3 | Numbers & Counting | 123 counting basket / number blocks |
-| Level 4 | Body Parts & Family | family portrait / family card |
-| Level 5 | Home & Food | house with food / home table |
-| Level 6 | Animals & Nature | tree, flowers, animal cue |
-| Level 7 | Verbs & Actions | child action / movement icon |
+- alphabet-sounds.png
+- greetings-phrases.png
+- numbers-counting.png
+- body-family.png
+- home-food.png
+- animals-nature.png
+- verbs-actions.png
 
-## UI Rule
+Rules:
 
-The app should render the lesson title and subtitle as text. Level icons should be textless custom artwork.
-
-Do not use:
-- emoji
-- generic app icons
-- stock icon styles
-- embedded text inside the image
-- mismatched art direction
-
-## Visual Direction
-
-- bright, tactile, kid-friendly
-- rounded-square tile composition
-- readable at small size
-- consistent with the MekaOps Edu Illustration System
+- No generic emoji as final level art.
+- App renders level labels separately.
+- Level icons should stay bright, tactile, and kid-friendly.

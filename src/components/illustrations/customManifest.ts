@@ -52,4 +52,13 @@ export const CUSTOM_ILLUSTRATIONS: Record<string, ImageSourcePropType> = {
   'tenses:past': require('../../../assets/illustrations/custom/tenses/past.png'),
   'tenses:future': require('../../../assets/illustrations/custom/tenses/future.png'),
 
+  // levels
+  'levels:alphabet-sounds': require('../../../assets/illustrations/custom/levels/alphabet-sounds.png'),
+  'levels:greetings-phrases': require('../../../assets/illustrations/custom/levels/greetings-phrases.png'),
+  'levels:numbers-counting': require('../../../assets/illustrations/custom/levels/numbers-counting.png'),
+  'levels:body-family': require('../../../assets/illustrations/custom/levels/body-family.png'),
+  'levels:home-food': require('../../../assets/illustrations/custom/levels/home-food.png'),
+  'levels:animals-nature': require('../../../assets/illustrations/custom/levels/animals-nature.png'),
+  'levels:verbs-actions': require('../../../assets/illustrations/custom/levels/verbs-actions.png'),
+
 };
