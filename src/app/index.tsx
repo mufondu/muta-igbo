@@ -352,7 +352,7 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
       </ScrollView>
 
       {/* Level cards */}
-      <Text style={sh.sectionLabel}>MekaOps Edu Paths</Text>
+      <Text style={sh.sectionLabel}>Levels</Text>
       {ALL_LEVELS.map((level, i) => {
         const lc = LEVEL_COLOR[level.id];
         const progress = activeProfile?.levelProgress[level.id] ?? 0;

@@ -32,7 +32,7 @@ export interface Level {
 
 // ─── LEVEL 7A: Alphabet & Vowels ─────────────────────────────────────────────
 const LEVEL_7A: Level = {
-  id: '7A', level: 'Sound Garden', free: true,
+  id: '7A', level: 'Level 1', free: true,
   title: 'Alphabet & Sounds',
   igboTitle: 'Mkpụrụ Edemede',
   emoji: '🔤',
@@ -110,7 +110,7 @@ const LEVEL_7A: Level = {
 
 // ─── LEVEL 6A: Greetings & Basic Phrases ─────────────────────────────────────
 const LEVEL_6A: Level = {
-  id: '6A', level: 'Hello Village', free: true,
+  id: '6A', level: 'Level 2', free: true,
   title: 'Greetings & Phrases',
   igboTitle: 'Ekele na Okwu',
   emoji: '👋🏾',
@@ -152,7 +152,7 @@ const LEVEL_6A: Level = {
 
 // ─── LEVEL 5A: Numbers & Counting ────────────────────────────────────────────
 const LEVEL_5A: Level = {
-  id: '5A', level: 'Counting Market', free: false,
+  id: '5A', level: 'Level 3', free: false,
   title: 'Numbers & Counting',
   igboTitle: 'Ọgụgụ',
   emoji: '🔢',
@@ -206,7 +206,7 @@ const LEVEL_5A: Level = {
 
 // ─── LEVEL 4A: Body Parts & Family ───────────────────────────────────────────
 const LEVEL_4A: Level = {
-  id: '4A', level: 'Family Tree', free: false,
+  id: '4A', level: 'Level 4', free: false,
   title: 'Body Parts & Family',
   igboTitle: 'Akụkụ Ahụ na Ezinụlọ',
   emoji: '🧍🏾‍♀️',
@@ -249,7 +249,7 @@ const LEVEL_4A: Level = {
 
 // ─── LEVEL 3A: Animals & Colours ─────────────────────────────────────────────
 const LEVEL_3A: Level = {
-  id: '3A', level: 'Home & Food', free: false,
+  id: '3A', level: 'Level 5', free: false,
   title: 'Animals & Colours',
   igboTitle: 'Anụmanụ na Agba',
   emoji: '🦁',
@@ -294,7 +294,7 @@ const LEVEL_3A: Level = {
 
 // ─── LEVEL 2A: Verbs & Actions ────────────────────────────────────────────────
 const LEVEL_2A: Level = {
-  id: '2A', level: 'Nature Walk', free: false,
+  id: '2A', level: 'Level 6', free: false,
   title: 'Verbs & Actions',
   igboTitle: 'Ngwaa na Omume',
   emoji: '🏃🏾',
@@ -339,7 +339,7 @@ const LEVEL_2A: Level = {
 
 // ─── LEVEL 1A: Grammar & Parts of Speech ─────────────────────────────────────
 const LEVEL_1A: Level = {
-  id: '1A', level: 'Word Builder', free: false,
+  id: '1A', level: 'Level 7', free: false,
   title: 'Grammar & Language',
   igboTitle: 'Ụzọ Asụsụ',
   emoji: '📖',
