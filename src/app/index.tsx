@@ -408,21 +408,26 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
             <Text style={sh.sectionHeading}>Igbo Alphabet</Text>
             <Text style={sh.sectionSubHeading}>Mkpụrụ Edemede</Text>
 
-            <View style={sh.alphaGrid}>
+            <View style={sh.alphaList}>
               {section.items.map((item, i) => (
                 <BounceIn key={`${item.igbo}-${i}`} delay={i * 18}>
                   <TouchableOpacity
-                    style={[sh.alphaTile, { borderColor: lc.pip }]}
+                    style={sh.alphaCard}
                     onPress={() => playSoundFallback(item.igbo)}
                     accessibilityLabel={`${item.igbo}, ${item.english}`}
                     activeOpacity={0.82}
                   >
-                    <View style={[sh.alphaLetterBubble, { backgroundColor: lc.bg }]}>
+                    <View style={[sh.alphaLetterBox, { backgroundColor: lc.bg }]}>
                       <Text style={[sh.alphaLetter, { color: lc.pip }]}>{item.igbo}</Text>
                     </View>
-                    <Text style={sh.alphaSound} numberOfLines={2}>{item.english}</Text>
+
+                    <View style={sh.alphaCopy}>
+                      <Text style={sh.alphaTitle}>{item.igbo}</Text>
+                      <Text style={sh.alphaSound} numberOfLines={2}>{item.english}</Text>
+                    </View>
+
                     <View style={[sh.alphaListenBtn, { backgroundColor: lc.pip }]}>
-                      <Text style={sh.alphaListenText}>Listen</Text>
+                      <Text style={sh.alphaListenText}>▶</Text>
                     </View>
                   </TouchableOpacity>
                 </BounceIn>
@@ -1044,20 +1049,22 @@ const sh = StyleSheet.create({
   listPad: { padding: SPACE.md, paddingBottom: 60 },
 
   sectionTabs: { paddingHorizontal: SPACE.md, paddingVertical: SPACE.sm, gap: SPACE.sm, alignItems: 'center' },
-  sectionTab: { minWidth: 150, 
-    paddingHorizontal: 12, paddingVertical: 7,
-    borderRadius: RADIUS.pill, backgroundColor: COLOR.bg,
-    borderWidth: 1, borderColor: COLOR.border,
-    maxWidth: 140,
+  sectionTab: {
+    minWidth: 156,
+    minHeight: 50,
+    borderRadius: RADIUS.pill,
+    borderWidth: 1,
+    borderColor: COLOR.border,
+    backgroundColor: COLOR.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: SPACE.md,
+    marginRight: SPACE.sm,
   },
-  sectionTabText: { fontSize: 13, fontWeight: '600', color: COLOR.textSecond, textAlign: 'center' },
-  sectionHeading: { fontSize: FONT.lg, fontWeight: '900', color: COLOR.textPrimary, marginBottom: 2 },
-  sectionSubHeading: {
+  sectionTabText: {
     fontSize: FONT.sm,
-    color: COLOR.textSecond,
-    marginBottom: SPACE.md,
-    fontStyle: 'italic',
-    fontWeight: '700',
+    color: COLOR.textPrimary,
+    fontWeight: '900',
   },
 
   lessonHero: {
@@ -1156,53 +1163,60 @@ const sh = StyleSheet.create({
     lineHeight: 20,
     fontWeight: '700',
   },
-  alphaGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  alphaList: {
     gap: SPACE.md,
   },
-  alphaTile: {
-    width: '47%',
+  alphaCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACE.md,
     backgroundColor: COLOR.card,
     borderRadius: RADIUS.xl,
-    borderWidth: 2,
+    borderWidth: 1,
+    borderColor: COLOR.border,
     padding: SPACE.md,
-    alignItems: 'center',
-    minHeight: 178,
+    minHeight: 96,
     shadowColor: '#000',
     shadowOpacity: 0.08,
     shadowRadius: 12,
     elevation: 3,
   },
-  alphaLetterBubble: {
-    width: 78,
-    height: 78,
+  alphaLetterBox: {
+    width: 72,
+    height: 72,
     borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: SPACE.sm,
   },
   alphaLetter: {
     fontSize: 34,
     fontWeight: '900',
   },
+  alphaCopy: {
+    flex: 1,
+  },
+  alphaTitle: {
+    fontSize: FONT.xl,
+    color: COLOR.textPrimary,
+    fontWeight: '900',
+    marginBottom: 4,
+  },
   alphaSound: {
     fontSize: FONT.sm,
     color: COLOR.textSecond,
-    fontWeight: '800',
-    textAlign: 'center',
-    lineHeight: 19,
-    minHeight: 40,
-    marginBottom: SPACE.sm,
+    fontWeight: '700',
+    lineHeight: 20,
   },
   alphaListenBtn: {
-    borderRadius: RADIUS.pill,
-    paddingVertical: 7,
-    paddingHorizontal: 14,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   alphaListenText: {
     color: COLOR.textWhite,
-    fontSize: FONT.xs,
+    fontSize: FONT.md,
     fontWeight: '900',
   },
 
