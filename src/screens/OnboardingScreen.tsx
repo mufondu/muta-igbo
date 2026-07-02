@@ -86,12 +86,10 @@ function StepDots({ current, total }: { current: number; total: number }) {
 function FriendCard({
   friend,
   selected,
-  width,
   onPress,
 }: {
   friend: MutaFriend;
   selected: boolean;
-  width: number;
   onPress: () => void;
 }) {
   return (
@@ -99,20 +97,15 @@ function FriendCard({
       onPress={onPress}
       activeOpacity={0.9}
       style={[
-        s.friendTile,
-        {
-          width,
-          borderColor: selected ? COLOR.gold : 'rgba(255, 248, 223, 0.16)',
-          backgroundColor: selected ? 'rgba(212, 161, 42, 0.20)' : 'rgba(255, 248, 223, 0.08)',
-        },
+        s.avatarRosterCard,
+        selected && s.avatarRosterCardSelected,
       ]}
     >
-      <View style={[s.friendGlow, selected && s.friendGlowSelected]}>
-        <AvatarIllustration avatar={friend.id} size={72} />
+      <View style={[s.avatarRosterImageWrap, selected && s.avatarRosterImageWrapSelected]}>
+        <AvatarIllustration avatar={friend.id} size={74} />
       </View>
-      <Text style={s.friendName}>{friend.name}</Text>
-      <Text style={s.friendSub} numberOfLines={1}>{friend.subtitle}</Text>
-      {selected ? <Text style={s.friendSelected}>✓ Selected</Text> : null}
+      <Text style={s.avatarRosterName} numberOfLines={1}>{friend.name}</Text>
+      <Text style={s.avatarRosterSub} numberOfLines={1}>{friend.subtitle}</Text>
     </TouchableOpacity>
   );
 }
@@ -131,9 +124,6 @@ export default function OnboardingScreen({ onComplete }: Props) {
   const [selectedFriend, setFriend]   = useState<MutaFriendId>('adaeze');
 
   const horizontalPadding = SPACE.sm * 2;
-  const cardGap = 10;
-  const columns = 2;
-  const friendCardWidth = Math.floor((width - horizontalPadding - (cardGap * (columns - 1))) / columns);
   const selectedFriendProfile = getMutaFriend(selectedFriend);
 
   function addChild() {
@@ -268,7 +258,7 @@ export default function OnboardingScreen({ onComplete }: Props) {
 
         <View style={s.selectedHero}>
           <View style={s.selectedAvatarWrap}>
-            <AvatarIllustration avatar={selectedFriend} size={112} />
+            <AvatarIllustration avatar={selectedFriend} size={132} />
           </View>
           <View style={s.selectedHeroText}>
             <Text style={s.selectedLabel}>Current friend</Text>
@@ -312,17 +302,20 @@ export default function OnboardingScreen({ onComplete }: Props) {
           <Text style={s.friendSectionSub}>Tap a card</Text>
         </View>
 
-        <View style={s.friendGrid}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={s.avatarRoster}
+        >
           {MUTA_FRIENDS.map(friend => (
             <FriendCard
               key={friend.id}
               friend={friend}
               selected={selectedFriend === friend.id}
-              width={friendCardWidth}
               onPress={() => setFriend(friend.id)}
             />
           ))}
-        </View>
+        </ScrollView>
 
         <TouchableOpacity
           style={[s.finishBtn, profiles.length === 0 && s.finishBtnDisabled]}
@@ -338,6 +331,56 @@ export default function OnboardingScreen({ onComplete }: Props) {
 
 
 const s = StyleSheet.create({
+  avatarRoster: {
+    paddingVertical: 8,
+    paddingHorizontal: 2,
+    gap: 12,
+  },
+  avatarRosterCard: {
+    width: 104,
+    minHeight: 138,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    backgroundColor: 'rgba(255, 248, 223, 0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 248, 223, 0.14)',
+  },
+  avatarRosterCardSelected: {
+    backgroundColor: 'rgba(212, 161, 42, 0.22)',
+    borderColor: COLOR.gold,
+    borderWidth: 2,
+    transform: [{ scale: 1.04 }],
+  },
+  avatarRosterImageWrap: {
+    width: 78,
+    height: 78,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: 'rgba(255, 248, 223, 0.08)',
+    overflow: 'visible',
+  },
+  avatarRosterImageWrapSelected: {
+    backgroundColor: 'rgba(212, 161, 42, 0.16)',
+  },
+  avatarRosterName: {
+    color: '#FFF8DF',
+    fontSize: 15,
+    fontWeight: '900',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  avatarRosterSub: {
+    color: 'rgba(255, 248, 223, 0.64)',
+    fontSize: 10,
+    fontWeight: '800',
+    textAlign: 'center',
+    marginTop: 1,
+  },
+
   welcomeRoot: {
     flex: 1,
     backgroundColor: COLOR.forestDark,
