@@ -171,12 +171,15 @@ export default function OnboardingScreen({ onComplete }: Props) {
 
             <View style={s.heroAvatarRow}>
               <View style={[s.heroAvatarShell, s.heroAvatarSmall]}>
+                <View style={[s.heroAura, s.heroAuraSide]} />
                 <AvatarIllustration avatar="kaira" size={92} />
               </View>
               <View style={[s.heroAvatarShell, s.heroAvatarMain]}>
-                <AvatarIllustration avatar="ekene" size={124} />
+                <View style={[s.heroAura, s.heroAuraMain]} />
+                <AvatarIllustration avatar="ekene" size={126} />
               </View>
               <View style={[s.heroAvatarShell, s.heroAvatarSmall]}>
+                <View style={[s.heroAura, s.heroAuraSide]} />
                 <AvatarIllustration avatar="somto" size={92} />
               </View>
             </View>
@@ -622,24 +625,41 @@ const s = StyleSheet.create({
   heroAvatarShell: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255, 248, 223, 0.08)',
-    borderWidth: 2,
-    borderColor: 'rgba(212, 161, 42, 0.44)',
+    backgroundColor: 'transparent',
+    borderWidth: 0,
     overflow: 'visible',
   },
-  heroAvatarMain: {
-    width: 126,
-    height: 126,
+  heroAura: {
+    position: 'absolute',
     borderRadius: 999,
-    marginHorizontal: -4,
-    zIndex: 2,
     backgroundColor: 'rgba(212, 161, 42, 0.16)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 248, 223, 0.10)',
+  },
+  heroAuraMain: {
+    width: 146,
+    height: 146,
+    opacity: 0.72,
+  },
+  heroAuraSide: {
+    width: 104,
+    height: 104,
+    opacity: 0.42,
+  },
+  heroAvatarMain: {
+    width: 132,
+    height: 132,
+    borderRadius: 999,
+    marginHorizontal: -2,
+    zIndex: 2,
+    backgroundColor: 'transparent',
   },
   heroAvatarSmall: {
-    width: 92,
-    height: 92,
+    width: 96,
+    height: 96,
     borderRadius: 999,
-    opacity: 0.96,
+    opacity: 0.98,
+    backgroundColor: 'transparent',
   },
   welcomeTitle: {
     color: '#FFF8DF',
