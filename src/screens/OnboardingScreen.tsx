@@ -84,34 +84,35 @@ function StepDots({ current, total }: { current: number; total: number }) {
 }
 
 function FriendCard({
-  friend, selected, width, onPress,
+  friend,
+  selected,
+  width,
+  onPress,
 }: {
-  friend: MutaFriend; selected: boolean; width: number; onPress: () => void;
+  friend: MutaFriend;
+  selected: boolean;
+  width: number;
+  onPress: () => void;
 }) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={0.88}
-      style={{
-        width,
-        aspectRatio: 1,
-        paddingVertical: 10,
-        paddingHorizontal: 8,
-        borderRadius: 20,
-        backgroundColor: selected ? 'rgba(0, 216, 121, 0.22)' : 'rgba(244, 255, 248, 0.10)',
-        borderWidth: selected ? 2 : 1,
-        borderColor: selected ? '#00D879' : 'rgba(255, 255, 255, 0.18)',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
+      activeOpacity={0.9}
+      style={[
+        s.friendTile,
+        {
+          width,
+          borderColor: selected ? COLOR.gold : 'rgba(255, 248, 223, 0.16)',
+          backgroundColor: selected ? 'rgba(212, 161, 42, 0.20)' : 'rgba(255, 248, 223, 0.08)',
+        },
+      ]}
     >
-      <AvatarIllustration avatar={friend.id} size={64} />
-      <Text style={{ marginTop: 6, fontWeight: '900', color: '#FFF8DF', fontSize: 14, textAlign: 'center' }} numberOfLines={1}>
-        {friend.name}
-      </Text>
-      <Text style={{ marginTop: 1, fontSize: 9, color: 'rgba(255, 248, 223, 0.72)', textAlign: 'center' }} numberOfLines={1}>
-        {friend.subtitle}
-      </Text>
+      <View style={[s.friendGlow, selected && s.friendGlowSelected]}>
+        <AvatarIllustration avatar={friend.id} size={72} />
+      </View>
+      <Text style={s.friendName}>{friend.name}</Text>
+      <Text style={s.friendSub} numberOfLines={1}>{friend.subtitle}</Text>
+      {selected ? <Text style={s.friendSelected}>✓ Selected</Text> : null}
     </TouchableOpacity>
   );
 }
@@ -129,8 +130,8 @@ export default function OnboardingScreen({ onComplete }: Props) {
   const [childName, setChildName]     = useState('');
   const [selectedFriend, setFriend]   = useState<MutaFriendId>('adaeze');
 
-  const horizontalPadding = SPACE.md * 2;
-  const cardGap = 12;
+  const horizontalPadding = SPACE.sm * 2;
+  const cardGap = 10;
   const columns = 2;
   const friendCardWidth = Math.floor((width - horizontalPadding - (cardGap * (columns - 1))) / columns);
   const selectedFriendProfile = getMutaFriend(selectedFriend);
@@ -213,90 +214,281 @@ export default function OnboardingScreen({ onComplete }: Props) {
 
   return (
     <SafeAreaView style={s.profileRoot}>
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={s.profileScroll}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        <StepDots current={2} total={2} />
-        <Text style={s.profileTitle}>Add Child Profile</Text>
-        <View style={s.titleUnderline} />
-        <Text style={s.profileSub}>Up to 4 children. Each has their own progress.</Text>
+      <ScrollView contentContainerStyle={s.profileScroll} showsVerticalScrollIndicator={false}>
+        <View style={s.profileHeader}>
+          <Text style={s.kicker}>PLAYER SETUP</Text>
+          <Text style={s.profileTitle}>Add Child Profile</Text>
+          <Text style={s.profileSub}>Pick a learning friend, add a name, and start the Igbo adventure.</Text>
+        </View>
 
-        {profiles.map(p => {
-          const friend = getMutaFriend(p.avatar);
-          return (
-            <View key={p.id} style={s.profileChip}>
-              <ProfileImage avatar={p.avatar} size={46} />
-              <View style={{ flex: 1 }}>
-                <Text style={s.profileChipName}>{p.name}</Text>
-                <Text style={s.profileChipSub}>{friend.name} is the Mụta Friend</Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => setProfiles(prev => prev.filter(x => x.id !== p.id))}
-                style={{ padding: 6 }}>
-                <Text style={s.removeText}>✕</Text>
-              </TouchableOpacity>
-            </View>
-          );
-        })}
+        <View style={s.selectedHero}>
+          <View style={s.selectedAvatarWrap}>
+            <AvatarIllustration avatar={selectedFriend} size={112} />
+          </View>
+          <View style={s.selectedHeroText}>
+            <Text style={s.selectedLabel}>Current friend</Text>
+            <Text style={s.selectedName}>{selectedFriendProfile.name}</Text>
+            <Text style={s.selectedDesc}>{selectedFriendProfile.description}</Text>
+          </View>
+        </View>
 
-        {profiles.length < 4 && (
-          <>
-            <View style={s.namePanel}>
-              <Text style={s.fieldLabel}>Child's name</Text>
-              <TextInput
-                style={s.nameInput}
-                value={childName}
-                onChangeText={setChildName}
-                placeholder="e.g. Amara"
-                placeholderTextColor="rgba(255,255,255,0.45)"
-                maxLength={20}
-                autoCapitalize="words"
-              />
-            </View>
+        <View style={s.nameCard}>
+          <Text style={s.inputLabel}>Child name</Text>
+          <TextInput
+            value={childName}
+            onChangeText={setChildName}
+            placeholder="e.g. Zara"
+            placeholderTextColor="rgba(255, 248, 223, 0.45)"
+            style={s.nameInput}
+          />
+          <TouchableOpacity style={s.addBtn} onPress={addChild} activeOpacity={0.88}>
+            <Text style={s.addBtnText}>Add Profile +</Text>
+          </TouchableOpacity>
+        </View>
 
-            <Text style={s.chooseTitle}>Choose Your Learning Friend</Text>
-            <Text style={s.chooseSub}>Your friend will help your child learn and celebrate every achievement.</Text>
+        {profiles.length > 0 ? (
+          <View style={s.createdWrap}>
+            <Text style={s.createdTitle}>Ready players</Text>
+            {profiles.map(p => {
+              const friend = getMutaFriend(p.avatar);
+              return (
+                <View key={p.id} style={s.createdPill}>
+                  <AvatarIllustration avatar={p.avatar} size={34} />
+                  <Text style={s.createdName}>{p.name}</Text>
+                  <Text style={s.createdFriend}>{friend.name}</Text>
+                </View>
+              );
+            })}
+          </View>
+        ) : null}
 
-            <View style={[s.friendGrid, { gap: cardGap }]}>
-              {MUTA_FRIENDS.map(friend => (
-                <FriendCard
-                  key={friend.id}
-                  friend={friend}
-                  selected={selectedFriend === friend.id}
-                  width={friendCardWidth}
-                  onPress={() => setFriend(friend.id)}
-                />
-              ))}
-            </View>
+        <View style={s.friendSectionHeader}>
+          <Text style={s.friendSectionTitle}>Choose a learning friend</Text>
+          <Text style={s.friendSectionSub}>Tap a card</Text>
+        </View>
 
-            <View style={s.friendSummary}>
-              <Text style={s.friendSummaryTitle}>👋 Meet {selectedFriendProfile.name}!</Text>
-              <Text style={s.friendSummaryText}>{selectedFriendProfile.description} {selectedFriendProfile.name} can’t wait to learn Igbo with your child.</Text>
-            </View>
-
-            <TouchableOpacity style={s.addBtn} onPress={addChild} activeOpacity={0.85}>
-              <Text style={s.addBtnText}>+ Add child</Text>
-            </TouchableOpacity>
-          </>
-        )}
+        <View style={s.friendGrid}>
+          {MUTA_FRIENDS.map(friend => (
+            <FriendCard
+              key={friend.id}
+              friend={friend}
+              selected={selectedFriend === friend.id}
+              width={friendCardWidth}
+              onPress={() => setFriend(friend.id)}
+            />
+          ))}
+        </View>
 
         <TouchableOpacity
-          style={[s.primaryBtn, profiles.length === 0 && s.primaryBtnDisabled, s.startBtn]}
+          style={[s.finishBtn, profiles.length === 0 && s.finishBtnDisabled]}
           onPress={finish}
-          activeOpacity={profiles.length > 0 ? 0.85 : 1}
+          activeOpacity={0.88}
         >
-          <Text style={s.primaryBtnText}>Start Learning 🚀</Text>
+          <Text style={s.finishBtnText}>Start Learning Adventure</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
+
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: COLOR.forestDark, paddingHorizontal: SPACE.lg, paddingTop: 60, paddingBottom: 40 },
+  kicker: {
+    color: COLOR.gold,
+    fontSize: 13,
+    fontWeight: '900',
+    letterSpacing: 2,
+    marginBottom: 8,
+  },
+  selectedHero: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 248, 223, 0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 248, 223, 0.16)',
+    marginBottom: 14,
+  },
+  selectedAvatarWrap: {
+    width: 112,
+    height: 112,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 14,
+  },
+  selectedHeroText: {
+    flex: 1,
+  },
+  selectedLabel: {
+    color: 'rgba(255, 248, 223, 0.58)',
+    fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  selectedName: {
+    color: '#FFF8DF',
+    fontSize: 32,
+    fontWeight: '900',
+    marginTop: 2,
+  },
+  selectedDesc: {
+    color: 'rgba(255, 248, 223, 0.75)',
+    fontSize: 14,
+    fontWeight: '700',
+    marginTop: 4,
+  },
+  nameCard: {
+    padding: 14,
+    borderRadius: 26,
+    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 248, 223, 0.14)',
+    marginBottom: 16,
+  },
+  inputLabel: {
+    color: COLOR.gold,
+    fontSize: 13,
+    fontWeight: '900',
+    marginBottom: 8,
+  },
+  nameInput: {
+    minHeight: 52,
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    color: '#FFF8DF',
+    backgroundColor: 'rgba(255, 248, 223, 0.09)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 248, 223, 0.14)',
+    fontSize: 18,
+    fontWeight: '800',
+  },
+  addBtn: {
+    marginTop: 10,
+    minHeight: 50,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLOR.gold,
+  },
+  addBtnText: {
+    color: COLOR.forestDark,
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  createdWrap: {
+    marginBottom: 16,
+  },
+  createdTitle: {
+    color: '#FFF8DF',
+    fontSize: 16,
+    fontWeight: '900',
+    marginBottom: 8,
+  },
+  createdPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 46,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    marginBottom: 8,
+    backgroundColor: 'rgba(255, 248, 223, 0.10)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 248, 223, 0.14)',
+  },
+  createdName: {
+    color: '#FFF8DF',
+    fontSize: 15,
+    fontWeight: '900',
+    marginLeft: 8,
+  },
+  createdFriend: {
+    color: 'rgba(255, 248, 223, 0.62)',
+    fontSize: 13,
+    fontWeight: '700',
+    marginLeft: 'auto',
+  },
+  friendSectionHeader: {
+    marginBottom: 10,
+  },
+  friendSectionTitle: {
+    color: '#FFF8DF',
+    fontSize: 22,
+    fontWeight: '900',
+  },
+  friendSectionSub: {
+    color: 'rgba(255, 248, 223, 0.62)',
+    fontSize: 13,
+    fontWeight: '800',
+    marginTop: 2,
+  },
+  friendGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    justifyContent: 'space-between',
+  },
+  friendTile: {
+    minHeight: 154,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    borderRadius: 26,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'visible',
+  },
+  friendGlow: {
+    width: 76,
+    height: 76,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: 'rgba(255, 248, 223, 0.08)',
+  },
+  friendGlowSelected: {
+    backgroundColor: 'rgba(212, 161, 42, 0.18)',
+  },
+  friendName: {
+    color: '#FFF8DF',
+    fontSize: 18,
+    fontWeight: '900',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  friendSub: {
+    color: 'rgba(255, 248, 223, 0.68)',
+    fontSize: 11,
+    fontWeight: '800',
+    textAlign: 'center',
+    marginTop: 2,
+  },
+  friendSelected: {
+    color: COLOR.gold,
+    fontSize: 11,
+    fontWeight: '900',
+    marginTop: 5,
+  },
+  finishBtn: {
+    minHeight: 58,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLOR.gold,
+    marginTop: 18,
+    marginBottom: 28,
+  },
+  finishBtnDisabled: {
+    opacity: 0.45,
+  },
+  finishBtnText: {
+    color: COLOR.forestDark,
+    fontSize: 17,
+    fontWeight: '900',
+  },
+
+  root: { flex: 1, backgroundColor: COLOR.forestDark, paddingHorizontal: SPACE.md, paddingTop: 60, paddingBottom: 40 },
 
   heroArea: { alignItems: 'center', marginBottom: SPACE.lg },
   heroKids: { flexDirection: 'row', gap: SPACE.lg, marginBottom: SPACE.md },
@@ -332,7 +524,7 @@ const s = StyleSheet.create({
   primaryBtnText:    { fontSize: FONT.lg, fontWeight: '800', color: COLOR.forestDark },
 
   profileRoot: { flex: 1, backgroundColor: COLOR.forestDark },
-  profileScroll: { paddingHorizontal: SPACE.lg, paddingTop: SPACE.md, paddingBottom: 42 },
+  profileScroll: { paddingHorizontal: SPACE.md, paddingTop: SPACE.md, paddingBottom: 42 },
   profileTitle: { fontSize: 30, fontWeight: '900', color: COLOR.textCream, textAlign: 'center', marginTop: SPACE.sm },
   titleUnderline: { width: 46, height: 4, borderRadius: 2, backgroundColor: COLOR.gold, alignSelf: 'center', marginTop: 10, marginBottom: SPACE.sm },
   profileSub: { fontSize: FONT.md, color: 'rgba(255,255,255,0.7)', textAlign: 'center', marginBottom: SPACE.lg },
