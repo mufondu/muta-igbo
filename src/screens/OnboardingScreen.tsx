@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AvatarIllustration from '../components/illustrations/AvatarIllustration';
 import {
   Alert,
   Image,
@@ -23,6 +24,8 @@ const GIRL_IMG = require('../../assets/images/igbo-girl.png');
 const BOY_IMG  = require('../../assets/images/igbo-boy.png');
 
 export function ProfileImage({ avatar, size = 40 }: { avatar: string; size?: number }) {
+  return <AvatarIllustration avatar={avatar} size={size} />;
+}: { avatar: string; size?: number }) {
   return <MutaFriendAvatar avatar={avatar} size={size} />;
 }
 

@@ -202,7 +202,7 @@ export default function MutaIgboApp() {
       {/* App header */}
       <View style={sh.appHeader}>
         <View style={sh.appHeaderLeft}>
-          <View style={sh.appLogoBox}><Image source={MUTA_LOGO} style={sh.appLogoImage} resizeMode="cover" /></View>
+          <View style={sh.appLogoBox}><Image source={MUTA_LOGO} style={sh.appLogoImage} resizeMode="contain" /></View>
           <View>
             <Text style={sh.appTitle}>Mụta Igbo</Text>
             <Text style={sh.appSub}>Central Igbo / Enuani Edition</Text>
