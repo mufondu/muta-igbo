@@ -1,22 +1,12 @@
-# Mụta Igbo Animal Illustration Standard
+# Animal Illustration Standard
 
-Animal lesson-card art uses tactile 3D toy-style animals.
+Approved animal lesson-card assets use premium 3D cartoon / tactile toy style.
 
-## Production Rule
-
-- Animal images should be animal-only, preferably transparent.
-- The white lesson card owns the background.
-- No embedded text.
-- No emoji as final art.
-- No cream mini-card or double-frame inside the image.
-- Use contain rendering so the full animal is visible.
-
-## Approved Add-on Animals
-
-- lion.png
-- elephant.png
-- rabbit.png
-- rat.png
-- python.png
-- tortoise.png
-- grasshopper.png
+Rules:
+- Single animal per asset.
+- White-safe or transparent background.
+- No cream mini-card background.
+- No border or embedded tile.
+- No embedded Igbo or English text.
+- The lesson card owns the background and labels.
+- Keep each animal centered with safe padding.
