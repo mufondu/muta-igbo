@@ -29,9 +29,9 @@ Assets:
 - natachi.png
 - onyeka.png
 - somto.png
-- emeka.png
+- kene.png
 - chidozie.png
-- ifeanyi.png
+- ebube.png
 
 ## Product Rule
 

@@ -15,9 +15,9 @@ const AVATARS: Record<string, ImageSourcePropType> = {
   natachi: require('../../../assets/illustrations/custom/avatars/natachi.png'),
   onyeka: require('../../../assets/illustrations/custom/avatars/onyeka.png'),
   somto: require('../../../assets/illustrations/custom/avatars/somto.png'),
-  emeka: require('../../../assets/illustrations/custom/avatars/emeka.png'),
+  kene: require('../../../assets/illustrations/custom/avatars/kene.png'),
   chidozie: require('../../../assets/illustrations/custom/avatars/chidozie.png'),
-  ifeanyi: require('../../../assets/illustrations/custom/avatars/ifeanyi.png'),
+  ebube: require('../../../assets/illustrations/custom/avatars/ebube.png'),
 };
 
 function normalize(value?: string): string {
@@ -36,15 +36,15 @@ export function getAvatarIllustrationSource(avatar?: string, name?: string): Ima
 
   // Keep existing app character names while mapping them to approved art.
   if (key.includes('amara')) return AVATARS.adaeze;
-  if (key.includes('obi')) return AVATARS.emeka;
+  if (key.includes('obi')) return AVATARS.kene;
 
   // Existing profile/avatar fallback support.
   if (avatar?.includes('👧')) return AVATARS.kaira;
-  if (avatar?.includes('👦')) return AVATARS.emeka;
+  if (avatar?.includes('👦')) return AVATARS.kene;
   if (key.includes('girl')) return AVATARS.kaira;
-  if (key.includes('boy')) return AVATARS.emeka;
+  if (key.includes('boy')) return AVATARS.kene;
 
-  return AVATARS.emeka;
+  return AVATARS.kene;
 }
 
 export default function AvatarIllustration({ avatar, name, size = 56 }: Props) {
