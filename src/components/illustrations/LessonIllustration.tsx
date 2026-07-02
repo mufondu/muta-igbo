@@ -51,6 +51,14 @@ const ILLUSTRATIONS: IllustrationEntry[] = [
   { keys: ['bird', 'nnụnụ', 'nnunu'], assetKey: 'animals:bird', fallback: '🐦', label: 'Bird' },
   { keys: ['leopard', 'tiger', 'agu'], assetKey: 'animals:leopard', fallback: '🐆', label: 'Animal' },
 
+  { keys: ['lion'], assetKey: 'animals:lion', fallback: 'Lion', label: 'Lion' },
+  { keys: ['elephant'], assetKey: 'animals:elephant', fallback: 'Elephant', label: 'Elephant' },
+  { keys: ['rabbit'], assetKey: 'animals:rabbit', fallback: 'Rabbit', label: 'Rabbit' },
+  { keys: ['rat'], assetKey: 'animals:rat', fallback: 'Rat', label: 'Rat' },
+  { keys: ['python', 'snake'], assetKey: 'animals:python', fallback: 'Python', label: 'Python' },
+  { keys: ['tortoise', 'turtle'], assetKey: 'animals:tortoise', fallback: 'Tortoise', label: 'Tortoise' },
+  { keys: ['grasshopper'], assetKey: 'animals:grasshopper', fallback: 'Grasshopper', label: 'Grasshopper' },
+
   { keys: ['house', 'ụlọ', 'ulo'], assetKey: 'home:house', fallback: '🏠', label: 'Home' },
   { keys: ['water', 'mmiri'], assetKey: 'home:water', fallback: '💧', label: 'Water' },
   { keys: ['book', 'akwụkwọ', 'akwukwo'], assetKey: 'home:book', fallback: '📘', label: 'Book' },
@@ -100,6 +108,22 @@ function findIllustration(igbo: string, english: string): IllustrationEntry | un
   const normalizedIgbo = normalize(igbo);
   const normalizedEnglish = normalize(english);
   const combined = normalizedIgbo + " " + normalizedEnglish;
+
+  const animalByEnglish: Record<string, string> = {
+    lion: 'animals:lion',
+    elephant: 'animals:elephant',
+    rabbit: 'animals:rabbit',
+    rat: 'animals:rat',
+    python: 'animals:python',
+    tortoise: 'animals:tortoise',
+    grasshopper: 'animals:grasshopper',
+  };
+
+  for (const animalName of Object.keys(animalByEnglish)) {
+    if (normalizedEnglish.includes(animalName)) {
+      return ILLUSTRATIONS.find(x => x.assetKey === animalByEnglish[animalName]);
+    }
+  }
 
   // Role-first matching prevents Nwanne from being mistaken for Nne / Mother.
   if (normalizedEnglish.includes('grandfather')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:grandfather');
