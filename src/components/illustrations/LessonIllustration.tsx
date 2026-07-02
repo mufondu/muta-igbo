@@ -47,7 +47,7 @@ const ILLUSTRATIONS: IllustrationEntry[] = [
   { keys: ['chicken', 'ọkụkọ', 'okuko'], assetKey: 'animals:chicken', fallback: 'Chicken', label: 'Chicken' },
   { keys: ['goat', 'ewu'], assetKey: 'animals:goat', fallback: 'Goat', label: 'Goat' },
   { keys: ['fish', 'azụ', 'azu'], assetKey: 'animals:fish', fallback: 'Fish', label: 'Fish' },
-  { keys: ['bird', 'nnụnụ', 'nnunu'], assetKey: 'animals:bird-disabled', fallback: 'Bird', label: 'Bird' },
+  { keys: ['bird', 'nnụnụ', 'nnunu'], assetKey: 'animals:bird', fallback: 'Bird', label: 'Bird' },
   { keys: ['leopard', 'tiger', 'agu'], assetKey: 'animals:leopard', fallback: 'Leopard', label: 'Leopard' },
   { keys: ['lion', 'ọdụm', 'odum'], assetKey: 'animals:lion', fallback: 'Lion', label: 'Lion' },
   { keys: ['elephant', 'enyi'], assetKey: 'animals:elephant', fallback: 'Elephant', label: 'Elephant' },
@@ -55,7 +55,7 @@ const ILLUSTRATIONS: IllustrationEntry[] = [
   { keys: ['rat', 'oke'], assetKey: 'animals:rat', fallback: 'Rat', label: 'Rat' },
   { keys: ['python', 'snake', 'eke', 'agwọ', 'agwo'], assetKey: 'animals:python', fallback: 'Python', label: 'Python' },
   { keys: ['tortoise', 'turtle', 'mbe'], assetKey: 'animals:tortoise', fallback: 'Tortoise', label: 'Tortoise' },
-  { keys: ['grasshopper', 'ụkpana', 'ukpana', 'ụkpara', 'ukpara'], assetKey: 'animals:grasshopper-disabled', fallback: 'Grasshopper', label: 'Grasshopper' },
+  { keys: ['grasshopper', 'ụkpana', 'ukpana', 'ụkpara', 'ukpara'], assetKey: 'animals:grasshopper', fallback: 'Grasshopper', label: 'Grasshopper' },
 
   { keys: ['house', 'ụlọ', 'ulo'], assetKey: 'home:house', fallback: 'Home', label: 'Home' },
   { keys: ['water', 'mmiri'], assetKey: 'home:water', fallback: 'Water', label: 'Water' },
