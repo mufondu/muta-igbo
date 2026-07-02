@@ -55,5 +55,6 @@ export const CUSTOM_ILLUSTRATIONS: Record<string, ImageSourcePropType> = {
   // levels
   'levels:alphabet-sounds': require('../../../assets/illustrations/custom/levels/alphabet-sounds.png'),
   'levels:greetings-phrases': require('../../../assets/illustrations/custom/levels/greetings-phrases.png'),
+  'levels:numbers-counting': require('../../../assets/illustrations/custom/levels/numbers-counting.png'),
 
 };
