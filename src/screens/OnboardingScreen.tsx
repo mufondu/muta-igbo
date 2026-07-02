@@ -12,14 +12,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AvatarIllustration from '../components/illustrations/AvatarIllustration';
-import { useApp } from '../hooks/useAppState';
+import { Profile, createProfile, useApp } from '../hooks/useAppState';
 import { COLOR, FONT, RADIUS, SPACE } from '../utils/tokens';
 
-type Profile = {
-  id: string;
-  name: string;
-  avatar: MutaFriendId;
-};
 
 type Props = {
   onComplete?: (profiles: Profile[]) => void;
@@ -43,22 +38,23 @@ type MutaFriend = {
   id: MutaFriendId;
   name: string;
   subtitle: string;
+  description: string;
 };
 
 const GIRL_IMG = require('../../assets/illustrations/custom/avatars/kaira.png');
 const BOY_IMG = require('../../assets/illustrations/custom/avatars/ekene.png');
 
 const MUTA_FRIENDS: MutaFriend[] = [
-  { id: 'adaeze', name: 'Adaeze', subtitle: 'Kind and curious' },
-  { id: 'kaira', name: 'Kaira', subtitle: 'Sound star' },
-  { id: 'natachi', name: 'Natachi', subtitle: 'Animal guide' },
-  { id: 'ebube', name: 'Ebube', subtitle: 'Bright helper' },
-  { id: 'ekene', name: 'Ekene', subtitle: 'Word explorer' },
-  { id: 'jc', name: 'JC', subtitle: 'Brave learner' },
-  { id: 'somto', name: 'Somto', subtitle: 'Story friend' },
-  { id: 'onyeka', name: 'Onyeka', subtitle: 'Culture buddy' },
-  { id: 'chizara', name: 'Chizara', subtitle: 'Reading friend' },
-  { id: 'kamsi', name: 'Kamsi', subtitle: 'Little helper' },
+  { id: 'adaeze', name: 'Adaeze', subtitle: 'Kind and curious', description: 'Kind and curious,' },
+  { id: 'kaira', name: 'Kaira', subtitle: 'Sound star', description: 'Kaira loves sounds and songs.' },
+  { id: 'natachi', name: 'Natachi', subtitle: 'Animal guide', description: 'Natachi loves animals and nature.' },
+  { id: 'ebube', name: 'Ebube', subtitle: 'Bright helper', description: 'Ebube is ready to help.' },
+  { id: 'ekene', name: 'Ekene', subtitle: 'Word explorer', description: 'Ekene loves discovering new words.' },
+  { id: 'jc', name: 'JC', subtitle: 'Brave learner', description: 'JC learns with courage.' },
+  { id: 'somto', name: 'Somto', subtitle: 'Story friend', description: 'Somto enjoys stories and games.' },
+  { id: 'onyeka', name: 'Onyeka', subtitle: 'Culture buddy', description: 'Onyeka loves culture and family.' },
+  { id: 'chizara', name: 'Chizara', subtitle: 'Reading friend', description: 'Chizara enjoys reading.' },
+  { id: 'kamsi', name: 'Kamsi', subtitle: 'Little helper', description: 'Kamsi is a cheerful helper.' },
 ]
 
 function getMutaFriend(id: MutaFriendId): MutaFriend {
@@ -66,11 +62,7 @@ function getMutaFriend(id: MutaFriendId): MutaFriend {
 }
 
 function makeProfile(name: string, avatar: MutaFriendId): Profile {
-  return {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    name,
-    avatar,
-  };
+  return createProfile(name, avatar);
 }
 
 function StepDots({ current, total }: { current: number; total: number }) {
@@ -83,7 +75,7 @@ function StepDots({ current, total }: { current: number; total: number }) {
             width: index + 1 === current ? 22 : 8,
             height: 8,
             borderRadius: 999,
-            backgroundColor: index + 1 === current ? COLOR.green : 'rgba(0,0,0,0.15)',
+            backgroundColor: index + 1 === current ? COLOR.forestMid : 'rgba(0,0,0,0.15)',
           }}
         />
       ))}
@@ -92,15 +84,9 @@ function StepDots({ current, total }: { current: number; total: number }) {
 }
 
 function FriendCard({
-  friend,
-  selected,
-  width,
-  onPress,
+  friend, selected, width, onPress,
 }: {
-  friend: MutaFriend;
-  selected: boolean;
-  width: number;
-  onPress: () => void;
+  friend: MutaFriend; selected: boolean; width: number; onPress: () => void;
 }) {
   return (
     <TouchableOpacity
@@ -108,10 +94,10 @@ function FriendCard({
       activeOpacity={0.88}
       style={{
         width,
-        minHeight: 148,
+        aspectRatio: 1,
         paddingVertical: 10,
         paddingHorizontal: 8,
-        borderRadius: 24,
+        borderRadius: 20,
         backgroundColor: selected ? 'rgba(0, 216, 121, 0.22)' : 'rgba(244, 255, 248, 0.10)',
         borderWidth: selected ? 2 : 1,
         borderColor: selected ? '#00D879' : 'rgba(255, 255, 255, 0.18)',
@@ -119,11 +105,11 @@ function FriendCard({
         justifyContent: 'center',
       }}
     >
-      <AvatarIllustration avatar={friend.id} size={82} />
-      <Text style={{ marginTop: 8, fontWeight: '900', color: '#FFF8DF', fontSize: 18, textAlign: 'center' }}>
+      <AvatarIllustration avatar={friend.id} size={64} />
+      <Text style={{ marginTop: 6, fontWeight: '900', color: '#FFF8DF', fontSize: 14, textAlign: 'center' }} numberOfLines={1}>
         {friend.name}
       </Text>
-      <Text style={{ marginTop: 2, fontSize: 11, color: 'rgba(255, 248, 223, 0.72)', textAlign: 'center' }} numberOfLines={1}>
+      <Text style={{ marginTop: 1, fontSize: 9, color: 'rgba(255, 248, 223, 0.72)', textAlign: 'center' }} numberOfLines={1}>
         {friend.subtitle}
       </Text>
     </TouchableOpacity>
