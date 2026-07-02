@@ -200,8 +200,9 @@ export default function LessonIllustration({
         {
           width: size,
           height: size,
-          borderRadius: Math.max(18, size * 0.24),
-          backgroundColor: animalAsset ? '#FFFFFF' : backgroundColor,
+          borderRadius: animalAsset ? 0 : Math.max(18, size * 0.24),
+          backgroundColor: animalAsset ? 'transparent' : backgroundColor,
+          borderWidth: animalAsset ? 0 : 1,
         },
       ]}
     >
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
   wrap: {
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
+    overflow: 'visible',
     borderWidth: 1,
     borderColor: 'rgba(81, 55, 20, 0.10)',
   },
