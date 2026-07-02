@@ -28,12 +28,17 @@ import OnboardingScreen, { ProfileImage } from '../screens/OnboardingScreen';
 import PremiumScreen from '../screens/PremiumScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import { COLOR, FONT, IS_TABLET, LEVEL_COLOR, RADIUS, SPACE } from '../utils/tokens';
+import * as haptics from '../utils/haptics';
+import { DailyGoalRing } from '../components/DailyGoalRing';
+import ParentGate from '../components/ParentGate';
+import { GuideBanner } from '../components/LevelGuide';
 
 const MUTA_LOGO = require('../../assets/brand/muta-igbo-logo.png');
 const APP_ICON = require('../../assets/muta-logo.png');
 
 const LEVEL_ICONS: Record<string, any> = {
   '7A': require('../../assets/illustrations/custom/levels/alphabet-sounds.png'),
+  '6A': require('../../assets/illustrations/custom/levels/greetings-phrases.png'),
 };
 
 // ─── Audio (optional, gracefully degraded) ───────────────────────────────────
@@ -136,6 +141,7 @@ function LockBadge() {
 export default function MutaIgboApp() {
   const { state, completeOnboarding, incrementStreak } = useApp();
   const [tab, setTab]     = useState<MainTab>('home');
+  const [gate, setGate] = useState<null | 'settings' | 'premium'>(null);
   const [nav, setNav]     = useState<NavState>(NAV_RESET);
 
   useEffect(() => {
@@ -199,7 +205,7 @@ export default function MutaIgboApp() {
         </View>
         <View style={sh.headerRight}>
           <ProfileSwitcher />
-          <TouchableOpacity onPress={() => setTab('settings')} style={sh.gearBtn} accessibilityLabel="Settings">
+          <TouchableOpacity onPress={() => { haptics.tapLight(); setGate('settings'); }} style={sh.gearBtn} accessibilityLabel="Settings">
             <Text style={{ fontSize: 22 }}>⚙️</Text>
           </TouchableOpacity>
         </View>
@@ -209,6 +215,16 @@ export default function MutaIgboApp() {
       {tab === 'home'     && <HomeScreen openInner={openInner} />}
       {tab === 'progress' && <ProgressScreen />}
       {tab === 'settings' && <SettingsScreen onBack={() => setTab('home')} />}
+
+      <ParentGate
+        visible={gate !== null}
+        onPass={() => {
+          const target = gate; setGate(null);
+          if (target === 'settings') setTab('settings');
+          if (target === 'premium') openInner('premium');
+        }}
+        onCancel={() => setGate(null)}
+      />
 
       {/* Bottom nav */}
       {tab !== 'settings' && (
@@ -257,6 +273,8 @@ function ProfileSwitcher() {
 // ─── HOME SCREEN ──────────────────────────────────────────────────────────────
 function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string) => void }) {
   const { activeProfile, state } = useApp();
+  const today = new Date().toDateString();
+  const goalCount = activeProfile?.goalDate === today ? (activeProfile?.goalCount ?? 0) : 0;
 
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={sh.homeScroll} showsVerticalScrollIndicator={false}>
@@ -269,6 +287,8 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
             <Text>🔥</Text>
             <Text style={sh.streakText}>{activeProfile?.streak ?? 0} day streak · {activeProfile?.wordsLearned ?? 0} words</Text>
           </View>
+
+      <DailyGoalRing completed={goalCount} />
         </View>
         {state.isPremium && (
           <View style={sh.premiumChip}><Text style={sh.premiumChipText}>⭐ Premium</Text></View>
@@ -366,7 +386,7 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
           <BounceIn key={level.id} delay={i * 55}>
             <TouchableOpacity
               style={[sh.levelCard, isLocked && sh.levelCardLocked]}
-              onPress={() => isLocked ? openInner('premium') : openInner('levelDetail', level.id)}
+              onPress={() => { haptics.tapMedium(); isLocked ? setGate('premium') : openInner('levelDetail', level.id); }}
               activeOpacity={0.8}
             >
               <View style={[sh.levelPip, { backgroundColor: lc.bg }]}>
@@ -503,7 +523,7 @@ function isSingularPluralSection(title: string): boolean {
 function LevelDetailScreen({ levelId, onBack, onPremium }: {
   levelId: string; onBack: () => void; onPremium: () => void;
 }) {
-  const { state, activeProfile, updateProgress } = useApp();
+  const { state, activeProfile, updateProgress , recordActivity } = useApp();
   const level = ALL_LEVELS.find(l => l.id === levelId)!;
   const lc = LEVEL_COLOR[levelId];
   const [activeSection, setActiveSection] = useState(0);
@@ -514,6 +534,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
     const currentProfile = state.profiles.find(p => p.id === state.activeProfileId);
     const current = currentProfile?.levelProgress[levelId] ?? 0;
     if (current < 0.1) updateProgress(levelId, 0.1);
+    recordActivity();
   }, []);
 
   return (
@@ -557,6 +578,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
       )}
 
       <ScrollView contentContainerStyle={sh.listPad} showsVerticalScrollIndicator={false}>
+        <GuideBanner levelId={levelId} accent={lc.pip} />
         {isAlphabet ? (
           <>
             <View style={sh.alphaIntroCard}>
@@ -577,7 +599,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                 <BounceIn key={`${item.igbo}-${i}`} delay={i * 18}>
                   <TouchableOpacity
                     style={sh.alphaCard}
-                    onPress={() => playSoundFallback(item.igbo)}
+                    onPress={() => { haptics.tapLight(); playSoundFallback(item.igbo); }}
                     accessibilityLabel={`${item.igbo}, ${item.english}`}
                     activeOpacity={0.82}
                   >
@@ -617,7 +639,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                   <BounceIn key={i} delay={i * 30}>
                     <TouchableOpacity
                       style={[sh.numberCard, { borderColor: numberColor.accent + '44' }]}
-                      onPress={() => playSoundFallback(item.igbo)}
+                      onPress={() => { haptics.tapLight(); playSoundFallback(item.igbo); }}
                       accessibilityLabel={`${item.igbo}, ${item.english}`}
                       activeOpacity={0.84}
                     >
@@ -650,7 +672,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                   <BounceIn key={i} delay={i * 30}>
                     <TouchableOpacity
                       style={sh.pairCard}
-                      onPress={() => playSoundFallback(item.igbo)}
+                      onPress={() => { haptics.tapLight(); playSoundFallback(item.igbo); }}
                       accessibilityLabel={`${item.igbo}, ${item.english}`}
                       activeOpacity={0.8}
                     >
@@ -695,7 +717,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                   <BounceIn key={i} delay={i * 30}>
                     <TouchableOpacity
                       style={sh.grammarTextCard}
-                      onPress={() => playSoundFallback(item.igbo)}
+                      onPress={() => { haptics.tapLight(); playSoundFallback(item.igbo); }}
                       accessibilityLabel={`${item.igbo}, ${item.english}`}
                       activeOpacity={0.8}
                     >
@@ -716,7 +738,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                 <BounceIn key={i} delay={i * 30}>
                   <TouchableOpacity
                     style={sh.vocabCard}
-                    onPress={() => playSoundFallback(item.igbo)}
+                    onPress={() => { haptics.tapLight(); playSoundFallback(item.igbo); }}
                     accessibilityLabel={`${item.igbo}, ${item.english}`}
                     activeOpacity={0.8}
                   >
@@ -1299,7 +1321,7 @@ const ld = StyleSheet.create({
   example:  { fontSize: FONT.xs, fontStyle: 'italic', marginTop: 3 },
 
   soundBtn: {
-    width: 40, height: 40, borderRadius: 20,
+    width: 48, height: 48, borderRadius: 24,
     alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
@@ -1336,7 +1358,7 @@ const sh = StyleSheet.create({
     marginTop: 2,
   },
   headerRight: { flexDirection: 'row', alignItems: 'center', gap: SPACE.sm },
-  gearBtn: { padding: 4 },
+  gearBtn: { padding: 10, minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
 
   profileRow: { flexDirection: 'row', gap: 6 },
   profilePill: {
@@ -1373,7 +1395,7 @@ const sh = StyleSheet.create({
     shadowRadius: 18,
     elevation: 10,
   },
-  navBtn: { flex: 1, paddingVertical: 8, alignItems: 'center', gap: 2 },
+  navBtn: { flex: 1, paddingVertical: 10, alignItems: 'center', gap: 2, minHeight: 54 },
   navIcon: { fontSize: 22 },
   navLabel: {
     fontSize: FONT.xs,
