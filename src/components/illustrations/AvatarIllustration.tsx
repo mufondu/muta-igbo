@@ -63,9 +63,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'transparent',
     overflow: 'visible',
+    borderWidth: 0,
+    elevation: 0,
+    shadowOpacity: 0,
   },
   image: {
-    width: '122%',
-    height: '122%',
+    width: '124%',
+    height: '124%',
   },
 });

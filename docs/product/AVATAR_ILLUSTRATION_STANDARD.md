@@ -36,3 +36,16 @@ Assets:
 ## Product Rule
 
 Keep the app character names as-is. These files are visual avatar assets and should be reusable in the future MekaOps Edu Illustration Engine.
+
+## Rendering Rule
+
+Transparent avatar images should blend directly into the app card. Do not place them inside a visible inner tile.
+
+Required rendering:
+
+- backgroundColor: transparent
+- overflow: visible
+- resizeMode: contain
+- no inner avatar border
+- no inner white square
+- no cover crop
