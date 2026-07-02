@@ -210,7 +210,7 @@ export default function LessonIllustration({
           {fallback}
         </Text>
       ) : (
-        <Image source={source} style={[styles.image, { backgroundColor: imageBackgroundColor }]} resizeMode={imageResizeMode} />
+        <Image source={source} style={[styles.image, animalAsset && styles.animalImage, { backgroundColor: imageBackgroundColor }]} resizeMode={imageResizeMode} />
       )}
     </View>
   );
@@ -227,6 +227,10 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
+  },
+  animalImage: {
+    width: '112%',
+    height: '112%',
   },
   fallbackText: {
     color: '#171611',
