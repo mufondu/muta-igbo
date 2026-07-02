@@ -137,6 +137,10 @@ function hasCustomAsset(assetKey?: string): boolean {
   return Boolean(assetKey && CUSTOM_ILLUSTRATIONS[assetKey]);
 }
 
+function isAnimalAsset(assetKey?: string): boolean {
+  return Boolean(assetKey && assetKey.startsWith('animals:'));
+}
+
 function isBodyAsset(assetKey?: string): boolean {
   return Boolean(assetKey && assetKey.startsWith('body:'));
 }
@@ -154,10 +158,11 @@ export default function LessonIllustration({
     : undefined;
 
   const bodyAsset = isBodyAsset(entry?.assetKey);
+  const animalAsset = isAnimalAsset(entry?.assetKey);
   const label = entry?.label || english || igbo;
   const fallback = entry?.fallback || label;
-  const imageResizeMode = bodyAsset ? 'contain' : 'cover';
-  const imageBackgroundColor = bodyAsset ? '#FFF8EE' : 'transparent';
+  const imageResizeMode = bodyAsset || animalAsset ? 'contain' : 'cover';
+  const imageBackgroundColor = animalAsset ? '#FFFFFF' : bodyAsset ? '#FFF8EE' : 'transparent';
 
   return (
     <View
@@ -167,7 +172,7 @@ export default function LessonIllustration({
           width: size,
           height: size,
           borderRadius: Math.round(size * 0.32),
-          backgroundColor,
+          backgroundColor: animalAsset ? '#FFFFFF' : backgroundColor,
         },
       ]}
     >
