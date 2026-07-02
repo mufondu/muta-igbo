@@ -101,23 +101,31 @@ function FriendCard({
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={0.85}
+      activeOpacity={0.88}
       style={{
         width,
-        padding: 12,
-        borderRadius: 24,
-        backgroundColor: selected ? '#D8FFE9' : '#FFFFFF',
+        minHeight: 136,
+        paddingVertical: 10,
+        paddingHorizontal: 8,
+        borderRadius: 22,
+        backgroundColor: selected ? '#CFFFE3' : '#F4FFF8',
         borderWidth: selected ? 2 : 1,
-        borderColor: selected ? COLOR.green : 'rgba(0,0,0,0.10)',
+        borderColor: selected ? '#00D879' : 'rgba(0, 96, 57, 0.18)',
         alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
-      <AvatarIllustration avatar={friend.id} size={74} />
-      <Text style={{ marginTop: 8, fontWeight: '900', color: COLOR.text }}>{friend.name}</Text>
-      <Text style={{ marginTop: 2, fontSize: 12, color: COLOR.muted, textAlign: 'center' }}>{friend.subtitle}</Text>
+      <AvatarIllustration avatar={friend.id} size={62} />
+      <Text style={{ marginTop: 4, fontWeight: '900', color: COLOR.text, fontSize: 17, textAlign: 'center' }}>
+        {friend.name}
+      </Text>
+      <Text style={{ marginTop: 1, fontSize: 11, color: COLOR.muted, textAlign: 'center' }} numberOfLines={1}>
+        {friend.subtitle}
+      </Text>
     </TouchableOpacity>
   );
 }
+
 
 export function ProfileImage({ avatar, size = 40 }: { avatar: string; size?: number }) {
   return <AvatarIllustration avatar={avatar} size={size} />;
@@ -131,8 +139,8 @@ export default function OnboardingScreen({ onComplete }: Props) {
   const [childName, setChildName]     = useState('');
   const [selectedFriend, setFriend]   = useState<MutaFriendId>('ada');
 
-  const horizontalPadding = SPACE.lg * 2;
-  const cardGap = 12;
+  const horizontalPadding = SPACE.md * 2;
+  const cardGap = 10;
   const columns = width >= 760 ? 4 : 2;
   const friendCardWidth = Math.floor((width - horizontalPadding - (cardGap * (columns - 1))) / columns);
   const selectedFriendProfile = getMutaFriend(selectedFriend);

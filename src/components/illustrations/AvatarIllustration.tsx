@@ -34,6 +34,19 @@ export function getAvatarIllustrationSource(avatar?: string, name?: string): Ima
 
   if (AVATARS[key]) return AVATARS[key];
 
+  const appNameMap: Record<string, ImageSourcePropType> = {
+    ada: AVATARS.adaeze,
+    obi: AVATARS.kene,
+    amara: AVATARS.adaeze,
+    ebube: AVATARS.ebube,
+    kene: AVATARS.kene,
+    kaira: AVATARS.kaira,
+    zara: AVATARS.chizara,
+    chizara: AVATARS.chizara,
+  };
+
+  if (appNameMap[key]) return appNameMap[key];
+
   // Keep existing app character names while mapping them to approved art.
   if (key.includes('amara')) return AVATARS.adaeze;
   if (key.includes('obi')) return AVATARS.kene;
@@ -68,7 +81,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
   },
   image: {
-    width: '132%',
-    height: '132%',
+    width: '112%',
+    height: '112%',
   },
 });
