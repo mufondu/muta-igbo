@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AvatarIllustration from '../components/illustrations/AvatarIllustration';
-import { Profile, createProfile, useApp } from '../hooks/useAppState';
+import { Profile, useApp } from '../hooks/useAppState';
 import { COLOR, FONT, RADIUS, SPACE } from '../utils/tokens';
 
 
@@ -62,7 +62,23 @@ function getMutaFriend(id: MutaFriendId): MutaFriend {
 }
 
 function makeProfile(name: string, avatar: MutaFriendId): Profile {
-  return createProfile(name, avatar);
+  const now = new Date().toISOString();
+
+  const profile = {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    name,
+    avatar,
+    streak: 0,
+    lastActive: now,
+    levelProgress: {},
+    quizBest: 0,
+    stars: 0,
+    badges: [],
+    completedLessons: [],
+    createdAt: now,
+  };
+
+  return profile as Profile;
 }
 
 function StepDots({ current, total }: { current: number; total: number }) {
@@ -218,32 +234,72 @@ export default function OnboardingScreen({ onComplete }: Props) {
 
   if (step === 'terms') {
     return (
-      <View style={s.root}>
-        <StepDots current={1} total={2} />
-        <Text style={s.stepTitle}>Before you continue</Text>
-        <Text style={s.stepSub}>Please read and agree as the parent or guardian</Text>
-        <ScrollView style={s.termsBox} contentContainerStyle={{ padding: SPACE.md }}>
-          <Text style={s.termsPara}>By continuing, you confirm that:</Text>
-          <Text style={s.termsPara}>{'• '}You are the parent or legal guardian of the child or children who will use this app.</Text>
-          <Text style={s.termsPara}>{'• '}You agree to our Terms and Conditions, Privacy Policy, and Subscription Terms.</Text>
-          <Text style={s.termsPara}>{'• '}All profile data is stored locally on this device. We do not collect personal information from children.</Text>
-          <Text style={s.termsPara}>{'• '}Subscription purchases are made by you as an adult through your app store account.</Text>
-          <Text style={s.termsPara}>{'• '}You can delete all data at any time from Settings.</Text>
-        </ScrollView>
-        <TouchableOpacity style={s.checkRow} onPress={() => setAgreed(a => !a)} activeOpacity={0.8}>
-          <View style={[s.checkbox, agreed && s.checkboxActive]}>
-            {agreed && <Text style={s.checkmark}>✓</Text>}
+      <SafeAreaView style={s.termsRoot}>
+        <ScrollView contentContainerStyle={s.termsScroll} showsVerticalScrollIndicator={false}>
+          <View style={s.termsHero}>
+            <View style={s.termsBadge}>
+              <Text style={s.termsBadgeText}>PARENT CHECKPOINT</Text>
+            </View>
+
+            <View style={s.termsAvatarStack}>
+              <AvatarIllustration avatar="adaeze" size={92} />
+              <AvatarIllustration avatar="ekene" size={104} />
+              <AvatarIllustration avatar="kaira" size={92} />
+            </View>
+
+            <Text style={s.termsTitle}>Before the adventure begins</Text>
+            <Text style={s.termsSub}>
+              Review the parent guidance, agree to the basics, then create your child profile.
+            </Text>
           </View>
-          <Text style={s.checkLabel}>I am a parent/guardian and I agree</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[s.primaryBtn, !agreed && s.primaryBtnDisabled]}
-          onPress={() => agreed && setStep('profiles')}
-          activeOpacity={agreed ? 0.85 : 1}
-        >
-          <Text style={s.primaryBtnText}>Continue ›</Text>
-        </TouchableOpacity>
-      </View>
+
+          <View style={s.termsCardPremium}>
+            <View style={s.termsRow}>
+              <Text style={s.termsIcon}>✓</Text>
+              <View style={s.termsCopy}>
+                <Text style={s.termsRowTitle}>Child-first learning</Text>
+                <Text style={s.termsRowText}>Mụta Igbo is designed as a kid-friendly language practice game.</Text>
+              </View>
+            </View>
+
+            <View style={s.termsRow}>
+              <Text style={s.termsIcon}>✓</Text>
+              <View style={s.termsCopy}>
+                <Text style={s.termsRowTitle}>Parent-managed setup</Text>
+                <Text style={s.termsRowText}>A parent or guardian should create and manage each child profile.</Text>
+              </View>
+            </View>
+
+            <View style={s.termsRow}>
+              <Text style={s.termsIcon}>✓</Text>
+              <View style={s.termsCopy}>
+                <Text style={s.termsRowTitle}>Respectful privacy</Text>
+                <Text style={s.termsRowText}>Use the app with care and review Terms and Privacy before continuing.</Text>
+              </View>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={[s.agreeCard, agreed && s.agreeCardActive]}
+            onPress={() => setAgreed(!agreed)}
+            activeOpacity={0.88}
+          >
+            <View style={[s.agreeCheck, agreed && s.agreeCheckActive]}>
+              <Text style={s.agreeCheckText}>{agreed ? '✓' : ''}</Text>
+            </View>
+            <Text style={s.agreeText}>I agree to the Terms and Privacy Policy</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[s.welcomePrimaryBtn, !agreed && s.finishBtnDisabled]}
+            onPress={() => agreed && setStep('profiles')}
+            activeOpacity={0.9}
+          >
+            <Text style={s.welcomePrimaryText}>Continue to Profile Setup</Text>
+            <Text style={s.welcomePrimaryArrow}>›</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 
@@ -331,6 +387,142 @@ export default function OnboardingScreen({ onComplete }: Props) {
 
 
 const s = StyleSheet.create({
+  termsRoot: {
+    flex: 1,
+    backgroundColor: COLOR.forestDark,
+  },
+  termsScroll: {
+    flexGrow: 1,
+    paddingHorizontal: SPACE.md,
+    paddingTop: 28,
+    paddingBottom: 30,
+    justifyContent: 'center',
+  },
+  termsHero: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  termsBadge: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: 'rgba(212, 161, 42, 0.14)',
+    borderWidth: 1,
+    borderColor: 'rgba(212, 161, 42, 0.34)',
+    marginBottom: 14,
+  },
+  termsBadgeText: {
+    color: COLOR.gold,
+    fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 1.8,
+  },
+  termsAvatarStack: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 112,
+    marginBottom: 10,
+  },
+  termsTitle: {
+    color: '#FFF8DF',
+    fontSize: 32,
+    lineHeight: 38,
+    fontWeight: '900',
+    textAlign: 'center',
+    letterSpacing: -0.5,
+  },
+  termsSub: {
+    color: 'rgba(255, 248, 223, 0.74)',
+    fontSize: 15,
+    lineHeight: 23,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginTop: 8,
+    paddingHorizontal: 12,
+  },
+  termsCardPremium: {
+    padding: 16,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 248, 223, 0.09)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 248, 223, 0.16)',
+    marginBottom: 14,
+  },
+  termsRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 14,
+  },
+  termsIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0, 216, 121, 0.20)',
+    color: '#7CFFB4',
+    textAlign: 'center',
+    lineHeight: 28,
+    fontSize: 16,
+    fontWeight: '900',
+    marginRight: 10,
+  },
+  termsCopy: {
+    flex: 1,
+  },
+  termsRowTitle: {
+    color: '#FFF8DF',
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  termsRowText: {
+    color: 'rgba(255, 248, 223, 0.72)',
+    fontSize: 13,
+    lineHeight: 19,
+    fontWeight: '700',
+    marginTop: 3,
+  },
+  agreeCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 14,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255, 248, 223, 0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 248, 223, 0.16)',
+    marginBottom: 14,
+  },
+  agreeCardActive: {
+    backgroundColor: 'rgba(212, 161, 42, 0.16)',
+    borderColor: COLOR.gold,
+  },
+  agreeCheck: {
+    width: 28,
+    height: 28,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 248, 223, 0.10)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 248, 223, 0.22)',
+    marginRight: 10,
+  },
+  agreeCheckActive: {
+    backgroundColor: COLOR.gold,
+    borderColor: COLOR.gold,
+  },
+  agreeCheckText: {
+    color: COLOR.forestDark,
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  agreeText: {
+    flex: 1,
+    color: '#FFF8DF',
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: '800',
+  },
+
   avatarRoster: {
     paddingVertical: 8,
     paddingHorizontal: 2,
