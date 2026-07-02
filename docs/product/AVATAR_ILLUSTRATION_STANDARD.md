@@ -2,21 +2,37 @@
 
 Approved for Mụta Igbo and future MekaOps Edu products.
 
-## Style
+## Approved Style
 
 - Premium 3D cartoon Igbo kid avatars
-- Backgroundless / transparent-safe image treatment
-- No labels embedded in the image
+- Backgroundless / transparent-safe treatment
+- No embedded labels
+- No checkerboard/grid source sheets in app
+- One character per file
 - No rounded-square crop inside the asset
-- No overlapping image slices
-- App UI owns the container
-- Avatar image uses contain, not cover
-- Wrapper uses overflow visible where possible
+- App UI owns the avatar container
+- Avatar images use contain, not cover
+- Wrapper uses overflow visible
 
-## Approved Avatar Asset Location
+## Approved Named Avatar Assets
+
+Location:
 
 assets/illustrations/custom/avatars/
 
-## Current Product Rule
+Assets:
 
-Keep the app character names as-is. These images are visual avatar assets only.
+- adaeze.png
+- chizara.png
+- kaira.png
+- kamsi.png
+- natachi.png
+- onyeka.png
+- somto.png
+- emeka.png
+- chidozie.png
+- ifeanyi.png
+
+## Product Rule
+
+Keep the app character names as-is. These files are visual avatar assets and should be reusable in the future MekaOps Edu Illustration Engine.

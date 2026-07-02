@@ -8,14 +8,16 @@ type Props = {
 };
 
 const AVATARS: Record<string, ImageSourcePropType> = {
-  chinenye: require('../../../assets/illustrations/custom/avatars/chinenye.png'),
-  ikenna: require('../../../assets/illustrations/custom/avatars/ikenna.png'),
-  adanna: require('../../../assets/illustrations/custom/avatars/adanna.png'),
+  adaeze: require('../../../assets/illustrations/custom/avatars/adaeze.png'),
+  chizara: require('../../../assets/illustrations/custom/avatars/chizara.png'),
+  kaira: require('../../../assets/illustrations/custom/avatars/kaira.png'),
+  kamsi: require('../../../assets/illustrations/custom/avatars/kamsi.png'),
+  natachi: require('../../../assets/illustrations/custom/avatars/natachi.png'),
+  onyeka: require('../../../assets/illustrations/custom/avatars/onyeka.png'),
+  somto: require('../../../assets/illustrations/custom/avatars/somto.png'),
   emeka: require('../../../assets/illustrations/custom/avatars/emeka.png'),
-  uche: require('../../../assets/illustrations/custom/avatars/uche.png'),
-  kene: require('../../../assets/illustrations/custom/avatars/kene.png'),
-  zane: require('../../../assets/illustrations/custom/avatars/zane.png'),
-  nneka: require('../../../assets/illustrations/custom/avatars/nneka.png'),
+  chidozie: require('../../../assets/illustrations/custom/avatars/chidozie.png'),
+  ifeanyi: require('../../../assets/illustrations/custom/avatars/ifeanyi.png'),
 };
 
 function normalize(value?: string): string {
@@ -30,20 +32,19 @@ function normalize(value?: string): string {
 export function getAvatarIllustrationSource(avatar?: string, name?: string): ImageSourcePropType {
   const key = normalize(avatar || name);
 
-  const direct = AVATARS[key];
-  if (direct) return direct;
+  if (AVATARS[key]) return AVATARS[key];
 
-  // Keep existing app names, only map their art direction.
-  if (key.includes('amara')) return AVATARS.chinenye;
-  if (key.includes('obi')) return AVATARS.ikenna;
+  // Keep existing app character names while mapping them to approved art.
+  if (key.includes('amara')) return AVATARS.adaeze;
+  if (key.includes('obi')) return AVATARS.emeka;
 
-  // Existing emoji/profile fallbacks.
-  if (avatar?.includes('👧')) return AVATARS.adanna;
-  if (avatar?.includes('👦')) return AVATARS.ikenna;
-  if (avatar?.includes('girl')) return AVATARS.adanna;
-  if (avatar?.includes('boy')) return AVATARS.ikenna;
+  // Existing profile/avatar fallback support.
+  if (avatar?.includes('👧')) return AVATARS.kaira;
+  if (avatar?.includes('👦')) return AVATARS.emeka;
+  if (key.includes('girl')) return AVATARS.kaira;
+  if (key.includes('boy')) return AVATARS.emeka;
 
-  return AVATARS.ikenna;
+  return AVATARS.emeka;
 }
 
 export default function AvatarIllustration({ avatar, name, size = 56 }: Props) {
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     overflow: 'visible',
   },
   image: {
-    width: '118%',
-    height: '118%',
+    width: '122%',
+    height: '122%',
   },
 });
