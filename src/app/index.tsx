@@ -43,6 +43,7 @@ const LEVEL_ICONS: Record<string, any> = {
   '4A': require('../../assets/illustrations/custom/levels/body-family.png'),
   '3A': require('../../assets/illustrations/custom/levels/animals-nature.png'),
   '2A': require('../../assets/illustrations/custom/levels/verbs-actions.png'),
+  '1A': require('../../assets/illustrations/custom/levels/grammar-language.png'),
 };
 
 // ─── Audio (optional, gracefully degraded) ───────────────────────────────────
