@@ -53,5 +53,6 @@ export const CUSTOM_ILLUSTRATIONS: Record<string, ImageSourcePropType> = {
   'tenses:future': require('../../../assets/illustrations/custom/tenses/future.png'),
 
   // levels
+  'levels:alphabet-sounds': require('../../../assets/illustrations/custom/levels/alphabet-sounds.png'),
 
 };
