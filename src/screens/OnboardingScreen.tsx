@@ -48,13 +48,13 @@ const BOY_IMG = require('../../assets/illustrations/custom/avatars/ekene.png');
 const MUTA_FRIENDS: MutaFriend[] = [
   { id: 'adaeze', name: 'Adaeze', subtitle: 'Kind and curious', description: 'Kind and curious,' },
   { id: 'kaira', name: 'Kaira', subtitle: 'Sound star', description: 'Kaira loves sounds and songs.' },
-  { id: 'natachi', name: 'Natachi', subtitle: 'Animal guide', description: 'Natachi loves animals and nature.' },
+  { id: 'natachi', name: 'Natachi', subtitle: 'Animal guide', description: 'Chizara enjoys reading.' },
   { id: 'ebube', name: 'Ebube', subtitle: 'Bright helper', description: 'Ebube is ready to help.' },
   { id: 'ekene', name: 'Ekene', subtitle: 'Word explorer', description: 'Ekene loves discovering new words.' },
   { id: 'jc', name: 'JC', subtitle: 'Brave learner', description: 'JC learns with courage.' },
   { id: 'somto', name: 'Somto', subtitle: 'Story friend', description: 'Somto enjoys stories and games.' },
   { id: 'onyeka', name: 'Onyeka', subtitle: 'Culture buddy', description: 'Onyeka loves culture and family.' },
-  { id: 'chizara', name: 'Chizara', subtitle: 'Reading friend', description: 'Chizara enjoys reading.' },
+  { id: 'chizara', name: 'Chizara', subtitle: 'Reading friend', description: 'Natachi loves animals and nature.' },
   { id: 'kamsi', name: 'Kamsi', subtitle: 'Little helper', description: 'Kamsi is a cheerful helper.' },
 ]
 
