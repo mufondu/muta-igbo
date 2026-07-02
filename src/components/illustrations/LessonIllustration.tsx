@@ -229,8 +229,8 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   animalImage: {
-    width: '112%',
-    height: '112%',
+    width: '120%',
+    height: '120%',
   },
   fallbackText: {
     color: '#171611',
