@@ -235,3 +235,45 @@ Rules:
 - No embedded text inside icons.
 - App renders level names separately.
 - Icons should feel tactile, bright, warm, and kid-friendly.
+
+
+## Approved Animal Pack
+
+These animal illustrations are part of the future MekaOps Edu Illustration Engine.
+
+Location:
+
+assets/illustrations/custom/animals/
+
+Approved assets:
+
+- dog.png
+- cat.png
+- chicken.png
+- goat.png
+- fish.png
+- bird.png
+- leopard.png
+- lion.png
+- elephant.png
+- rabbit.png
+- rat.png
+- python.png
+- tortoise.png
+- grasshopper.png
+
+Approved style:
+
+- Premium 3D cartoon animal
+- Clean white or transparent background
+- No cream mini-card background
+- No border
+- No embedded Igbo or English text
+- No emoji fallback
+- Centered subject with safe padding
+- Blends cleanly into white app lesson cards
+- Reusable across future MekaOps Edu products
+
+Product rule:
+
+The lesson card owns the background. The animal asset contains only the animal subject.
