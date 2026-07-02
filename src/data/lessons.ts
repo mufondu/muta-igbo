@@ -273,7 +273,9 @@ const LEVEL_3A: Level = {
         { igbo: 'Mbe', english: 'Tortoise', emoji: '🐢' },
         { igbo: 'Nnụnụ', english: 'Bird (general)', emoji: '🦅' },
         { igbo: 'Ụkpana', english: 'Grasshopper', emoji: '🦗' },
-      ],
+      
+      { igbo: 'Oke', english: 'Rat', emoji: 'Rat' },
+      { igbo: 'Eke', english: 'Python', emoji: 'Python' },],
     },
     {
       id: 'colours', title: 'Colours', igboTitle: 'Agba',

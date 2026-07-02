@@ -391,7 +391,7 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
           <BounceIn key={level.id} delay={i * 55}>
             <TouchableOpacity
               style={[sh.levelCard, isLocked && sh.levelCardLocked]}
-              onPress={() => { haptics.tapMedium(); isLocked ? setGate('premium') : openInner('levelDetail', level.id); }}
+              onPress={() => { haptics.tapMedium(); isLocked ? openInner('premium') : openInner('levelDetail', level.id); }}
               activeOpacity={0.8}
             >
               <View style={[sh.levelPip, { backgroundColor: lc.bg }]}>

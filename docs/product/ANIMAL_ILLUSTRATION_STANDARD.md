@@ -1,23 +1,22 @@
 # Mụta Igbo Animal Illustration Standard
 
-Approved animal lesson-card art direction for Level 5.
+Animal lesson-card art uses tactile 3D toy-style animals.
 
-## Production Rules
+## Production Rule
 
-- Tactile 3D toy animal style
-- Warm cream rounded tile
-- One animal per image
-- No embedded text inside image
-- No emoji or generic icon fallback
-- App renders Igbo and English labels separately
-- Reusable in the MekaOps Edu Illustration System
+- Animal images should be animal-only, preferably transparent.
+- The white lesson card owns the background.
+- No embedded text.
+- No emoji as final art.
+- No cream mini-card or double-frame inside the image.
+- Use contain rendering so the full animal is visible.
 
-## Current Assets
+## Approved Add-on Animals
 
-- dog.png
-- cat.png
-- chicken.png
-- goat.png
-- fish.png
-- bird.png
-- leopard.png
+- lion.png
+- elephant.png
+- rabbit.png
+- rat.png
+- python.png
+- tortoise.png
+- grasshopper.png

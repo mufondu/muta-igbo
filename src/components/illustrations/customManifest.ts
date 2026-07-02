@@ -35,6 +35,13 @@ export const CUSTOM_ILLUSTRATIONS: Record<string, ImageSourcePropType> = {
   'animals:fish': require('../../../assets/illustrations/custom/animals/fish.png'),
   'animals:bird': require('../../../assets/illustrations/custom/animals/bird.png'),
   'animals:leopard': require('../../../assets/illustrations/custom/animals/leopard.png'),
+  'animals:lion': require('../../../assets/illustrations/custom/animals/lion.png'),
+  'animals:elephant': require('../../../assets/illustrations/custom/animals/elephant.png'),
+  'animals:rabbit': require('../../../assets/illustrations/custom/animals/rabbit.png'),
+  'animals:rat': require('../../../assets/illustrations/custom/animals/rat.png'),
+  'animals:python': require('../../../assets/illustrations/custom/animals/python.png'),
+  'animals:tortoise': require('../../../assets/illustrations/custom/animals/tortoise.png'),
+  'animals:grasshopper': require('../../../assets/illustrations/custom/animals/grasshopper.png'),
 
   // home
 

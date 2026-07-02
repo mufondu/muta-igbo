@@ -12,7 +12,7 @@ PACKS = {
         "head", "eye", "eyebrow", "mouth", "hand", "leg", "ear", "nose", "toes", "tongue", "teeth",
     ],
     "animals": [
-        "dog", "cat", "chicken", "goat", "fish", "bird", "leopard",
+        "dog", "cat", "chicken", "goat", "fish", "bird", "leopard", "lion", "elephant", "rabbit", "rat", "python", "tortoise", "grasshopper",
     ],
     "home": [
         "house", "water", "book",
