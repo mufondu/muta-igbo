@@ -21,6 +21,8 @@ type Step = 'welcome' | 'profile' | 'age' | 'done';
 
 export function ProfileImage({ avatar, size = 40 }: { avatar: string; size?: number }) {
   return <AvatarIllustration avatar={avatar} size={size} />;
+}: { avatar: string; size?: number }) {
+  return <AvatarIllustration avatar={avatar} size={size} />;
 }
 
 export default function OnboardingScreen({ onComplete }: Props) {
