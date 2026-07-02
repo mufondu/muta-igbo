@@ -110,6 +110,14 @@ function findIllustration(igbo: string, english: string): IllustrationEntry | un
   const combined = normalizedIgbo + " " + normalizedEnglish;
 
   const animalByEnglish: Record<string, string> = {
+    dog: 'animals:dog',
+    cat: 'animals:cat',
+    chicken: 'animals:chicken',
+    goat: 'animals:goat',
+    fish: 'animals:fish',
+    bird: 'animals:bird',
+    leopard: 'animals:leopard',
+    tiger: 'animals:leopard',
     lion: 'animals:lion',
     elephant: 'animals:elephant',
     rabbit: 'animals:rabbit',
@@ -121,6 +129,11 @@ function findIllustration(igbo: string, english: string): IllustrationEntry | un
 
   for (const animalName of Object.keys(animalByEnglish)) {
     if (normalizedEnglish.includes(animalName)) {
+      return ILLUSTRATIONS.find(x => x.assetKey === animalByEnglish[animalName]);
+    }
+  }
+
+  if (normalizedEnglish.includes(animalName)) {
       return ILLUSTRATIONS.find(x => x.assetKey === animalByEnglish[animalName]);
     }
   }
