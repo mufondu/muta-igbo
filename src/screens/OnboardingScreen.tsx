@@ -153,31 +153,76 @@ export default function OnboardingScreen({ onComplete }: Props) {
 
   if (step === 'welcome') {
     return (
-      <View style={s.root}>
-        <View style={s.heroArea}>
-          <View style={s.heroKids}>
-            <View style={s.heroKidWrap}>
-              <Image source={GIRL_IMG} style={s.heroKidImg} resizeMode="contain" />
+      <SafeAreaView style={s.welcomeRoot}>
+        <ScrollView contentContainerStyle={s.welcomeScroll} showsVerticalScrollIndicator={false}>
+          <View style={s.welcomeHero}>
+            <View style={s.heroBadge}>
+              <Text style={s.heroBadgeText}>MỤTA IGBO</Text>
             </View>
-            <View style={s.heroKidWrap}>
-              <Image source={BOY_IMG}  style={s.heroKidImg} resizeMode="contain" />
+
+            <View style={s.heroAvatarRow}>
+              <View style={[s.heroAvatarShell, s.heroAvatarSmall]}>
+                <AvatarIllustration avatar="kaira" size={92} />
+              </View>
+              <View style={[s.heroAvatarShell, s.heroAvatarMain]}>
+                <AvatarIllustration avatar="ekene" size={124} />
+              </View>
+              <View style={[s.heroAvatarShell, s.heroAvatarSmall]}>
+                <AvatarIllustration avatar="somto" size={92} />
+              </View>
+            </View>
+
+            <Text style={s.welcomeTitle}>Start your child’s Igbo adventure</Text>
+            <Text style={s.welcomeSub}>
+              A playful, story-rich learning game for Central Igbo and Enuani practice.
+            </Text>
+
+            <View style={s.heroStatsRow}>
+              <View style={s.heroStatPill}>
+                <Text style={s.heroStatIcon}>🎧</Text>
+                <Text style={s.heroStatText}>Listen</Text>
+              </View>
+              <View style={s.heroStatPill}>
+                <Text style={s.heroStatIcon}>🎮</Text>
+                <Text style={s.heroStatText}>Play</Text>
+              </View>
+              <View style={s.heroStatPill}>
+                <Text style={s.heroStatIcon}>🌍</Text>
+                <Text style={s.heroStatText}>Culture</Text>
+              </View>
             </View>
           </View>
-          <Text style={s.heroTitle}>Welcome to{`\n`}Mụta Igbo</Text>
-          <Text style={s.heroSub}>The fun way for children to learn{`\n`}Central Igbo</Text>
-        </View>
-        <View style={s.card}>
-          <Text style={s.cardTitle}>For Parents and Guardians</Text>
-          <Text style={s.cardBody}>
-            {'✅ Review and agree to our Terms and Privacy Policy\n'}
-            {'✅ Create a profile for each child\n'}
-            {'✅ Manage subscriptions from Settings'}
+
+          <View style={s.parentCardPremium}>
+            <View style={s.parentCardHeader}>
+              <Text style={s.parentCardKicker}>FOR PARENTS</Text>
+              <Text style={s.parentCardTitle}>Set up once. Let them learn daily.</Text>
+            </View>
+
+            <View style={s.parentBullet}>
+              <Text style={s.parentCheck}>✓</Text>
+              <Text style={s.parentBulletText}>Review terms and privacy before setup</Text>
+            </View>
+            <View style={s.parentBullet}>
+              <Text style={s.parentCheck}>✓</Text>
+              <Text style={s.parentBulletText}>Create child profiles with learning friends</Text>
+            </View>
+            <View style={s.parentBullet}>
+              <Text style={s.parentCheck}>✓</Text>
+              <Text style={s.parentBulletText}>Track progress, streaks, quiz wins, and practice</Text>
+            </View>
+          </View>
+
+          <TouchableOpacity style={s.welcomePrimaryBtn} onPress={() => setStep('terms')} activeOpacity={0.9}>
+            <Text style={s.welcomePrimaryText}>Get Started</Text>
+            <Text style={s.welcomePrimaryArrow}>›</Text>
+          </TouchableOpacity>
+
+          <Text style={s.welcomeFinePrint}>
+            Built for children learning Igbo with confidence, joy, and family support.
           </Text>
-        </View>
-        <TouchableOpacity style={s.primaryBtn} onPress={() => setStep('terms')} activeOpacity={0.85}>
-          <Text style={s.primaryBtnText}>Get Started ›</Text>
-        </TouchableOpacity>
-      </View>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 
@@ -293,6 +338,192 @@ export default function OnboardingScreen({ onComplete }: Props) {
 
 
 const s = StyleSheet.create({
+  welcomeRoot: {
+    flex: 1,
+    backgroundColor: COLOR.forestDark,
+  },
+  welcomeScroll: {
+    flexGrow: 1,
+    paddingHorizontal: SPACE.md,
+    paddingTop: 28,
+    paddingBottom: 30,
+    justifyContent: 'center',
+  },
+  welcomeHero: {
+    alignItems: 'center',
+    paddingTop: 18,
+    paddingBottom: 22,
+  },
+  heroBadge: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: 'rgba(212, 161, 42, 0.14)',
+    borderWidth: 1,
+    borderColor: 'rgba(212, 161, 42, 0.36)',
+    marginBottom: 18,
+  },
+  heroBadgeText: {
+    color: COLOR.gold,
+    fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 2.2,
+  },
+  heroAvatarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 142,
+    marginBottom: 18,
+  },
+  heroAvatarShell: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 248, 223, 0.08)',
+    borderWidth: 2,
+    borderColor: 'rgba(212, 161, 42, 0.44)',
+    overflow: 'visible',
+  },
+  heroAvatarMain: {
+    width: 126,
+    height: 126,
+    borderRadius: 999,
+    marginHorizontal: -4,
+    zIndex: 2,
+    backgroundColor: 'rgba(212, 161, 42, 0.16)',
+  },
+  heroAvatarSmall: {
+    width: 92,
+    height: 92,
+    borderRadius: 999,
+    opacity: 0.96,
+  },
+  welcomeTitle: {
+    color: '#FFF8DF',
+    fontSize: 38,
+    lineHeight: 44,
+    fontWeight: '900',
+    textAlign: 'center',
+    letterSpacing: -0.8,
+    marginHorizontal: 8,
+  },
+  welcomeSub: {
+    color: 'rgba(255, 248, 223, 0.76)',
+    fontSize: 17,
+    lineHeight: 25,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginTop: 12,
+    marginHorizontal: 16,
+  },
+  heroStatsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 18,
+  },
+  heroStatPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255, 248, 223, 0.10)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 248, 223, 0.14)',
+  },
+  heroStatIcon: {
+    fontSize: 15,
+    marginRight: 5,
+  },
+  heroStatText: {
+    color: '#FFF8DF',
+    fontSize: 12,
+    fontWeight: '900',
+  },
+  parentCardPremium: {
+    padding: 18,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 248, 223, 0.09)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 248, 223, 0.16)',
+    marginTop: 12,
+    marginBottom: 18,
+  },
+  parentCardHeader: {
+    marginBottom: 12,
+  },
+  parentCardKicker: {
+    color: COLOR.gold,
+    fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 1.7,
+    marginBottom: 5,
+  },
+  parentCardTitle: {
+    color: '#FFF8DF',
+    fontSize: 20,
+    lineHeight: 25,
+    fontWeight: '900',
+  },
+  parentBullet: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  parentCheck: {
+    width: 26,
+    height: 26,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0, 216, 121, 0.20)',
+    color: '#7CFFB4',
+    textAlign: 'center',
+    lineHeight: 26,
+    fontSize: 16,
+    fontWeight: '900',
+    marginRight: 10,
+  },
+  parentBulletText: {
+    flex: 1,
+    color: 'rgba(255, 248, 223, 0.84)',
+    fontSize: 15,
+    lineHeight: 21,
+    fontWeight: '700',
+  },
+  welcomePrimaryBtn: {
+    minHeight: 62,
+    borderRadius: 999,
+    backgroundColor: COLOR.gold,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    shadowColor: '#000',
+    shadowOpacity: 0.20,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
+  },
+  welcomePrimaryText: {
+    color: COLOR.forestDark,
+    fontSize: 19,
+    fontWeight: '900',
+  },
+  welcomePrimaryArrow: {
+    color: COLOR.forestDark,
+    fontSize: 32,
+    fontWeight: '900',
+    marginLeft: 8,
+    marginTop: -2,
+  },
+  welcomeFinePrint: {
+    color: 'rgba(255, 248, 223, 0.52)',
+    fontSize: 12,
+    lineHeight: 18,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginTop: 14,
+    paddingHorizontal: 20,
+  },
+
   kicker: {
     color: COLOR.gold,
     fontSize: 13,
