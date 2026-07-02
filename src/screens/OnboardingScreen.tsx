@@ -28,14 +28,16 @@ type Props = {
 type Step = 'welcome' | 'terms' | 'profiles' | 'profile' | 'age' | 'done';
 
 type MutaFriendId =
-  | 'ada'
-  | 'obi'
-  | 'amara'
-  | 'ebube'
-  | 'kene'
+  | 'adaeze'
   | 'kaira'
-  | 'zara'
-  | 'chizara';
+  | 'natachi'
+  | 'ebube'
+  | 'ekene'
+  | 'jc'
+  | 'somto'
+  | 'onyeka'
+  | 'chizara'
+  | 'kamsi';
 
 type MutaFriend = {
   id: MutaFriendId;
@@ -44,18 +46,20 @@ type MutaFriend = {
 };
 
 const GIRL_IMG = require('../../assets/illustrations/custom/avatars/kaira.png');
-const BOY_IMG = require('../../assets/illustrations/custom/avatars/kene.png');
+const BOY_IMG = require('../../assets/illustrations/custom/avatars/ekene.png');
 
 const MUTA_FRIENDS: MutaFriend[] = [
-  { id: 'ada', name: 'Ada', subtitle: 'Kind and curious' },
-  { id: 'obi', name: 'Obi', subtitle: 'Brave learner' },
-  { id: 'amara', name: 'Amara', subtitle: 'Animal guide' },
-  { id: 'ebube', name: 'Ebube', subtitle: 'Bright helper' },
-  { id: 'kene', name: 'Kene', subtitle: 'Word explorer' },
+  { id: 'adaeze', name: 'Adaeze', subtitle: 'Kind and curious' },
   { id: 'kaira', name: 'Kaira', subtitle: 'Sound star' },
-  { id: 'zara', name: 'Zara', subtitle: 'Story friend' },
-  { id: 'chizara', name: 'Chizara', subtitle: 'Culture buddy' },
-];
+  { id: 'natachi', name: 'Natachi', subtitle: 'Animal guide' },
+  { id: 'ebube', name: 'Ebube', subtitle: 'Bright helper' },
+  { id: 'ekene', name: 'Ekene', subtitle: 'Word explorer' },
+  { id: 'jc', name: 'JC', subtitle: 'Brave learner' },
+  { id: 'somto', name: 'Somto', subtitle: 'Story friend' },
+  { id: 'onyeka', name: 'Onyeka', subtitle: 'Culture buddy' },
+  { id: 'chizara', name: 'Chizara', subtitle: 'Reading friend' },
+  { id: 'kamsi', name: 'Kamsi', subtitle: 'Little helper' },
+]
 
 function getMutaFriend(id: MutaFriendId): MutaFriend {
   return MUTA_FRIENDS.find(friend => friend.id === id) || MUTA_FRIENDS[0];
@@ -137,7 +141,7 @@ export default function OnboardingScreen({ onComplete }: Props) {
   const [agreed, setAgreed]           = useState(false);
   const [profiles, setProfiles]       = useState<Profile[]>([]);
   const [childName, setChildName]     = useState('');
-  const [selectedFriend, setFriend]   = useState<MutaFriendId>('ada');
+  const [selectedFriend, setFriend]   = useState<MutaFriendId>('adaeze');
 
   const horizontalPadding = SPACE.md * 2;
   const cardGap = 10;
@@ -150,7 +154,7 @@ export default function OnboardingScreen({ onComplete }: Props) {
       Alert.alert('Name required', 'Please enter at least 2 characters.'); return;
     }
     setProfiles(prev => [...prev, makeProfile(childName.trim(), selectedFriend)]);
-    setChildName(''); setFriend('ada');
+    setChildName(''); setFriend('adaeze');
   }
 
   function finish() {

@@ -9,15 +9,15 @@ type Props = {
 
 const AVATARS: Record<string, ImageSourcePropType> = {
   adaeze: require('../../../assets/illustrations/custom/avatars/adaeze.png'),
-  chizara: require('../../../assets/illustrations/custom/avatars/chizara.png'),
   kaira: require('../../../assets/illustrations/custom/avatars/kaira.png'),
-  kamsi: require('../../../assets/illustrations/custom/avatars/kamsi.png'),
   natachi: require('../../../assets/illustrations/custom/avatars/natachi.png'),
-  onyeka: require('../../../assets/illustrations/custom/avatars/onyeka.png'),
-  somto: require('../../../assets/illustrations/custom/avatars/somto.png'),
-  kene: require('../../../assets/illustrations/custom/avatars/kene.png'),
-  chidozie: require('../../../assets/illustrations/custom/avatars/chidozie.png'),
   ebube: require('../../../assets/illustrations/custom/avatars/ebube.png'),
+  ekene: require('../../../assets/illustrations/custom/avatars/ekene.png'),
+  jc: require('../../../assets/illustrations/custom/avatars/jc.png'),
+  somto: require('../../../assets/illustrations/custom/avatars/somto.png'),
+  onyeka: require('../../../assets/illustrations/custom/avatars/onyeka.png'),
+  chizara: require('../../../assets/illustrations/custom/avatars/chizara.png'),
+  kamsi: require('../../../assets/illustrations/custom/avatars/kamsi.png'),
 };
 
 function normalize(value?: string): string {
@@ -35,29 +35,21 @@ export function getAvatarIllustrationSource(avatar?: string, name?: string): Ima
   if (AVATARS[key]) return AVATARS[key];
 
   const appNameMap: Record<string, ImageSourcePropType> = {
-    ada: AVATARS.adaeze,
-    obi: AVATARS.kene,
-    amara: AVATARS.adaeze,
-    ebube: AVATARS.ebube,
-    kene: AVATARS.kene,
+    adaeze: AVATARS.adaeze,
     kaira: AVATARS.kaira,
-    zara: AVATARS.chizara,
+    natachi: AVATARS.natachi,
+    ebube: AVATARS.ebube,
+    ekene: AVATARS.ekene,
+    jc: AVATARS.jc,
+    somto: AVATARS.somto,
+    onyeka: AVATARS.onyeka,
     chizara: AVATARS.chizara,
+    kamsi: AVATARS.kamsi,
   };
 
   if (appNameMap[key]) return appNameMap[key];
 
-  // Keep existing app character names while mapping them to approved art.
-  if (key.includes('amara')) return AVATARS.adaeze;
-  if (key.includes('obi')) return AVATARS.kene;
-
-  // Existing profile/avatar fallback support.
-  if (avatar?.includes('👧')) return AVATARS.kaira;
-  if (avatar?.includes('👦')) return AVATARS.kene;
-  if (key.includes('girl')) return AVATARS.kaira;
-  if (key.includes('boy')) return AVATARS.kene;
-
-  return AVATARS.kene;
+  return AVATARS.ekene;
 }
 
 export default function AvatarIllustration({ avatar, name, size = 56 }: Props) {
