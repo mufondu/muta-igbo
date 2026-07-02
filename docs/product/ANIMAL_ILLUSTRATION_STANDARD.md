@@ -1,9 +1,13 @@
 # Animal Illustration Standard
 
-Approved animal lesson-card assets use premium 3D cartoon animals with clean transparent/white-safe backgrounds, no embedded text, no tile background, and no neighboring animal overlap.
+Approved animal lesson-card assets use a premium 3D cartoon style with transparent or white-safe backgrounds.
 
-Latest corrected standalone replacements:
+Rules:
 
-- bird.png
-- grasshopper.png
-- tortoise.png
+- Single animal subject only.
+- No embedded text.
+- No phone UI mockups.
+- No cream mini-card or colored tile behind the animal.
+- No neighboring animal overlap from sheet crops.
+- Safe padding so the subject is not cut off in lesson cards.
+- Lesson cards own the visual background.
