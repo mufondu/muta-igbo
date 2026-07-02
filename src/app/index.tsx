@@ -40,6 +40,7 @@ const LEVEL_ICONS: Record<string, any> = {
   '7A': require('../../assets/illustrations/custom/levels/alphabet-sounds.png'),
   '6A': require('../../assets/illustrations/custom/levels/greetings-phrases.png'),
   '5A': require('../../assets/illustrations/custom/levels/numbers-counting.png'),
+  '4A': require('../../assets/illustrations/custom/levels/body-family.png'),
 };
 
 // ─── Audio (optional, gracefully degraded) ───────────────────────────────────
