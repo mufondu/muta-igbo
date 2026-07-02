@@ -34,12 +34,6 @@ const APP_ICON = require('../../assets/muta-logo.png');
 
 const LEVEL_ICONS: Record<string, any> = {
   '7A': require('../../assets/illustrations/custom/levels/alphabet-sounds.png'),
-  '6A': require('../../assets/illustrations/custom/levels/greetings-phrases.png'),
-  '5A': require('../../assets/illustrations/custom/levels/numbers-counting.png'),
-  '4A': require('../../assets/illustrations/custom/levels/body-family.png'),
-  '3A': require('../../assets/illustrations/custom/levels/home-food.png'),
-  '2A': require('../../assets/illustrations/custom/levels/animals-nature.png'),
-  '1A': require('../../assets/illustrations/custom/levels/verbs-actions.png'),
 };
 
 // ─── Audio (optional, gracefully degraded) ───────────────────────────────────
