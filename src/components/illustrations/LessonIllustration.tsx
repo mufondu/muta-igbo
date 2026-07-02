@@ -1,6 +1,5 @@
 import React from 'react';
 import { Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
-import { COLOR, FONT } from '../../utils/tokens';
 import { CUSTOM_ILLUSTRATIONS } from './customManifest';
 
 type Props = {
@@ -13,101 +12,98 @@ type Props = {
 
 type IllustrationEntry = {
   keys: string[];
-  assetKey?: string;
+  assetKey: string;
   fallback: string;
-  label?: string;
+  label: string;
 };
 
 const ILLUSTRATIONS: IllustrationEntry[] = [
-  { keys: ['grandmother', 'nne nne'], assetKey: 'family:grandmother', fallback: 'Grandma', label: 'Grandma' },
-  { keys: ['grandfather', 'nna nna'], assetKey: 'family:grandfather', fallback: 'Grandpa', label: 'Grandpa' },
-  { keys: ['mother', 'nne'], assetKey: 'family:mother', fallback: 'Mother', label: 'Mother' },
-  { keys: ['father', 'nna'], assetKey: 'family:father', fallback: 'Father', label: 'Father' },
+  { keys: ['grandmother', 'nne ochie'], assetKey: 'family:grandmother', fallback: 'Grandma', label: 'Grandma' },
+  { keys: ['grandfather', 'nna ochie'], assetKey: 'family:grandfather', fallback: 'Grandpa', label: 'Grandpa' },
   { keys: ['brother', 'nwanne nwoke'], assetKey: 'family:brother', fallback: 'Brother', label: 'Brother' },
-  { keys: ['sister', 'nwanne nwanyi'], assetKey: 'family:sister', fallback: 'Sister', label: 'Sister' },
+  { keys: ['sister', 'nwanne nwanyi', 'nwanne nwanyị'], assetKey: 'family:sister', fallback: 'Sister', label: 'Sister' },
   { keys: ['children', 'ụmụ', 'umu'], assetKey: 'family:children', fallback: 'Children', label: 'Children' },
   { keys: ['child', 'nwa'], assetKey: 'family:child', fallback: 'Child', label: 'Child' },
-  { keys: ['uncle'], assetKey: 'family:uncle', fallback: 'Uncle', label: 'Uncle' },
-  { keys: ['aunt'], assetKey: 'family:aunt', fallback: 'Aunt', label: 'Aunt' },
+  { keys: ['uncle', 'nwanne nna', 'nwanne nne'], assetKey: 'family:uncle', fallback: 'Uncle', label: 'Uncle' },
+  { keys: ['aunt', 'nwanne nne', 'nwanne nna'], assetKey: 'family:aunt', fallback: 'Aunt', label: 'Aunt' },
   { keys: ['cousin', 'ibe'], assetKey: 'family:cousin', fallback: 'Cousin', label: 'Cousin' },
+  { keys: ['mother', 'mum', 'nne'], assetKey: 'family:mother', fallback: 'Mother', label: 'Mother' },
+  { keys: ['father', 'dad', 'nna'], assetKey: 'family:father', fallback: 'Father', label: 'Father' },
 
   { keys: ['head', 'isi'], assetKey: 'body:head', fallback: 'Head', label: 'Head' },
   { keys: ['eyebrow', 'eyebrows', 'nku anya'], assetKey: 'body:eyebrow', fallback: 'Eyebrow', label: 'Eyebrow' },
   { keys: ['eye', 'eyes', 'anya'], assetKey: 'body:eye', fallback: 'Eye', label: 'Eye' },
+  { keys: ['nose', 'imi'], assetKey: 'body:nose', fallback: 'Nose', label: 'Nose' },
   { keys: ['mouth', 'ọnụ', 'onu'], assetKey: 'body:mouth', fallback: 'Mouth', label: 'Mouth' },
-  { keys: ['tongue', 'ire'], assetKey: 'body:tongue', fallback: 'Tongue', label: 'Tongue' },
-  { keys: ['teeth', 'tooth', 'eze'], assetKey: 'body:teeth', fallback: 'Teeth', label: 'Teeth' },
-  { keys: ['toes', 'toe', 'mkpisi ukwu', 'mkpịsị ụkwụ'], assetKey: 'body:toes', fallback: 'Toes', label: 'Toes' },
+  { keys: ['ear', 'ntị', 'nti'], assetKey: 'body:ear', fallback: 'Ear', label: 'Ear' },
   { keys: ['hand', 'aka'], assetKey: 'body:hand', fallback: 'Hand', label: 'Hand' },
   { keys: ['leg', 'ụkwụ', 'ukwu'], assetKey: 'body:leg', fallback: 'Leg', label: 'Leg' },
-  { keys: ['ear', 'ntị', 'nti'], assetKey: 'body:ear', fallback: 'Ear', label: 'Ear' },
-  { keys: ['nose', 'imi'], assetKey: 'body:nose', fallback: 'Nose', label: 'Nose' },
+  { keys: ['toes', 'toe', 'mkpisi ukwu', 'mkpịsị ụkwụ'], assetKey: 'body:toes', fallback: 'Toes', label: 'Toes' },
+  { keys: ['tongue', 'ire'], assetKey: 'body:tongue', fallback: 'Tongue', label: 'Tongue' },
+  { keys: ['teeth', 'tooth', 'eze'], assetKey: 'body:teeth', fallback: 'Teeth', label: 'Teeth' },
 
-  { keys: ['dog', 'nkịta', 'nkita'], assetKey: 'animals:dog', fallback: '🐶', label: 'Dog' },
-  { keys: ['cat', 'nwamba'], assetKey: 'animals:cat', fallback: '🐱', label: 'Cat' },
-  { keys: ['chicken', 'ọkụkọ', 'okuko'], assetKey: 'animals:chicken', fallback: '🐓', label: 'Chicken' },
-  { keys: ['goat', 'ewu'], assetKey: 'animals:goat', fallback: '🐐', label: 'Goat' },
-  { keys: ['fish', 'azụ', 'azu'], assetKey: 'animals:fish', fallback: '🐟', label: 'Fish' },
-  { keys: ['bird', 'nnụnụ', 'nnunu'], assetKey: 'animals:bird', fallback: '🐦', label: 'Bird' },
-  { keys: ['leopard', 'tiger', 'agu'], assetKey: 'animals:leopard', fallback: '🐆', label: 'Animal' },
+  { keys: ['dog', 'nkịta', 'nkita'], assetKey: 'animals:dog', fallback: 'Dog', label: 'Dog' },
+  { keys: ['cat', 'nwamba'], assetKey: 'animals:cat', fallback: 'Cat', label: 'Cat' },
+  { keys: ['chicken', 'ọkụkọ', 'okuko'], assetKey: 'animals:chicken', fallback: 'Chicken', label: 'Chicken' },
+  { keys: ['goat', 'ewu'], assetKey: 'animals:goat', fallback: 'Goat', label: 'Goat' },
+  { keys: ['fish', 'azụ', 'azu'], assetKey: 'animals:fish', fallback: 'Fish', label: 'Fish' },
+  { keys: ['bird', 'nnụnụ', 'nnunu'], assetKey: 'animals:bird', fallback: 'Bird', label: 'Bird' },
+  { keys: ['leopard', 'tiger', 'agu'], assetKey: 'animals:leopard', fallback: 'Leopard', label: 'Leopard' },
+  { keys: ['lion', 'ọdụm', 'odum'], assetKey: 'animals:lion', fallback: 'Lion', label: 'Lion' },
+  { keys: ['elephant', 'enyi'], assetKey: 'animals:elephant', fallback: 'Elephant', label: 'Elephant' },
+  { keys: ['rabbit', 'oke bekee'], assetKey: 'animals:rabbit', fallback: 'Rabbit', label: 'Rabbit' },
+  { keys: ['rat', 'oke'], assetKey: 'animals:rat', fallback: 'Rat', label: 'Rat' },
+  { keys: ['python', 'snake', 'eke', 'agwọ', 'agwo'], assetKey: 'animals:python', fallback: 'Python', label: 'Python' },
+  { keys: ['tortoise', 'turtle', 'mbe'], assetKey: 'animals:tortoise', fallback: 'Tortoise', label: 'Tortoise' },
+  { keys: ['grasshopper', 'ụkpana', 'ukpana', 'ụkpara', 'ukpara'], assetKey: 'animals:grasshopper', fallback: 'Grasshopper', label: 'Grasshopper' },
 
-  { keys: ['lion'], assetKey: 'animals:lion', fallback: 'Lion', label: 'Lion' },
-  { keys: ['elephant'], assetKey: 'animals:elephant', fallback: 'Elephant', label: 'Elephant' },
-  { keys: ['rabbit'], assetKey: 'animals:rabbit', fallback: 'Rabbit', label: 'Rabbit' },
-  { keys: ['rat'], assetKey: 'animals:rat', fallback: 'Rat', label: 'Rat' },
-  { keys: ['python', 'snake'], assetKey: 'animals:python', fallback: 'Python', label: 'Python' },
-  { keys: ['tortoise', 'turtle'], assetKey: 'animals:tortoise', fallback: 'Tortoise', label: 'Tortoise' },
-  { keys: ['grasshopper'], assetKey: 'animals:grasshopper', fallback: 'Grasshopper', label: 'Grasshopper' },
+  { keys: ['house', 'ụlọ', 'ulo'], assetKey: 'home:house', fallback: 'Home', label: 'Home' },
+  { keys: ['water', 'mmiri'], assetKey: 'home:water', fallback: 'Water', label: 'Water' },
+  { keys: ['book', 'akwụkwọ', 'akwukwo'], assetKey: 'home:book', fallback: 'Book', label: 'Book' },
+  { keys: ['food', 'nri'], assetKey: 'food:food', fallback: 'Food', label: 'Food' },
 
-  { keys: ['house', 'ụlọ', 'ulo'], assetKey: 'home:house', fallback: '🏠', label: 'Home' },
-  { keys: ['water', 'mmiri'], assetKey: 'home:water', fallback: '💧', label: 'Water' },
-  { keys: ['book', 'akwụkwọ', 'akwukwo'], assetKey: 'home:book', fallback: '📘', label: 'Book' },
-  { keys: ['food', 'nri'], assetKey: 'food:food', fallback: '🍲', label: 'Food' },
   { keys: ['greet', 'hello', 'salute', 'salụo', 'saluo', 'bịa', 'bia', 'come'], assetKey: 'verbs:greet', fallback: 'Greet', label: 'Greet' },
   { keys: ['eat', 'rie', 'eri'], assetKey: 'verbs:eat', fallback: 'Eat', label: 'Eat' },
   { keys: ['drink', 'ṅụọ', 'nu', 'ịṅụ'], assetKey: 'verbs:drink', fallback: 'Drink', label: 'Drink' },
   { keys: ['read', 'gụ', 'agu'], assetKey: 'verbs:read', fallback: 'Read', label: 'Read' },
   { keys: ['write', 'dee'], assetKey: 'verbs:write', fallback: 'Write', label: 'Write' },
-  { keys: ['run', 'gbaa ọsọ'], assetKey: 'verbs:run', fallback: 'Run', label: 'Run' },
+  { keys: ['run', 'gbaa ọsọ', 'gbaa oso'], assetKey: 'verbs:run', fallback: 'Run', label: 'Run' },
   { keys: ['walk', 'go', 'gaa', 'aga'], assetKey: 'verbs:walk', fallback: 'Walk', label: 'Walk' },
   { keys: ['sleep', 'raa', 'rahu ụra', 'rahu ura'], assetKey: 'verbs:sleep', fallback: 'Sleep', label: 'Sleep' },
-  { keys: ['point', 'chọ'], assetKey: 'verbs:point', fallback: 'Point', label: 'Point' },
+  { keys: ['point', 'chọ', 'cho'], assetKey: 'verbs:point', fallback: 'Point', label: 'Point' },
   { keys: ['give', 'nyere'], assetKey: 'verbs:give', fallback: 'Give', label: 'Give' },
-  { keys: ['clap', 'kụọ aka', 'kpo'], assetKey: 'verbs:clap', fallback: 'Clap', label: 'Clap' },
+  { keys: ['clap', 'kụọ aka', 'kuo aka', 'kpo'], assetKey: 'verbs:clap', fallback: 'Clap', label: 'Clap' },
   { keys: ['think', 'chee', 'nọ', 'no', 'stay', 'be'], assetKey: 'verbs:think', fallback: 'Think', label: 'Think' },
   { keys: ['start', 'begin', 'bido'], assetKey: 'verbs:run', fallback: 'Start', label: 'Start' },
   { keys: ['stop', 'kwụsị', 'kwusi'], assetKey: 'verbs:clap', fallback: 'Stop', label: 'Stop' },
   { keys: ['stand', 'stand up', 'bilie'], assetKey: 'verbs:point', fallback: 'Stand', label: 'Stand' },
   { keys: ['speak', 'talk', 'ekwu', 'kwuru'], assetKey: 'verbs:greet', fallback: 'Speak', label: 'Speak' },
-  { keys: ['present tense', 'ugbu a'], assetKey: 'tenses:present', fallback: 'Now', label: 'Now' },
-  { keys: ['past tense', 'oge gara aga'], assetKey: 'tenses:past', fallback: 'Past', label: 'Past' },
-  { keys: ['future tense', 'oge ga-abịa'], assetKey: 'tenses:future', fallback: 'Future', label: 'Future' },
 ];
 
 function normalize(value: string): string {
   return value
     .toLowerCase()
-    .trim()
-    .replace(/[ị]/g, 'i')
-    .replace(/[ụ]/g, 'u')
-    .replace(/[ọ]/g, 'o')
-    .replace(/[ṅ]/g, 'n');
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[ịìí]/g, 'i')
+    .replace(/[ọòó]/g, 'o')
+    .replace(/[ụùú]/g, 'u')
+    .replace(/[ṅñ]/g, 'n')
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function tokenIncludes(combined: string, key: string): boolean {
   const normalizedKey = normalize(key);
-
-  if (normalizedKey.includes(' ')) {
-    return combined.includes(normalizedKey);
-  }
-
+  if (normalizedKey.includes(' ')) return combined.includes(normalizedKey);
   return combined.split(/\s+/).includes(normalizedKey);
 }
 
 function findIllustration(igbo: string, english: string): IllustrationEntry | undefined {
   const normalizedIgbo = normalize(igbo);
   const normalizedEnglish = normalize(english);
-  const combined = normalizedIgbo + " " + normalizedEnglish;
+  const combined = normalizedIgbo + ' ' + normalizedEnglish;
 
   const animalByEnglish: Record<string, string> = {
     dog: 'animals:dog',
@@ -133,12 +129,6 @@ function findIllustration(igbo: string, english: string): IllustrationEntry | un
     }
   }
 
-  if (normalizedEnglish.includes(animalName)) {
-      return ILLUSTRATIONS.find(x => x.assetKey === animalByEnglish[animalName]);
-    }
-  }
-
-  // Role-first matching prevents Nwanne from being mistaken for Nne / Mother.
   if (normalizedEnglish.includes('grandfather')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:grandfather');
   if (normalizedEnglish.includes('grandmother')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:grandmother');
   if (normalizedEnglish.includes('brother')) return ILLUSTRATIONS.find(x => x.assetKey === 'family:brother');
@@ -161,17 +151,19 @@ function findIllustration(igbo: string, english: string): IllustrationEntry | un
   if (normalizedIgbo === 'nne') return ILLUSTRATIONS.find(x => x.assetKey === 'family:mother');
   if (normalizedIgbo === 'nna') return ILLUSTRATIONS.find(x => x.assetKey === 'family:father');
 
+  if (normalizedIgbo.includes('eri') || normalizedEnglish.includes('eat')) return ILLUSTRATIONS.find(x => x.assetKey === 'verbs:eat');
+  if (normalizedIgbo.includes('agu') || normalizedEnglish.includes('read')) return ILLUSTRATIONS.find(x => x.assetKey === 'verbs:read');
+  if (normalizedIgbo.includes('asu') || normalizedEnglish.includes('greet')) return ILLUSTRATIONS.find(x => x.assetKey === 'verbs:greet');
+  if (normalizedIgbo.includes('aga') || normalizedEnglish.includes('go') || normalizedEnglish.includes('went')) return ILLUSTRATIONS.find(x => x.assetKey === 'verbs:walk');
+  if (normalizedIgbo.includes('ekwu') || normalizedIgbo.includes('kwuru') || normalizedEnglish.includes('speak') || normalizedEnglish.includes('spoke')) return ILLUSTRATIONS.find(x => x.assetKey === 'verbs:greet');
+
   return ILLUSTRATIONS.find(entry =>
     entry.keys.some(key => tokenIncludes(combined, key))
   );
 }
 
-function isTextFallback(value: string): boolean {
-  return /^[A-Za-z ]+$/.test(value);
-}
-
-function hasCustomAsset(assetKey?: string): boolean {
-  return Boolean(assetKey && CUSTOM_ILLUSTRATIONS[assetKey]);
+function isTextFallback(source?: ImageSourcePropType): boolean {
+  return !source;
 }
 
 function isAnimalAsset(assetKey?: string): boolean {
@@ -186,8 +178,8 @@ export default function LessonIllustration({
   igbo,
   english,
   emoji,
-  size = 74,
-  backgroundColor = '#F2EAFE',
+  size = 64,
+  backgroundColor = '#F2EAFD',
 }: Props) {
   const entry = findIllustration(igbo, english);
   const source: ImageSourcePropType | undefined = entry?.assetKey
@@ -208,21 +200,17 @@ export default function LessonIllustration({
         {
           width: size,
           height: size,
-          borderRadius: Math.round(size * 0.32),
+          borderRadius: Math.max(18, size * 0.24),
           backgroundColor: animalAsset ? '#FFFFFF' : backgroundColor,
         },
       ]}
     >
-      {source ? (
-        <Image source={source} style={[styles.image, { backgroundColor: imageBackgroundColor }]} resizeMode={imageResizeMode} />
-      ) : isTextFallback(fallback) ? (
-        <Text style={styles.textFallback} numberOfLines={1}>
-          {label.slice(0, 6)}
-        </Text>
-      ) : (
-        <Text style={[styles.fallback, { fontSize: Math.round(size * 0.42) }]}>
+      {isTextFallback(source) ? (
+        <Text style={[styles.fallbackText, { fontSize: Math.max(10, size * 0.18) }]} numberOfLines={1}>
           {fallback}
         </Text>
+      ) : (
+        <Image source={source} style={[styles.image, { backgroundColor: imageBackgroundColor }]} resizeMode={imageResizeMode} />
       )}
     </View>
   );
@@ -234,22 +222,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: COLOR.border,
+    borderColor: 'rgba(81, 55, 20, 0.10)',
   },
   image: {
     width: '100%',
     height: '100%',
   },
-  fallback: {
+  fallbackText: {
+    color: '#171611',
     fontWeight: '900',
     textAlign: 'center',
-  },
-  textFallback: {
-    fontSize: FONT.xs,
-    fontWeight: '900',
-    color: COLOR.textPrimary,
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    letterSpacing: 0.4,
+    paddingHorizontal: 4,
   },
 });
