@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
   },
   image: {
-    width: '124%',
-    height: '124%',
+    width: '132%',
+    height: '132%',
   },
 });
