@@ -1,9 +1,6 @@
-import React, { useState } from 'react';
-import AvatarIllustration from '../components/illustrations/AvatarIllustration';
+import React, { useMemo, useState } from 'react';
 import {
   Alert,
-  Image,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,58 +9,18 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import MutaFriendAvatar from '../components/MutaFriendAvatar';
-import { MUTA_FRIENDS, getMutaFriend, MutaFriend, MutaFriendId } from '../data/mutaFriends';
-import { makeProfile, Profile } from '../hooks/useAppState';
+import AvatarIllustration from '../components/illustrations/AvatarIllustration';
+import { useApp } from '../hooks/useAppState';
 import { COLOR, FONT, RADIUS, SPACE } from '../utils/tokens';
 
-interface Props { onComplete: (profiles: Profile[]) => void; }
-type Step = 'welcome' | 'terms' | 'profiles';
+type Props = {
+  onComplete?: () => void;
+};
 
-const GIRL_IMG = require('../../assets/images/igbo-girl.png');
-const BOY_IMG  = require('../../assets/images/igbo-boy.png');
+type Step = 'welcome' | 'profile' | 'age' | 'done';
 
 export function ProfileImage({ avatar, size = 40 }: { avatar: string; size?: number }) {
   return <AvatarIllustration avatar={avatar} size={size} />;
-
-function StepDots({ current, total }: { current: number; total: number }) {
-  return (
-    <View style={s.stepDots}>
-      {Array.from({ length: total }).map((_, i) => (
-        <View key={i} style={[s.stepDot, i < current && s.stepDotActive]} />
-      ))}
-    </View>
-  );
-}
-
-function FriendCard({
-  friend,
-  selected,
-  width,
-  onPress,
-}: {
-  friend: MutaFriend;
-  selected: boolean;
-  width: number;
-  onPress: () => void;
-}) {
-  return (
-    <TouchableOpacity
-      style={[s.friendCard, { width }, selected && s.friendCardActive]}
-      onPress={onPress}
-      activeOpacity={0.86}
-      accessibilityLabel={`Choose ${friend.name}`}
-    >
-      {selected && (
-        <View style={s.checkBubble}>
-          <Text style={s.checkBubbleText}>✓</Text>
-        </View>
-      )}
-      <MutaFriendAvatar avatar={friend.id} size={102} style={s.friendAvatarRing} />
-      <Text style={s.friendName} numberOfLines={1}>{friend.name}</Text>
-      <Text style={s.friendInterest} numberOfLines={1}>{friend.icon} {friend.interest}</Text>
-    </TouchableOpacity>
-  );
 }
 
 export default function OnboardingScreen({ onComplete }: Props) {
