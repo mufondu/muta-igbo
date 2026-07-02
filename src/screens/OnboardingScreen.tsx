@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import {
   Alert,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,19 +10,116 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AvatarIllustration from '../components/illustrations/AvatarIllustration';
 import { useApp } from '../hooks/useAppState';
 import { COLOR, FONT, RADIUS, SPACE } from '../utils/tokens';
 
-type Props = {
-  onComplete?: () => void;
+type Profile = {
+  id: string;
+  name: string;
+  avatar: MutaFriendId;
 };
 
-type Step = 'welcome' | 'profile' | 'age' | 'done';
+type Props = {
+  onComplete?: (profiles: Profile[]) => void;
+};
+
+type Step = 'welcome' | 'terms' | 'profiles' | 'profile' | 'age' | 'done';
+
+type MutaFriendId =
+  | 'ada'
+  | 'obi'
+  | 'amara'
+  | 'ebube'
+  | 'kene'
+  | 'kaira'
+  | 'zara'
+  | 'chizara';
+
+type MutaFriend = {
+  id: MutaFriendId;
+  name: string;
+  subtitle: string;
+};
+
+const GIRL_IMG = require('../../assets/illustrations/custom/avatars/kaira.png');
+const BOY_IMG = require('../../assets/illustrations/custom/avatars/kene.png');
+
+const MUTA_FRIENDS: MutaFriend[] = [
+  { id: 'ada', name: 'Ada', subtitle: 'Kind and curious' },
+  { id: 'obi', name: 'Obi', subtitle: 'Brave learner' },
+  { id: 'amara', name: 'Amara', subtitle: 'Animal guide' },
+  { id: 'ebube', name: 'Ebube', subtitle: 'Bright helper' },
+  { id: 'kene', name: 'Kene', subtitle: 'Word explorer' },
+  { id: 'kaira', name: 'Kaira', subtitle: 'Sound star' },
+  { id: 'zara', name: 'Zara', subtitle: 'Story friend' },
+  { id: 'chizara', name: 'Chizara', subtitle: 'Culture buddy' },
+];
+
+function getMutaFriend(id: MutaFriendId): MutaFriend {
+  return MUTA_FRIENDS.find(friend => friend.id === id) || MUTA_FRIENDS[0];
+}
+
+function makeProfile(name: string, avatar: MutaFriendId): Profile {
+  return {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    name,
+    avatar,
+  };
+}
+
+function StepDots({ current, total }: { current: number; total: number }) {
+  return (
+    <View style={{ flexDirection: 'row', gap: 8, justifyContent: 'center', marginVertical: 12 }}>
+      {Array.from({ length: total }).map((_, index) => (
+        <View
+          key={index}
+          style={{
+            width: index + 1 === current ? 22 : 8,
+            height: 8,
+            borderRadius: 999,
+            backgroundColor: index + 1 === current ? COLOR.green : 'rgba(0,0,0,0.15)',
+          }}
+        />
+      ))}
+    </View>
+  );
+}
+
+function FriendCard({
+  friend,
+  selected,
+  width,
+  onPress,
+}: {
+  friend: MutaFriend;
+  selected: boolean;
+  width: number;
+  onPress: () => void;
+}) {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.85}
+      style={{
+        width,
+        padding: 12,
+        borderRadius: 24,
+        backgroundColor: selected ? '#D8FFE9' : '#FFFFFF',
+        borderWidth: selected ? 2 : 1,
+        borderColor: selected ? COLOR.green : 'rgba(0,0,0,0.10)',
+        alignItems: 'center',
+      }}
+    >
+      <AvatarIllustration avatar={friend.id} size={74} />
+      <Text style={{ marginTop: 8, fontWeight: '900', color: COLOR.text }}>{friend.name}</Text>
+      <Text style={{ marginTop: 2, fontSize: 12, color: COLOR.muted, textAlign: 'center' }}>{friend.subtitle}</Text>
+    </TouchableOpacity>
+  );
+}
 
 export function ProfileImage({ avatar, size = 40 }: { avatar: string; size?: number }) {
-  return <AvatarIllustration avatar={avatar} size={size} />;
-}: { avatar: string; size?: number }) {
   return <AvatarIllustration avatar={avatar} size={size} />;
 }
 
@@ -51,7 +149,7 @@ export default function OnboardingScreen({ onComplete }: Props) {
     if (profiles.length === 0) {
       Alert.alert('Add a child', 'Please add at least one child profile to continue.'); return;
     }
-    onComplete(profiles);
+    onComplete?.(profiles);
   }
 
   if (step === 'welcome') {
@@ -60,10 +158,10 @@ export default function OnboardingScreen({ onComplete }: Props) {
         <View style={s.heroArea}>
           <View style={s.heroKids}>
             <View style={s.heroKidWrap}>
-              <Image source={GIRL_IMG} style={s.heroKidImg} resizeMode="cover" />
+              <Image source={GIRL_IMG} style={s.heroKidImg} resizeMode="contain" />
             </View>
             <View style={s.heroKidWrap}>
-              <Image source={BOY_IMG}  style={s.heroKidImg} resizeMode="cover" />
+              <Image source={BOY_IMG}  style={s.heroKidImg} resizeMode="contain" />
             </View>
           </View>
           <Text style={s.heroTitle}>Welcome to{`\n`}Mụta Igbo</Text>
