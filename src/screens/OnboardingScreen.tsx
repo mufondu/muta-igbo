@@ -75,10 +75,13 @@ function makeProfile(name: string, avatar: MutaFriendId): Profile {
     stars: 0,
     badges: [],
     completedLessons: [],
+    wordsLearned: 0,
+    goalDate: now,
+    goalCount: 10,
     createdAt: now,
   };
 
-  return profile as Profile;
+  return profile as unknown as Profile;
 }
 
 function StepDots({ current, total }: { current: number; total: number }) {
@@ -341,7 +344,7 @@ export default function OnboardingScreen({ onComplete }: Props) {
           <View style={s.createdWrap}>
             <Text style={s.createdTitle}>Ready players</Text>
             {profiles.map(p => {
-              const friend = getMutaFriend(p.avatar);
+              const friend = getMutaFriend(p.avatar as unknown as MutaFriendId);
               return (
                 <View key={p.id} style={s.createdPill}>
                   <AvatarIllustration avatar={p.avatar} size={34} />
@@ -387,6 +390,11 @@ export default function OnboardingScreen({ onComplete }: Props) {
 
 
 const s = StyleSheet.create({
+  profileHeader: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+
   termsRoot: {
     flex: 1,
     backgroundColor: COLOR.forestDark,
@@ -1014,20 +1022,9 @@ const s = StyleSheet.create({
     marginBottom: SPACE.lg,
   },
   fieldLabel: { fontSize: FONT.sm, color: '#61D391', fontWeight: '800', marginBottom: SPACE.xs },
-  nameInput: {
-    backgroundColor: 'rgba(255,255,255,0.07)',
-    borderRadius: RADIUS.md,
-    paddingHorizontal: SPACE.md,
-    paddingVertical: 13,
-    fontSize: FONT.lg,
-    color: COLOR.textCream,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.22)',
-  },
 
   chooseTitle: { fontSize: 24, fontWeight: '900', color: COLOR.textCream, marginBottom: 5 },
   chooseSub: { fontSize: FONT.sm, color: 'rgba(255,255,255,0.72)', marginBottom: SPACE.md, lineHeight: 20 },
-  friendGrid: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: SPACE.lg },
   friendCard: {
     minHeight: 164,
     borderRadius: 22,
@@ -1063,7 +1060,6 @@ const s = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.14)',
     marginBottom: 8,
   },
-  friendName: { color: COLOR.textCream, fontSize: 20, fontWeight: '900', textAlign: 'center' },
   friendInterest: { color: 'rgba(255,255,255,0.72)', fontSize: FONT.sm, marginTop: 3, textAlign: 'center' },
 
   friendSummary: {
@@ -1076,7 +1072,4 @@ const s = StyleSheet.create({
   },
   friendSummaryTitle: { color: COLOR.textCream, fontSize: FONT.lg, fontWeight: '900', marginBottom: 6 },
   friendSummaryText: { color: 'rgba(255,255,255,0.72)', fontSize: FONT.md, lineHeight: 22 },
-  addBtn: { backgroundColor: COLOR.forestMid, borderRadius: RADIUS.md, paddingVertical: 14, alignItems: 'center', marginBottom: SPACE.md },
-  addBtnText: { fontSize: FONT.lg, fontWeight: '800', color: COLOR.textCream },
-  startBtn: { marginBottom: 6 },
-});
+  startBtn: { marginBottom: 6 },});
