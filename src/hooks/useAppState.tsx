@@ -13,6 +13,8 @@ export interface Profile {
   levelProgress: Record<string, number>;
   quizBest: number;
   wordsLearned: number;
+  goalDate: string;        // date string of last goal activity
+  goalCount: number;       // activities completed on goalDate
 }
 
 export interface AppState {
@@ -49,6 +51,8 @@ export function makeProfile(name: string, avatar: AvatarEmoji): Profile {
     levelProgress: {},
     quizBest: 0,
     wordsLearned: 0,
+    goalDate: '',
+    goalCount: 0,
   };
 }
 
@@ -84,6 +88,7 @@ interface AppContextValue {
   updateQuizBest: (score: number) => void;
   incrementStreak: () => void;
   addWordsLearned: (count: number) => void;
+  recordActivity: () => void;
   setPremium: (val: boolean) => void;
   toggleSound: () => void;
   toggleHaptic: () => void;
@@ -195,6 +200,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }));
   }, [update]);
 
+  const recordActivity = useCallback(() => {
+    const today = new Date().toDateString();
+    update(s => ({
+      ...s,
+      profiles: s.profiles.map(p => {
+        if (p.id !== s.activeProfileId) return p;
+        const count = p.goalDate === today ? (p.goalCount ?? 0) + 1 : 1;
+        return { ...p, goalDate: today, goalCount: count };
+      }),
+    }));
+  }, [update]);
+
   const setPremium = useCallback((val: boolean) => update(s => ({ ...s, isPremium: val })), [update]);
   const toggleSound = useCallback(() => update(s => ({ ...s, soundEnabled: !s.soundEnabled })), [update]);
   const toggleHaptic = useCallback(() => update(s => ({ ...s, hapticEnabled: !s.hapticEnabled })), [update]);
@@ -206,7 +223,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     <AppContext.Provider value={{
       state, activeProfile, setActiveProfile, addProfile, deleteProfile, renameProfile,
       completeOnboarding, agreeToTerms, updateProgress, updateQuizBest,
-      incrementStreak, addWordsLearned, setPremium, toggleSound, toggleHaptic, resetAll,
+      incrementStreak, addWordsLearned, recordActivity, setPremium, toggleSound, toggleHaptic, resetAll,
     }}>
       {children}
     </AppContext.Provider>

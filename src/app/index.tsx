@@ -35,7 +35,7 @@ import { KIDS_COLOR, KIDS_SHADOW } from '../theme/kidsTheme';
 import ParentGate from '../components/ParentGate';
 import { GuideBanner } from '../components/LevelGuide';
 
-const MUTA_LOGO = require('../../assets/brand/muta-igbo-logo.png');
+const MUTA_LOGO = require('../../assets/muta-logo.png');
 const APP_ICON = require('../../assets/muta-logo.png');
 
 const LEVEL_ICONS: Record<string, any> = {

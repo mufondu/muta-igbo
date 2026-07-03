@@ -2,6 +2,9 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import { COLOR, FONT, RADIUS, SPACE } from '../../utils/tokens';
+import { CharacterCheer, Confetti, randomPraise } from '../../components/Celebration';
+import { getMutaFriend } from '../../data/mutaFriends';
+import * as haptics from '../../utils/haptics';
 
 // ─── Difficulty ───────────────────────────────────────────────────────────────
 export type Difficulty = 'easy' | 'medium' | 'hard';
@@ -103,7 +106,7 @@ export function DifficultyPicker({ value, onChange }: {
           >
             <Text
               style={[sb.diffText, active && { color: COLOR.textWhite }]}
-              onPress={() => onChange(d)}
+              onPress={() => { haptics.tick(); onChange(d); }}
             >
               {dc.emoji} {dc.label}
             </Text>
@@ -122,6 +125,7 @@ export function FeedbackFlash({ text, correct }: { text: string; correct: boolea
   const opacity = useRef(new Animated.Value(0)).current;
   const slideY  = useRef(new Animated.Value(10)).current;
   useEffect(() => {
+    if (correct) haptics.success(); else haptics.wrong();
     opacity.setValue(0); slideY.setValue(10);
     Animated.parallel([
       Animated.timing(opacity, { toValue: 1, duration: 200, useNativeDriver: true }),
@@ -138,21 +142,26 @@ export function FeedbackFlash({ text, correct }: { text: string; correct: boolea
 }
 
 // ─── Game over screen ─────────────────────────────────────────────────────────
-export function GameOver({ score, streak, difficulty, onReplay, onHome }: {
+export function GameOver({ score, streak, difficulty, onReplay, onHome, guideId = 'ebuka' }: {
   score: number; streak: number; difficulty: Difficulty;
-  onReplay: () => void; onHome: () => void;
+  onReplay: () => void; onHome: () => void; guideId?: string;
 }) {
   const stars   = starsFromScore(score, Math.max(score + 3, 10));
   const badges  = checkBadges(score, streak, difficulty);
   const scale   = useRef(new Animated.Value(0)).current;
+  const guide   = getMutaFriend(guideId);
+  const praise  = useRef(randomPraise()).current;
 
   useEffect(() => {
+    haptics.success();
     Animated.spring(scale, { toValue: 1, useNativeDriver: true, damping: 10, mass: 0.8 }).start();
   }, []);
 
   return (
+    <>
+    <Confetti visible={stars >= 1} />
     <Animated.View style={[sb.gameOver, { transform: [{ scale }] }]}>
-      <Text style={sb.gameOverTitle}>Ọma! Well done! 🎉</Text>
+      <CharacterCheer image={guide.image} name={guide.name} phrase={praise} />
       <StarDisplay stars={stars} size={40} />
       <Text style={sb.gameOverScore}>Score: {score} &nbsp;·&nbsp; Best streak: {streak}</Text>
 
@@ -174,10 +183,11 @@ export function GameOver({ score, streak, difficulty, onReplay, onHome }: {
       )}
 
       <View style={sb.gameOverBtns}>
-        <Text style={sb.replayBtn} onPress={onReplay}>🔄 Play Again</Text>
+        <Text style={sb.replayBtn} onPress={() => { haptics.tapMedium(); onReplay(); }}>🔄 Play Again</Text>
         <Text style={sb.homeBtn}   onPress={onHome}>🏠 Home</Text>
       </View>
     </Animated.View>
+    </>
   );
 }
 
