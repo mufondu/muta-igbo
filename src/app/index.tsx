@@ -209,7 +209,15 @@ export default function MutaIgboApp() {
 
       <View style={sh.appHeader}>
         <View style={sh.compactHudRow}>
-          <ProfileSwitcher />
+          <View style={sh.activePlayerChip}>
+            <AvatarIllustration avatar={activeProfile?.avatar ?? 'adaeze'} size={44} />
+            <View style={sh.activePlayerTextWrap}>
+              <Text style={sh.activePlayerKicker}>PLAYER</Text>
+              <Text style={sh.activePlayerName} numberOfLines={1}>
+                {activeProfile?.name ?? 'Nwa Igbo'}
+              </Text>
+            </View>
+          </View>
 
           {gate !== 'settings' ? (
             <TouchableOpacity
@@ -1330,39 +1338,24 @@ const sh = StyleSheet.create({
     backgroundColor: KIDS_COLOR.palmCream,
   },
   profileSwitcherScroll: {
-    maxWidth: 170,
+    maxWidth: 0,
+    height: 0,
   },
   profileSwitcherRail: {
-    gap: 8,
-    paddingRight: 4,
-    paddingTop: 0,
+    gap: 0,
+    paddingRight: 0,
   },
   profileAvatarPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    minWidth: 116,
-    maxWidth: 164,
-    paddingVertical: 6,
-    paddingLeft: 7,
-    paddingRight: 14,
-    borderRadius: RADIUS.pill,
-    backgroundColor: KIDS_COLOR.sunshine,
-    borderWidth: 1.5,
-    borderColor: KIDS_COLOR.mango,
+    display: 'none',
   },
   profileAvatarPillActive: {
-    backgroundColor: KIDS_COLOR.sunshine,
-    borderColor: KIDS_COLOR.mango,
+    display: 'none',
   },
   profileAvatarPillText: {
-    flex: 1,
-    marginLeft: 7,
-    fontSize: FONT.sm,
-    color: KIDS_COLOR.deepForest,
-    fontWeight: '900',
+    display: 'none',
   },
   profileAvatarPillTextActive: {
-    color: KIDS_COLOR.deepForest,
+    display: 'none',
   },
   kidsHeroCard: {
     ...KIDS_SHADOW.softCard,
@@ -1468,10 +1461,11 @@ const sh = StyleSheet.create({
   root: { flex: 1, backgroundColor: COLOR.bg },
   appHeader: {
     marginHorizontal: SPACE.md,
-    paddingVertical: 10,
+    paddingVertical: 9,
     paddingHorizontal: 12,
     backgroundColor: KIDS_COLOR.forestGreen,
     borderRadius: 28,
+    marginBottom: SPACE.md,
   },
   appHeaderLeft: {
     display: 'none',
@@ -2639,8 +2633,39 @@ const sh = StyleSheet.create({
     height: 76,
   },
   compactHudRow: {
-    minHeight: 54,
+    minHeight: 56,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  activePlayerChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    maxWidth: 220,
+    minHeight: 54,
+    paddingVertical: 5,
+    paddingLeft: 8,
+    paddingRight: 14,
+    borderRadius: 999,
+    backgroundColor: KIDS_COLOR.sunshine,
+    borderWidth: 1.5,
+    borderColor: KIDS_COLOR.mango,
+  },
+  activePlayerTextWrap: {
+    marginLeft: 8,
+    minWidth: 0,
+    flexShrink: 1,
+  },
+  activePlayerKicker: {
+    color: KIDS_COLOR.deepForest,
+    fontSize: 9,
+    fontWeight: '900',
+    letterSpacing: 0.9,
+    opacity: 0.72,
+  },
+  activePlayerName: {
+    color: KIDS_COLOR.deepForest,
+    fontSize: FONT.md,
+    fontWeight: '900',
+    marginTop: -1,
   },});
