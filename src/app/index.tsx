@@ -203,24 +203,29 @@ export default function MutaIgboApp() {
     <SafeAreaView style={sh.root}>
       {/* App header */}
       <View style={sh.appHeader}>
-        <View style={sh.appHeaderLeft}>
-          <View style={sh.appLogoBox}><Image source={MUTA_LOGO} style={sh.appLogoImage} resizeMode="contain" /></View>
-          <View>
-            <Text style={sh.appTitle}>Mụta Igbo</Text>
-            <Text style={sh.appSub}>Central Igbo / Enuani Edition</Text>
+        <View style={sh.appHeaderTop}>
+          <View style={sh.appHeaderLeft}>
+            <View style={sh.appLogoBox}>
+              <Image source={MUTA_LOGO} style={sh.appLogoImage} resizeMode="contain" />
+            </View>
+            <View style={sh.appTitleWrap}>
+              <Text style={sh.appTitle}>Mụta Igbo</Text>
+              <Text style={sh.appSub}>Central Igbo / Enuani Edition</Text>
+            </View>
           </View>
-        </View>
-        <View style={sh.headerRight}>
-          <ProfileSwitcher />
+
           <TouchableOpacity
             onPress={() => { haptics.tapLight(); setGate('settings'); }}
-            style={sh.gearBtn}
-            accessibilityLabel="Parent settings"
+            style={sh.parentCenterBtn}
+            accessibilityLabel="Open Parent Center settings"
             activeOpacity={0.86}
           >
-            <Text style={sh.parentBtnText}>Parent</Text>
+            <Text style={sh.parentCenterKicker}>PARENT</Text>
+            <Text style={sh.parentCenterText}>Settings</Text>
           </TouchableOpacity>
         </View>
+
+        <ProfileSwitcher />
       </View>
 
       {/* Body */}
@@ -239,24 +244,26 @@ export default function MutaIgboApp() {
       />
 
       {/* Bottom nav */}
-      <View style={sh.bottomNav}>
+      {tab !== 'settings' && (
+        <View style={sh.bottomNav}>
           {([
-            { id: 'home',     emoji: 'HOME', label: 'Home' },
-            { id: 'progress', emoji: 'PROG', label: 'Progress' },
-            { id: 'quiz',     emoji: 'QUIZ', label: 'Quiz', action: () => openInner('quiz') },
-            { id: 'settings', emoji: 'SET', label: 'Parent', action: () => setGate('settings') },
+            { id: 'home',     badge: 'HOME', label: 'Home' },
+            { id: 'progress', badge: 'XP', label: 'Progress' },
+            { id: 'quiz',     badge: 'QUIZ', label: 'Quiz', action: () => openInner('quiz') },
           ] as const).map(item => (
             <TouchableOpacity
               key={item.id}
               style={sh.navBtn}
               onPress={'action' in item ? item.action : (() => setTab(item.id as MainTab))}
               accessibilityLabel={item.label}
+              activeOpacity={0.86}
             >
-              <Text style={sh.navIcon}>{item.emoji}</Text>
+              <Text style={[sh.navIcon, tab === item.id && sh.navIconActive]}>{item.badge}</Text>
               <Text style={[sh.navLabel, tab === item.id && sh.navLabelActive]}>{item.label}</Text>
             </TouchableOpacity>
           ))}
         </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -1301,6 +1308,40 @@ const ld = StyleSheet.create({
 });
 
 const sh = StyleSheet.create({
+  appHeaderTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  appTitleWrap: {
+    flex: 1,
+    minWidth: 0,
+  },
+  parentCenterBtn: {
+    minWidth: 92,
+    minHeight: 48,
+    paddingHorizontal: 12,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: KIDS_COLOR.sunshine,
+    borderWidth: 1.5,
+    borderColor: KIDS_COLOR.mango,
+  },
+  parentCenterKicker: {
+    color: KIDS_COLOR.deepForest,
+    fontSize: 9,
+    fontWeight: '900',
+    letterSpacing: 0.8,
+  },
+  parentCenterText: {
+    color: KIDS_COLOR.deepForest,
+    fontSize: FONT.xs,
+    fontWeight: '900',
+    marginTop: 1,
+  },
+
   kidsHomeRoot: { flex: 1, backgroundColor: KIDS_COLOR.palmCream },
   kidsHomeScroll: { paddingHorizontal: SPACE.md, paddingTop: SPACE.lg, paddingBottom: 128, backgroundColor: KIDS_COLOR.palmCream },
   profileSwitcherScroll: { maxWidth: 230 },
@@ -1348,13 +1389,12 @@ const sh = StyleSheet.create({
   root: { flex: 1, backgroundColor: COLOR.bg },
 
   appHeader: {
-    paddingTop: 18,
-    paddingBottom: 18,
+    paddingTop: 16,
+    paddingBottom: 12,
     paddingHorizontal: SPACE.md,
-    backgroundColor: COLOR.forestDark,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: KIDS_COLOR.forestGreen,
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
   },
   appHeaderLeft: {
     flexDirection: 'row',
@@ -1370,12 +1410,12 @@ const sh = StyleSheet.create({
   appTitle: {
     fontSize: FONT.xl,
     fontWeight: '900',
-    color: COLOR.textCream,
+    color: KIDS_COLOR.white,
     letterSpacing: -0.4,
   },
   appSub: {
-    fontSize: FONT.sm,
-    color: '#AEE7C7',
+    fontSize: FONT.xs,
+    color: '#DDF7E8',
     fontWeight: '800',
     marginTop: 2,
   },
@@ -1386,15 +1426,7 @@ const sh = StyleSheet.create({
     flexShrink: 0,
   },
   gearBtn: {
-    minWidth: 78,
-    minHeight: 42,
-    paddingHorizontal: 14,
-    borderRadius: 999,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: KIDS_COLOR.sunshine,
-    borderWidth: 1.5,
-    borderColor: KIDS_COLOR.mango,
+    display: 'none',
   },
   parentBtnText: {
     color: KIDS_COLOR.deepForest,
@@ -1423,34 +1455,46 @@ const sh = StyleSheet.create({
 
   bottomNav: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: COLOR.card,
-    borderTopWidth: 1,
-    borderColor: COLOR.border,
+    left: SPACE.md,
+    right: SPACE.md,
+    bottom: 18,
+    backgroundColor: KIDS_COLOR.white,
+    borderWidth: 1,
+    borderColor: KIDS_COLOR.borderSoft,
+    borderRadius: 30,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingTop: 12,
-    paddingBottom: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
+    paddingVertical: 8,
+    shadowColor: '#073B27',
+    shadowOpacity: 0.14,
     shadowRadius: 18,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 8,
   },
-  navBtn: { flex: 1, paddingVertical: 10, alignItems: 'center', gap: 2, minHeight: 54 },
+  navBtn: {
+    flex: 1,
+    paddingVertical: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 3,
+    minHeight: 56,
+  },
   navIcon: {
-    minWidth: 40,
-    paddingHorizontal: 7,
+    minWidth: 44,
+    paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 999,
     overflow: 'hidden',
     backgroundColor: KIDS_COLOR.mintMist,
     color: KIDS_COLOR.palmGreen,
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: '900',
     textAlign: 'center',
-    letterSpacing: 0.4,
+    letterSpacing: 0.5,
+  },
+  navIconActive: {
+    backgroundColor: KIDS_COLOR.sunshine,
+    color: KIDS_COLOR.deepForest,
   },
   navLabel: {
     fontSize: FONT.xs,
