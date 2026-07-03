@@ -147,13 +147,14 @@ function LockBadge() {
 
 // ─── ROOT COMPONENT ───────────────────────────────────────────────────────────
 export default function MutaIgboApp() {
-  const { state, completeOnboarding, incrementStreak } = useApp();
+  const { state, completeOnboarding, incrementStreak, setActiveProfile } = useApp();
 
   const headerProfile =
     state.profiles.find(profile => profile.id === state.activeProfileId) ??
     state.profiles[0] ??
     null;
   const [tab, setTab]     = useState<MainTab>('home');
+  const [profileSheetOpen, setProfileSheetOpen] = React.useState(false);
   const [gate, setGate] = useState<null | 'settings' | 'premium'>(null);
   const [nav, setNav]     = useState<NavState>(NAV_RESET);
 
@@ -214,7 +215,12 @@ export default function MutaIgboApp() {
 
       <View style={sh.appHeader}>
         <View style={sh.compactHudRow}>
-          <View style={sh.activePlayerChip}>
+          <TouchableOpacity
+            style={sh.activePlayerChip}
+            onPress={() => setProfileSheetOpen(true)}
+            activeOpacity={0.86}
+            accessibilityLabel="Switch child profile"
+          >
             <AvatarIllustration avatar={headerProfile?.avatar ?? 'adaeze'} size={44} />
             <View style={sh.activePlayerTextWrap}>
               <Text style={sh.activePlayerKicker}>PLAYER</Text>
@@ -222,7 +228,8 @@ export default function MutaIgboApp() {
                 {headerProfile?.name ?? 'Nwa Igbo'}
               </Text>
             </View>
-          </View>
+            <Text style={sh.activePlayerChevron}>⌄</Text>
+          </TouchableOpacity>
 
           {gate !== 'settings' ? (
             <TouchableOpacity
@@ -251,6 +258,58 @@ export default function MutaIgboApp() {
         }}
         onCancel={() => setGate(null)}
       />
+
+      <Modal
+        visible={profileSheetOpen}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setProfileSheetOpen(false)}
+      >
+        <TouchableOpacity
+          style={sh.profileSheetBackdrop}
+          activeOpacity={1}
+          onPress={() => setProfileSheetOpen(false)}
+        >
+          <TouchableOpacity activeOpacity={1} style={sh.profileSheet}>
+            <View style={sh.profileSheetHandle} />
+            <Text style={sh.profileSheetKicker}>CHOOSE PLAYER</Text>
+            <Text style={sh.profileSheetTitle}>Who is learning today?</Text>
+
+            <View style={sh.profileSheetGrid}>
+              {state.profiles.map(profile => {
+                const selected = profile.id === headerProfile?.id;
+
+                return (
+                  <TouchableOpacity
+                    key={profile.id}
+                    style={[sh.profileSheetCard, selected && sh.profileSheetCardActive]}
+                    activeOpacity={0.86}
+                    onPress={() => {
+                      setActiveProfile(profile.id);
+                      setProfileSheetOpen(false);
+                    }}
+                  >
+                    <AvatarIllustration avatar={profile.avatar} size={72} />
+                    <Text style={sh.profileSheetName} numberOfLines={1}>{profile.name}</Text>
+                    {selected ? <Text style={sh.profileSheetSelected}>Current</Text> : null}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <TouchableOpacity
+              style={sh.profileSheetAdd}
+              activeOpacity={0.86}
+              onPress={() => {
+                setProfileSheetOpen(false);
+                setGate('settings');
+              }}
+            >
+              <Text style={sh.profileSheetAddText}>＋ Add or manage child profiles</Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
 
       {/* Bottom nav */}
       {tab !== 'settings' && (
@@ -1317,6 +1376,94 @@ const ld = StyleSheet.create({
 });
 
 const sh = StyleSheet.create({
+  profileSheetAddText: {
+    color: KIDS_COLOR.white,
+    fontSize: FONT.sm,
+    fontWeight: '900',
+  },
+  profileSheetAdd: {
+    marginTop: 14,
+    minHeight: 52,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: KIDS_COLOR.forestGreen,
+  },
+  profileSheetSelected: {
+    color: KIDS_COLOR.palmGreen,
+    fontSize: 10,
+    fontWeight: '900',
+    marginTop: 2,
+  },
+  profileSheetName: {
+    color: KIDS_COLOR.textPrimary,
+    fontSize: FONT.sm,
+    fontWeight: '900',
+    marginTop: 6,
+    textAlign: 'center',
+  },
+  profileSheetCardActive: {
+    backgroundColor: '#FFF2C7',
+    borderColor: KIDS_COLOR.mango,
+  },
+  profileSheetCard: {
+    width: '31.5%',
+    minHeight: 126,
+    borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: KIDS_COLOR.white,
+    borderWidth: 1.5,
+    borderColor: KIDS_COLOR.borderSoft,
+    padding: 8,
+  },
+  profileSheetGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  profileSheetTitle: {
+    color: KIDS_COLOR.textPrimary,
+    fontSize: 28,
+    fontWeight: '900',
+    letterSpacing: -0.6,
+    marginTop: 2,
+    marginBottom: 14,
+  },
+  profileSheetKicker: {
+    color: KIDS_COLOR.mango,
+    fontSize: FONT.xs,
+    fontWeight: '900',
+    letterSpacing: 1.6,
+  },
+  profileSheetHandle: {
+    alignSelf: 'center',
+    width: 46,
+    height: 5,
+    borderRadius: 999,
+    backgroundColor: 'rgba(18, 59, 42, 0.18)',
+    marginBottom: 14,
+  },
+  profileSheet: {
+    backgroundColor: KIDS_COLOR.palmCream,
+    borderTopLeftRadius: 34,
+    borderTopRightRadius: 34,
+    paddingHorizontal: SPACE.md,
+    paddingTop: 12,
+    paddingBottom: 34,
+  },
+  profileSheetBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(7, 59, 39, 0.28)',
+    justifyContent: 'flex-end',
+  },
+  activePlayerChevron: {
+    color: KIDS_COLOR.deepForest,
+    fontSize: 16,
+    fontWeight: '900',
+    marginLeft: 8,
+    marginTop: -4,
+  },
   appHeaderTop: {
     display: 'none',
   },
