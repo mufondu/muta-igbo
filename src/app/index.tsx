@@ -2531,7 +2531,7 @@ const sh = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
     borderWidth: 0,
-255,255,0.28)',
+borderColor: 'rgba(255,255,255,0.28)',
     shadowColor: '#000',
     shadowOpacity: 0.16,
     shadowRadius: 12,
