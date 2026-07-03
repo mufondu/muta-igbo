@@ -1311,16 +1311,16 @@ const sh = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    minHeight: 72,
+    minHeight: 58,
   },
   appTitleWrap: {
     display: 'none',
   },
   parentCenterBtn: {
-    minWidth: 108,
-    minHeight: 52,
+    minWidth: 104,
+    minHeight: 46,
     paddingHorizontal: 14,
-    borderRadius: 22,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: KIDS_COLOR.sunshine,
@@ -1329,13 +1329,13 @@ const sh = StyleSheet.create({
   },
   parentCenterKicker: {
     color: KIDS_COLOR.deepForest,
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: '900',
     letterSpacing: 0.9,
   },
   parentCenterText: {
     color: KIDS_COLOR.deepForest,
-    fontSize: FONT.sm,
+    fontSize: FONT.xs,
     fontWeight: '900',
     marginTop: 1,
   },
@@ -1355,16 +1355,17 @@ const sh = StyleSheet.create({
   profileSwitcherRail: {
     gap: 8,
     paddingRight: 4,
+    paddingTop: 0,
   },
   profileAvatarPill: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    minWidth: 104,
-    maxWidth: 148,
-    paddingVertical: 6,
-    paddingLeft: 8,
-    paddingRight: 13,
+    minWidth: 98,
+    maxWidth: 140,
+    paddingVertical: 5,
+    paddingLeft: 7,
+    paddingRight: 12,
     borderRadius: RADIUS.pill,
     backgroundColor: KIDS_COLOR.sunshine,
     borderWidth: 1.5,
@@ -1376,8 +1377,8 @@ const sh = StyleSheet.create({
   },
   profileAvatarPillText: {
     flex: 1,
-    marginLeft: 7,
-    fontSize: FONT.sm,
+    marginLeft: 6,
+    fontSize: FONT.xs,
     color: KIDS_COLOR.deepForest,
     fontWeight: '900',
   },
@@ -1487,12 +1488,12 @@ const sh = StyleSheet.create({
 
   root: { flex: 1, backgroundColor: COLOR.bg },
   appHeader: {
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingTop: 8,
+    paddingBottom: 10,
     paddingHorizontal: SPACE.md,
     backgroundColor: KIDS_COLOR.forestGreen,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   appHeaderLeft: {
     display: 'none',
@@ -1523,7 +1524,7 @@ const sh = StyleSheet.create({
     letterSpacing: 0.5,
   },
   profileRow: {
-    marginTop: 6,
+    marginTop: 0,
     alignItems: 'flex-start',
   },
   profilePill: {
@@ -2625,8 +2626,8 @@ const sh = StyleSheet.create({
     fontWeight: '800',
   },
   brandMark: {
-    width: 78,
-    height: 78,
+    width: 62,
+    height: 62,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
@@ -2634,6 +2635,6 @@ const sh = StyleSheet.create({
     overflow: 'visible',
   },
   brandLogo: {
-    width: 78,
-    height: 78,
+    width: 62,
+    height: 62,
   },});
