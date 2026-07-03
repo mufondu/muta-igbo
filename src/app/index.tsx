@@ -148,6 +148,11 @@ function LockBadge() {
 // ─── ROOT COMPONENT ───────────────────────────────────────────────────────────
 export default function MutaIgboApp() {
   const { state, completeOnboarding, incrementStreak } = useApp();
+
+  const headerProfile =
+    state.profiles.find(profile => profile.id === state.activeProfileId) ??
+    state.profiles[0] ??
+    null;
   const [tab, setTab]     = useState<MainTab>('home');
   const [gate, setGate] = useState<null | 'settings' | 'premium'>(null);
   const [nav, setNav]     = useState<NavState>(NAV_RESET);
@@ -210,11 +215,11 @@ export default function MutaIgboApp() {
       <View style={sh.appHeader}>
         <View style={sh.compactHudRow}>
           <View style={sh.activePlayerChip}>
-            <AvatarIllustration avatar={activeProfile?.avatar ?? 'adaeze'} size={44} />
+            <AvatarIllustration avatar={headerProfile?.avatar ?? 'adaeze'} size={44} />
             <View style={sh.activePlayerTextWrap}>
               <Text style={sh.activePlayerKicker}>PLAYER</Text>
               <Text style={sh.activePlayerName} numberOfLines={1}>
-                {activeProfile?.name ?? 'Nwa Igbo'}
+                {headerProfile?.name ?? 'Nwa Igbo'}
               </Text>
             </View>
           </View>
