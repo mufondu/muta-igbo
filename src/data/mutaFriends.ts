@@ -1,18 +1,21 @@
 import { ImageSourcePropType } from 'react-native';
 
 export type MutaFriendId =
-  | 'ada'
-  | 'amara'
-  | 'chioma'
-  | 'ifeoma'
-  | 'chinedu'
-  | 'obinna'
-  | 'kelechi'
-  | 'ebuka';
+  | 'adaeze'
+  | 'kaira'
+  | 'natachi'
+  | 'ebube'
+  | 'ekene'
+  | 'jc'
+  | 'somto'
+  | 'onyeka'
+  | 'chizara'
+  | 'kamsi';
 
 export interface MutaFriend {
   id: MutaFriendId;
   name: string;
+  subtitle: string;
   interest: string;
   icon: string;
   description: string;
@@ -20,90 +23,46 @@ export interface MutaFriend {
 }
 
 export const MUTA_FRIENDS: MutaFriend[] = [
-  {
-    id: 'ada',
-    name: 'Ada',
-    interest: 'Loves books',
-    icon: '📖',
-    description: 'Ada is curious, kind, and loves learning new things.',
-    image: require('../../assets/characters/ada_avatar_clean.png'),
-  },
-  {
-    id: 'amara',
-    name: 'Amara',
-    interest: 'Loves animals',
-    icon: '🐾',
-    description: 'Amara is gentle, playful, and loves animals.',
-    image: require('../../assets/characters/amara_avatar_clean.png'),
-  },
-  {
-    id: 'chioma',
-    name: 'Chioma',
-    interest: 'Loves songs',
-    icon: '🎵',
-    description: 'Chioma loves music, rhythm, and singing along.',
-    image: require('../../assets/characters/chioma_avatar_clean.png'),
-  },
-  {
-    id: 'ifeoma',
-    name: 'Ifeoma',
-    interest: 'Loves drawing',
-    icon: '🎨',
-    description: 'Ifeoma is creative and loves drawing colorful pictures.',
-    image: require('../../assets/characters/ifeoma_avatar_clean.png'),
-  },
-  {
-    id: 'chinedu',
-    name: 'Chinedu',
-    interest: 'Loves stories',
-    icon: '📚',
-    description: 'Chinedu loves folktales, stories, and adventures.',
-    image: require('../../assets/characters/chinedu_avatar_clean.png'),
-  },
-  {
-    id: 'obinna',
-    name: 'Obinna',
-    interest: 'Loves football',
-    icon: '⚽',
-    description: 'Obinna is energetic and loves games and movement.',
-    image: require('../../assets/characters/obinna_avatar_clean.png'),
-  },
-  {
-    id: 'kelechi',
-    name: 'Kelechi',
-    interest: 'Loves drums',
-    icon: '🥁',
-    description: 'Kelechi loves drums, dancing, and celebration.',
-    image: require('../../assets/characters/kelechi_avatar_clean.png'),
-  },
-  {
-    id: 'ebuka',
-    name: 'Ebuka',
-    interest: 'Loves puzzles',
-    icon: '🧩',
-    description: 'Ebuka loves puzzles, patterns, and solving problems.',
-    image: require('../../assets/characters/ebuka_avatar_clean.png'),
-  },
+  { id: 'adaeze', name: 'Adaeze', subtitle: 'Kind and curious', interest: 'Kind and curious', icon: '🌟', description: 'Adaeze is kind, curious, and ready to learn.', image: require('../../assets/illustrations/custom/avatars/adaeze.png') },
+  { id: 'kaira', name: 'Kaira', subtitle: 'Sound star', interest: 'Sound star', icon: '🎵', description: 'Kaira loves sounds and songs.', image: require('../../assets/illustrations/custom/avatars/kaira.png') },
+  { id: 'natachi', name: 'Natachi', subtitle: 'Reading friend', interest: 'Reading friend', icon: '📖', description: 'Natachi enjoys reading.', image: require('../../assets/illustrations/custom/avatars/natachi.png') },
+  { id: 'ebube', name: 'Ebube', subtitle: 'Bright helper', interest: 'Bright helper', icon: '✨', description: 'Ebube is ready to help.', image: require('../../assets/illustrations/custom/avatars/ebube.png') },
+  { id: 'ekene', name: 'Ekene', subtitle: 'Word explorer', interest: 'Word explorer', icon: '🧭', description: 'Ekene loves discovering new words.', image: require('../../assets/illustrations/custom/avatars/ekene.png') },
+  { id: 'jc', name: 'JC', subtitle: 'Brave learner', interest: 'Brave learner', icon: '🏅', description: 'JC learns with courage.', image: require('../../assets/illustrations/custom/avatars/jc.png') },
+  { id: 'somto', name: 'Somto', subtitle: 'Story friend', interest: 'Story friend', icon: '⚽', description: 'Somto enjoys stories and games.', image: require('../../assets/illustrations/custom/avatars/somto.png') },
+  { id: 'onyeka', name: 'Onyeka', subtitle: 'Culture buddy', interest: 'Culture buddy', icon: '🌍', description: 'Onyeka loves culture and family.', image: require('../../assets/illustrations/custom/avatars/onyeka.png') },
+  { id: 'chizara', name: 'Chizara', subtitle: 'Animal guide', interest: 'Animal guide', icon: '🐾', description: 'Chizara loves animals and nature.', image: require('../../assets/illustrations/custom/avatars/chizara.png') },
+  { id: 'kamsi', name: 'Kamsi', subtitle: 'Little helper', interest: 'Little helper', icon: '🤝', description: 'Kamsi is a cheerful helper.', image: require('../../assets/illustrations/custom/avatars/kamsi.png') },
 ];
 
 const LEGACY_AVATAR_MAP: Record<string, MutaFriendId> = {
-  girl: 'ada',
-  boy: 'chinedu',
-  '👧🏾': 'ada',
-  '👧🏽': 'amara',
-  '👧🏻': 'chioma',
-  '👦🏾': 'chinedu',
-  '👦🏽': 'obinna',
-  '👦🏻': 'ebuka',
-  '🧒🏾': 'kelechi',
-  '🧒🏽': 'ifeoma',
+  ada: 'adaeze',
+  amara: 'chizara',
+  chioma: 'kaira',
+  ifeoma: 'natachi',
+  chinedu: 'ekene',
+  obinna: 'somto',
+  kelechi: 'jc',
+  ebuka: 'ebube',
+  girl: 'kaira',
+  boy: 'ekene',
+  '👧🏾': 'adaeze',
+  '👧🏽': 'kaira',
+  '👧🏻': 'natachi',
+  '👦🏾': 'ekene',
+  '👦🏽': 'somto',
+  '👦🏻': 'jc',
+  '🧒🏾': 'ebube',
+  '🧒🏽': 'kamsi',
 };
 
 export function normalizeFriendId(value: string | undefined | null): MutaFriendId {
-  if (!value) return 'ada';
+  if (!value) return 'adaeze';
   if (MUTA_FRIENDS.some(friend => friend.id === value)) return value as MutaFriendId;
-  return LEGACY_AVATAR_MAP[value] ?? 'ada';
+  return LEGACY_AVATAR_MAP[value] ?? 'adaeze';
 }
+
+export const normalizeAvatarId = normalizeFriendId;
 
 export function getMutaFriend(value: string | undefined | null): MutaFriend {
   const id = normalizeFriendId(value);

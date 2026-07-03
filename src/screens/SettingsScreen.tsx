@@ -44,7 +44,7 @@ export default function SettingsScreen({ onBack }: Props) {
   const [legalPage, setLegalPage] = useState<LegalPage>(null);
   const [addingChild, setAddingChild] = useState(false);
   const [newName, setNewName] = useState('');
-  const [newAvatar, setNewAvatar] = useState<AvatarEmoji>('ada');
+  const [newAvatar, setNewAvatar] = useState<AvatarEmoji>('adaeze');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
 
@@ -99,7 +99,7 @@ export default function SettingsScreen({ onBack }: Props) {
       Alert.alert('Maximum reached', 'You can have up to 4 child profiles.'); return;
     }
     addProfile(newName.trim(), newAvatar);
-    setNewName(''); setNewAvatar('ada'); setAddingChild(false);
+    setNewName(''); setNewAvatar('adaeze'); setAddingChild(false);
   }
 
   function saveRename() {

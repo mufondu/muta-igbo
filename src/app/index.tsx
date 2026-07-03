@@ -18,6 +18,7 @@ import {
   View,
 } from 'react-native';
 import LessonIllustration from '../components/illustrations/LessonIllustration';
+import AvatarIllustration from '../components/illustrations/AvatarIllustration';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ALL_LEVELS, buildQuizPool, FOLKTALES, TRANSLATOR_POOL, TranslatorItem, VocabItem } from '../data/lessons';
 import { useApp } from '../hooks/useAppState';
@@ -30,6 +31,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import { COLOR, FONT, IS_TABLET, LEVEL_COLOR, RADIUS, SPACE } from '../utils/tokens';
 import * as haptics from '../utils/haptics';
 import { DailyGoalRing } from '../components/DailyGoalRing';
+import { KIDS_COLOR, KIDS_SHADOW } from '../theme/kidsTheme';
 import ParentGate from '../components/ParentGate';
 import { GuideBanner } from '../components/LevelGuide';
 
@@ -259,19 +261,30 @@ export default function MutaIgboApp() {
 function ProfileSwitcher() {
   const { state, activeProfile, setActiveProfile } = useApp();
   if (state.profiles.length === 0) return null;
+
   return (
-    <View style={sh.profileRow}>
-      {state.profiles.map(p => (
-        <TouchableOpacity
-          key={p.id}
-          style={[sh.profilePill, activeProfile?.id === p.id && sh.profilePillActive]}
-          onPress={() => setActiveProfile(p.id)}
-          accessibilityLabel={`Switch to ${p.name}`}
-        >
-          <Text style={sh.profilePillText}>{p.name}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={sh.profileSwitcherRail}
+      style={sh.profileSwitcherScroll}
+    >
+      {state.profiles.map(p => {
+        const selected = activeProfile?.id === p.id;
+        return (
+          <TouchableOpacity
+            key={p.id}
+            style={[sh.profileAvatarPill, selected && sh.profileAvatarPillActive]}
+            onPress={() => setActiveProfile(p.id)}
+            accessibilityLabel={`Switch to ${p.name}`}
+            activeOpacity={0.88}
+          >
+            <AvatarIllustration avatar={p.avatar} size={34} />
+            <Text style={[sh.profileAvatarPillText, selected && sh.profileAvatarPillTextActive]} numberOfLines={1}>{p.name}</Text>
+          </TouchableOpacity>
+        );
+      })}
+    </ScrollView>
   );
 }
 
@@ -280,109 +293,67 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
   const { activeProfile, state } = useApp();
   const today = new Date().toDateString();
   const goalCount = activeProfile?.goalDate === today ? (activeProfile?.goalCount ?? 0) : 0;
+  const profileName = activeProfile?.name ?? 'Nwa Igbo';
+  const avatar = activeProfile?.avatar ?? 'adaeze';
 
   return (
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={sh.homeScroll} showsVerticalScrollIndicator={false}>
-      {/* Greeting */}
-      <View style={sh.greetBanner}>
-        <ProfileImage avatar={activeProfile?.avatar ?? "ada"} size={56} />
-        <View style={{ flex: 1 }}>
-          <Text style={sh.greetName}>{activeProfile?.name ?? 'Welcome'}'s Journey 🌍</Text>
-          <View style={sh.streakRow}>
-            <Text>🔥</Text>
-            <Text style={sh.streakText}>{activeProfile?.streak ?? 0} day streak · {activeProfile?.wordsLearned ?? 0} words</Text>
+    <ScrollView style={sh.kidsHomeRoot} contentContainerStyle={sh.kidsHomeScroll} showsVerticalScrollIndicator={false}>
+      <View style={sh.kidsHeroCard}>
+        <View style={sh.kidsHeroTopRow}>
+          <View style={sh.kidsHeroAvatarWrap}>
+            <AvatarIllustration avatar={avatar} size={96} />
           </View>
-
-      <DailyGoalRing completed={goalCount} />
+          <View style={sh.kidsHeroCopy}>
+            <Text style={sh.kidsHeroKicker}>TODAY'S IGBO QUEST</Text>
+            <Text style={sh.kidsHeroTitle}>Nnọọ, {profileName}!</Text>
+            <Text style={sh.kidsHeroSub}>Ready to learn, play, and keep your Igbo growing?</Text>
+          </View>
+          {state.isPremium ? <View style={sh.kidsPremiumBadge}><Text style={sh.kidsPremiumBadgeText}>Premium</Text></View> : null}
         </View>
-        {state.isPremium && (
-          <View style={sh.premiumChip}><Text style={sh.premiumChipText}>⭐ Premium</Text></View>
-        )}
+
+        <View style={sh.kidsStatsRow}>
+          <View style={sh.kidsStatChip}><Text style={sh.kidsStatEmoji}>🔥</Text><Text style={sh.kidsStatText}>{activeProfile?.streak ?? 0} day streak</Text></View>
+          <View style={sh.kidsStatChip}><Text style={sh.kidsStatEmoji}>⭐</Text><Text style={sh.kidsStatText}>{activeProfile?.wordsLearned ?? 0} words</Text></View>
+          <DailyGoalRing completed={goalCount} />
+        </View>
       </View>
 
-      {/* Quiz CTA */}
-      <TouchableOpacity style={sh.quizHero} onPress={() => openInner('quiz')} activeOpacity={0.85}>
-        <View>
-          <Text style={sh.quizTag}>DAILY CHALLENGE</Text>
-          <Text style={sh.quizTitle}>Quiz Mode 🎯</Text>
-          <Text style={sh.quizSub}>Play today and keep your streak glowing!</Text>
+      <TouchableOpacity style={sh.kidsQuestCard} onPress={() => openInner('quiz')} activeOpacity={0.88}>
+        <View style={sh.kidsQuestIcon}><Text style={sh.kidsQuestIconText}>🎯</Text></View>
+        <View style={{ flex: 1 }}>
+          <Text style={sh.kidsQuestKicker}>DAILY CHALLENGE</Text>
+          <Text style={sh.kidsQuestTitle}>Play Quiz Mode</Text>
+          <Text style={sh.kidsQuestSub}>Earn stars and keep your streak glowing.</Text>
         </View>
-        <View style={sh.quizBadge}><Text style={{ fontSize: 32 }}>🌟</Text></View>
+        <Text style={sh.kidsQuestArrow}>›</Text>
       </TouchableOpacity>
 
-      {/* Feature rail */}
-      <View style={sh.featureHeaderRow}>
-        <View>
-          <Text style={sh.sectionLabel}>Play Zone</Text>
-          <Text style={sh.featureHeaderTitle}>Pick your next adventure</Text>
-        </View>
+      <View style={sh.kidsSectionHeader}>
+        <Text style={sh.kidsSectionLabel}>PLAY ZONE</Text>
+        <Text style={sh.kidsSectionTitle}>Choose an adventure</Text>
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={sh.featureRail}
-        style={sh.featureRailScroll}
-      >
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={sh.kidsFeatureRail}>
         {[
-          {
-            icon: '🎙️',
-            title: 'Speak',
-            sub: 'Say it back',
-            bg: '#FFF1EA',
-            accent: '#D4571F',
-            action: () => openInner('sayItBack'),
-          },
-          {
-            icon: '💬',
-            title: 'Translate',
-            sub: 'Enuani words',
-            bg: '#EAF5FF',
-            accent: '#2B6CB0',
-            action: () => openInner('translator'),
-          },
-          {
-            icon: '📖',
-            title: 'Stories',
-            sub: 'Folktales',
-            bg: '#E8F6EC',
-            accent: '#087443',
-            action: () => openInner('folktales'),
-          },
-          {
-            icon: '🌍',
-            title: 'History',
-            sub: 'Culture',
-            bg: '#E6FAFA',
-            accent: '#0B7F83',
-            action: () => openInner('history'),
-          },
-          {
-            icon: '🎮',
-            title: 'Games',
-            sub: 'Play & learn',
-            bg: '#F0E7FF',
-            accent: '#6B46C1',
-            action: () => openInner('games' as InnerView),
-          },
+          { icon: '🎙️', title: 'Speak', sub: 'Say it back', bg: '#FFF1EA', accent: '#FF6B6B', action: () => openInner('sayItBack') },
+          { icon: '💬', title: 'Translate', sub: 'Words & phrases', bg: '#EAF5FF', accent: '#2B6CB0', action: () => openInner('translator') },
+          { icon: '📖', title: 'Stories', sub: 'Folktales', bg: '#FFF5D6', accent: '#FFB84D', action: () => openInner('folktales') },
+          { icon: '🌍', title: 'Culture', sub: 'History', bg: '#E6FAFA', accent: '#0B7F83', action: () => openInner('history') },
+          { icon: '🎮', title: 'Games', sub: 'Play & learn', bg: '#F0E7FF', accent: '#6B46C1', action: () => openInner('games' as InnerView) },
         ].map(card => (
-          <TouchableOpacity
-            key={card.title}
-            style={[sh.featureCard, { backgroundColor: card.bg, borderColor: card.accent + '33' }]}
-            onPress={card.action}
-            activeOpacity={0.84}
-          >
-            <View style={[sh.featureIconBubble, { backgroundColor: card.accent }]}>
-              <Text style={sh.featureIcon}>{card.icon}</Text>
-            </View>
-            <Text style={sh.featureTitle} numberOfLines={1}>{card.title}</Text>
-            <Text style={sh.featureSub} numberOfLines={2}>{card.sub}</Text>
+          <TouchableOpacity key={card.title} style={[sh.kidsFeatureCard, { backgroundColor: card.bg, borderColor: card.accent + '33' }]} onPress={card.action} activeOpacity={0.86}>
+            <View style={[sh.kidsFeatureBubble, { backgroundColor: card.accent }]}><Text style={sh.kidsFeatureIcon}>{card.icon}</Text></View>
+            <Text style={sh.kidsFeatureTitle} numberOfLines={1}>{card.title}</Text>
+            <Text style={sh.kidsFeatureSub} numberOfLines={2}>{card.sub}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
-      {/* Level cards */}
-      <Text style={sh.sectionLabel}>Levels</Text>
+      <View style={sh.kidsSectionHeader}>
+        <Text style={sh.kidsSectionLabel}>LESSON PATH</Text>
+        <Text style={sh.kidsSectionTitle}>Keep moving forward</Text>
+      </View>
+
       {ALL_LEVELS.map((level, i) => {
         const lc = LEVEL_COLOR[level.id];
         const progress = activeProfile?.levelProgress[level.id] ?? 0;
@@ -390,32 +361,24 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
         return (
           <BounceIn key={level.id} delay={i * 55}>
             <TouchableOpacity
-              style={[sh.levelCard, isLocked && sh.levelCardLocked]}
+              style={[sh.kidsLevelCard, isLocked && sh.levelCardLocked]}
               onPress={() => { haptics.tapMedium(); isLocked ? openInner('premium') : openInner('levelDetail', level.id); }}
-              activeOpacity={0.8}
+              activeOpacity={0.84}
             >
-              <View style={[sh.levelPip, { backgroundColor: lc.bg }]}>
-                {LEVEL_ICONS[level.id] ? (
-                  <Image source={LEVEL_ICONS[level.id]} style={sh.levelPipImage} resizeMode="contain" />
-                ) : (
-                  <Text style={[sh.featureIcon, { color: lc.pip }]}>{level.level}</Text>
-                )}
+              <View style={[sh.kidsLevelPip, { backgroundColor: lc.bg }]}>
+                {LEVEL_ICONS[level.id] ? <Image source={LEVEL_ICONS[level.id]} style={sh.levelPipImage} resizeMode="contain" /> : <Text style={[sh.featureIcon, { color: lc.pip }]}>{level.level}</Text>}
               </View>
               <View style={{ flex: 1 }}>
                 <View style={sh.levelTopRow}>
                   <Text style={[sh.levelBadge, { color: lc.text }]}>{level.level}</Text>
                   {isLocked && <LockBadge />}
-                  {!level.free && state.isPremium && (
-                    <View style={sh.premiumTag}><Text style={sh.premiumTagText}>⭐</Text></View>
-                  )}
+                  {!level.free && state.isPremium && <View style={sh.premiumTag}><Text style={sh.premiumTagText}>⭐</Text></View>}
                 </View>
-                <Text style={sh.levelName}>{level.title}</Text>
-                <Text style={sh.levelSub}>{level.igboTitle} · {level.description}</Text>
-                <View style={sh.progressTrack}>
-                  <View style={[sh.progressFill, { width: `${Math.round(progress * 100)}%` as any, backgroundColor: lc.pip }]} />
-                </View>
+                <Text style={sh.kidsLevelName}>{level.title}</Text>
+                <Text style={sh.kidsLevelSub}>{level.igboTitle} · {level.description}</Text>
+                <View style={sh.kidsProgressTrack}><View style={[sh.progressFill, { width: `${Math.round(progress * 100)}%` as any, backgroundColor: lc.pip }]} /></View>
               </View>
-              <Text style={sh.chevron}>›</Text>
+              <Text style={sh.kidsChevron}>›</Text>
             </TouchableOpacity>
           </BounceIn>
         );
@@ -1334,6 +1297,50 @@ const ld = StyleSheet.create({
 });
 
 const sh = StyleSheet.create({
+  kidsHomeRoot: { flex: 1, backgroundColor: KIDS_COLOR.palmCream },
+  kidsHomeScroll: { paddingHorizontal: SPACE.md, paddingTop: SPACE.lg, paddingBottom: 128, backgroundColor: KIDS_COLOR.palmCream },
+  profileSwitcherScroll: { maxWidth: 230 },
+  profileSwitcherRail: { gap: 8, paddingRight: 4 },
+  profileAvatarPill: { flexDirection: 'row', alignItems: 'center', minWidth: 92, maxWidth: 126, paddingVertical: 6, paddingLeft: 6, paddingRight: 10, borderRadius: RADIUS.pill, backgroundColor: 'rgba(255,255,255,0.18)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.22)' },
+  profileAvatarPillActive: { backgroundColor: KIDS_COLOR.sunshine, borderColor: KIDS_COLOR.mango },
+  profileAvatarPillText: { flex: 1, marginLeft: 6, fontSize: FONT.xs, color: KIDS_COLOR.white, fontWeight: '900' },
+  profileAvatarPillTextActive: { color: KIDS_COLOR.deepForest },
+  kidsHeroCard: { ...KIDS_SHADOW.softCard, borderRadius: 34, padding: SPACE.md, marginBottom: SPACE.lg, backgroundColor: KIDS_COLOR.softMint, borderWidth: 1.5, borderColor: '#BDEFD2' },
+  kidsHeroTopRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  kidsHeroAvatarWrap: { width: 98, height: 98, borderRadius: 999, alignItems: 'center', justifyContent: 'center', backgroundColor: KIDS_COLOR.white, overflow: 'visible' },
+  kidsHeroCopy: { flex: 1 },
+  kidsHeroKicker: { color: KIDS_COLOR.mango, fontSize: FONT.xs, fontWeight: '900', letterSpacing: 1.4, marginBottom: 2 },
+  kidsHeroTitle: { color: KIDS_COLOR.textPrimary, fontSize: 30, lineHeight: 34, fontWeight: '900', letterSpacing: -0.8 },
+  kidsHeroSub: { color: KIDS_COLOR.textSecondary, fontSize: FONT.sm, lineHeight: 20, fontWeight: '800', marginTop: 5 },
+  kidsPremiumBadge: { position: 'absolute', top: -8, right: 10, backgroundColor: KIDS_COLOR.sunshine, borderRadius: RADIUS.pill, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: KIDS_COLOR.mango },
+  kidsPremiumBadgeText: { color: KIDS_COLOR.deepForest, fontSize: FONT.xs, fontWeight: '900' },
+  kidsStatsRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 14, flexWrap: 'wrap' },
+  kidsStatChip: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 8, borderRadius: RADIUS.pill, backgroundColor: KIDS_COLOR.white, borderWidth: 1, borderColor: KIDS_COLOR.borderSoft },
+  kidsStatEmoji: { fontSize: 15, marginRight: 5 },
+  kidsStatText: { color: KIDS_COLOR.textPrimary, fontSize: FONT.xs, fontWeight: '900' },
+  kidsQuestCard: { ...KIDS_SHADOW.softCard, flexDirection: 'row', alignItems: 'center', gap: 14, borderRadius: 32, padding: SPACE.md, marginBottom: SPACE.xl, backgroundColor: KIDS_COLOR.forestGreen, borderWidth: 1.5, borderColor: '#197A4F' },
+  kidsQuestIcon: { width: 76, height: 76, borderRadius: 28, alignItems: 'center', justifyContent: 'center', backgroundColor: KIDS_COLOR.sunshine, borderWidth: 5, borderColor: 'rgba(255,255,255,0.32)' },
+  kidsQuestIconText: { fontSize: 34 },
+  kidsQuestKicker: { color: KIDS_COLOR.sunshine, fontSize: FONT.xs, fontWeight: '900', letterSpacing: 1.4, marginBottom: 3 },
+  kidsQuestTitle: { color: KIDS_COLOR.white, fontSize: 28, fontWeight: '900', letterSpacing: -0.5 },
+  kidsQuestSub: { color: '#DDF7E8', fontSize: FONT.sm, fontWeight: '800', marginTop: 4 },
+  kidsQuestArrow: { color: KIDS_COLOR.white, fontSize: 34, fontWeight: '900' },
+  kidsSectionHeader: { marginBottom: 10, marginTop: 4 },
+  kidsSectionLabel: { color: KIDS_COLOR.mango, fontSize: FONT.xs, fontWeight: '900', letterSpacing: 1.7 },
+  kidsSectionTitle: { color: KIDS_COLOR.textPrimary, fontSize: 22, fontWeight: '900', letterSpacing: -0.4 },
+  kidsFeatureRail: { gap: 12, paddingRight: SPACE.md, paddingBottom: SPACE.md },
+  kidsFeatureCard: { ...KIDS_SHADOW.softCard, width: 126, minHeight: 142, borderRadius: 28, padding: 12, borderWidth: 1.5 },
+  kidsFeatureBubble: { width: 48, height: 48, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
+  kidsFeatureIcon: { fontSize: 24 },
+  kidsFeatureTitle: { color: KIDS_COLOR.textPrimary, fontSize: 17, fontWeight: '900', marginBottom: 3 },
+  kidsFeatureSub: { color: KIDS_COLOR.textSecondary, fontSize: FONT.xs, fontWeight: '800', lineHeight: 16 },
+  kidsLevelCard: { ...KIDS_SHADOW.softCard, flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: KIDS_COLOR.white, borderRadius: 30, borderWidth: 1.5, borderColor: KIDS_COLOR.borderSoft, padding: SPACE.md, marginBottom: SPACE.md, minHeight: 120 },
+  kidsLevelPip: { width: 74, height: 74, borderRadius: 26, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  kidsLevelName: { fontSize: FONT.xl, fontWeight: '900', color: KIDS_COLOR.textPrimary, marginBottom: 3, letterSpacing: -0.5 },
+  kidsLevelSub: { fontSize: FONT.sm, color: KIDS_COLOR.textSecondary, marginTop: 1, lineHeight: 20, fontWeight: '800' },
+  kidsProgressTrack: { height: 9, backgroundColor: '#EAF0E8', borderRadius: 999, marginTop: 12, overflow: 'hidden' },
+  kidsChevron: { fontSize: 34, color: KIDS_COLOR.textSoft, fontWeight: '900' },
+
   root: { flex: 1, backgroundColor: COLOR.bg },
 
   appHeader: {
