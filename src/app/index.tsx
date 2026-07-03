@@ -16,6 +16,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Modal,
 } from 'react-native';
 import LessonIllustration from '../components/illustrations/LessonIllustration';
 import AvatarIllustration from '../components/illustrations/AvatarIllustration';
