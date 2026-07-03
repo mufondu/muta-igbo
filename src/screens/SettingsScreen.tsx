@@ -570,6 +570,7 @@ const s = StyleSheet.create({
     borderColor: '#BDEFD2',
   },
   heroAvatarWrap: {
+    borderWidth: 0,
     backgroundColor: 'transparent',
     width: 104,
     height: 104,

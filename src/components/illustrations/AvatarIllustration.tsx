@@ -20,44 +20,60 @@ const AVATARS: Record<string, ImageSourcePropType> = {
   kamsi: require('../../../assets/illustrations/custom/avatars/kamsi.png'),
 };
 
+const LEGACY_AVATAR_MAP: Record<string, string> = {
+  ada: 'adaeze',
+  amara: 'chizara',
+  chioma: 'kaira',
+  ifeoma: 'natachi',
+  chinedu: 'ekene',
+  obinna: 'somto',
+  kelechi: 'jc',
+  ebuka: 'ebube',
+  girl: 'kaira',
+  boy: 'ekene',
+  '👧🏾': 'adaeze',
+  '👧🏽': 'kaira',
+  '👧🏻': 'natachi',
+  '👦🏾': 'ekene',
+  '👦🏽': 'somto',
+  '👦🏻': 'jc',
+  '🧒🏾': 'ebube',
+  '🧒🏽': 'kamsi',
+};
+
 function normalize(value?: string): string {
-  return String(value || '')
+  const key = String(value || '')
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^\w\s-]/g, '')
     .trim();
+
+  return LEGACY_AVATAR_MAP[key] ?? key;
 }
 
 export function getAvatarIllustrationSource(avatar?: string, name?: string): ImageSourcePropType {
   const key = normalize(avatar || name);
-
-  if (AVATARS[key]) return AVATARS[key];
-
-  const appNameMap: Record<string, ImageSourcePropType> = {
-    adaeze: AVATARS.adaeze,
-    kaira: AVATARS.kaira,
-    natachi: AVATARS.natachi,
-    ebube: AVATARS.ebube,
-    ekene: AVATARS.ekene,
-    jc: AVATARS.jc,
-    somto: AVATARS.somto,
-    onyeka: AVATARS.onyeka,
-    chizara: AVATARS.chizara,
-    kamsi: AVATARS.kamsi,
-  };
-
-  if (appNameMap[key]) return appNameMap[key];
-
-  return AVATARS.ekene;
+  return AVATARS[key] ?? AVATARS.adaeze;
 }
 
 export default function AvatarIllustration({ avatar, name, size = 56 }: Props) {
-  const source = getAvatarIllustrationSource(avatar, name);
-
   return (
-    <View style={[styles.wrap, { width: size, height: size }]}>
-      <Image source={source} style={styles.image} resizeMode="contain" />
+    <View
+      pointerEvents="none"
+      style={[
+        styles.wrap,
+        {
+          width: size,
+          height: size,
+        },
+      ]}
+    >
+      <Image
+        source={getAvatarIllustrationSource(avatar, name)}
+        style={styles.image}
+        resizeMode="contain"
+      />
     </View>
   );
 }
@@ -73,7 +89,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
   },
   image: {
-    width: '118%',
-    height: '118%',
+    width: '112%',
+    height: '112%',
   },
 });

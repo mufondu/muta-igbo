@@ -562,6 +562,7 @@ const s = StyleSheet.create({
     transform: [{ scale: 1.04 }],
   },
   avatarRosterImageWrap: {
+    borderWidth: 0,
     backgroundColor: 'transparent',
     width: 78,
     height: 78,
@@ -811,6 +812,7 @@ overflow: 'visible',
     marginBottom: 14,
   },
   selectedAvatarWrap: {
+    borderWidth: 0,
     overflow: 'visible',
     backgroundColor: 'transparent',
     width: 112,
@@ -943,6 +945,7 @@ overflow: 'visible',
     overflow: 'visible',
   },
   friendGlow: {
+    borderWidth: 0,
     overflow: 'visible',
     backgroundColor: 'transparent',
     width: 76,
