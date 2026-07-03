@@ -59,21 +59,8 @@ export function getAvatarIllustrationSource(avatar?: string, name?: string): Ima
 
 export default function AvatarIllustration({ avatar, name, size = 56 }: Props) {
   return (
-    <View
-      pointerEvents="none"
-      style={[
-        styles.wrap,
-        {
-          width: size,
-          height: size,
-        },
-      ]}
-    >
-      <Image
-        source={getAvatarIllustrationSource(avatar, name)}
-        style={styles.image}
-        resizeMode="contain"
-      />
+    <View pointerEvents="none" style={[styles.wrap, { width: size, height: size }]}>
+      <Image source={getAvatarIllustrationSource(avatar, name)} style={styles.image} resizeMode="contain" />
     </View>
   );
 }
