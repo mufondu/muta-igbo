@@ -226,7 +226,7 @@ export default function MutaIgboApp() {
       </View>
 
       {/* Body */}
-      {tab === 'home'     && <HomeScreen openInner={openInner} />}
+      {tab === 'home'     && <HomeScreen openInner={openInner} onOpenProfileSheet={() => setProfileSheetOpen(true)} />}
       {tab === 'progress' && <ProgressScreen />}
       {tab === 'settings' && <SettingsScreen onBack={() => setTab('home')} />}
 
@@ -349,7 +349,7 @@ function ProfileSwitcher() {
 }
 
 // ─── HOME SCREEN ──────────────────────────────────────────────────────────────
-function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string) => void }) {
+function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerView, levelId?: string) => void; onOpenProfileSheet: () => void }) {
   const { activeProfile, state } = useApp();
   const today = new Date().toDateString();
   const goalCount = activeProfile?.goalDate === today ? (activeProfile?.goalCount ?? 0) : 0;
@@ -374,7 +374,7 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
                 <TouchableOpacity
                   style={sh.switchPlayerMiniBtn}
                   activeOpacity={0.86}
-                  onPress={() => setProfileSheetOpen(true)}
+                  onPress={onOpenProfileSheet}
                   accessibilityLabel="Switch child profile"
                 >
                   <Text style={sh.switchPlayerMiniText}>Switch</Text>
