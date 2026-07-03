@@ -204,9 +204,7 @@ export default function MutaIgboApp() {
       {/* App header */}
       <View style={sh.appHeader}>
         <View style={sh.appHeaderTop}>
-          <View style={sh.appHeaderLeft}>
-            <Image source={MUTA_LOGO} style={sh.appLogoImage} resizeMode="contain" />
-          </View>
+          <Image source={MUTA_LOGO} style={sh.appLogoImage} resizeMode="contain" />
 
           {gate !== 'settings' ? (
             <TouchableOpacity
@@ -2616,4 +2614,69 @@ const sh = StyleSheet.create({\n  appHeaderTop: {
     marginTop: 1,
     lineHeight: 20,
     fontWeight: '800',
+  },
+  appHeader: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingHorizontal: SPACE.md,
+    backgroundColor: KIDS_COLOR.forestGreen,
+    borderBottomLeftRadius: 26,
+    borderBottomRightRadius: 26,
+  },
+  appHeaderTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  appHeaderLeft: {
+    display: 'none',
+  },
+  appLogoBox: {
+    display: 'none',
+  },
+  appLogoImage: {
+    width: 118,
+    height: 118,
+    marginLeft: -14,
+    marginTop: -20,
+    marginBottom: -20,
+  },
+  appTitleWrap: {
+    display: 'none',
+  },
+  appTitle: {
+    display: 'none',
+  },
+  appSub: {
+    display: 'none',
+  },
+  parentCenterBtn: {
+    minWidth: 108,
+    minHeight: 50,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: KIDS_COLOR.sunshine,
+    borderWidth: 1.5,
+    borderColor: KIDS_COLOR.mango,
+  },
+  profileSwitcherRail: {
+    gap: 8,
+    paddingRight: 4,
+  },
+  profileAvatarPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    minWidth: 104,
+    maxWidth: 148,
+    paddingVertical: 6,
+    paddingLeft: 8,
+    paddingRight: 13,
+    borderRadius: RADIUS.pill,
+    backgroundColor: KIDS_COLOR.sunshine,
+    borderWidth: 1.5,
+    borderColor: KIDS_COLOR.mango,
   },});
