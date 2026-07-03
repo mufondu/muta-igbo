@@ -1,28 +1,41 @@
 export const KIDS_COLOR = {
+  // Calm base surfaces
   palmCream: '#FFF8E7',
   softCream: '#FFF3D8',
-  softMint: '#DDF7E8',
-  mintMist: '#EEFBEF',
   white: '#FFFFFF',
 
-  forestGreen: '#006B3A',
-  deepForest: '#00422B',
-  palmGreen: '#19B765',
-  leaf: '#22C55E',
+  // Kid-first learning surfaces
+  softSky: '#DFF5FF',
+  skyMist: '#EFFAFF',
+  softMint: '#E7FAEF',
+  mintMist: '#F1FFF6',
+  softCoral: '#FFE8EF',
+  softPurple: '#F1E9FF',
+  softSunshine: '#FFF3C4',
 
+  // Primary playful brand colors
+  sky: '#31BDED',
   sunshine: '#FFD24A',
   mango: '#FFA62B',
   coral: '#F64F72',
-  sky: '#31BDED',
   purple: '#7A45D8',
-  orange: '#FF7A1A',
 
-  textPrimary: '#00422B',
-  textSecondary: '#3F6F5C',
-  textSoft: '#6F8B7D',
-  borderSoft: 'rgba(0, 66, 43, 0.12)',
-  shadow: 'rgba(0, 66, 43, 0.18)',
+  // Support colors
+  palmGreen: '#19B765',
+  leaf: '#22C55E',
+  forestGreen: '#008A4A',
+  deepForest: '#00422B',
 
+  // Text system: less corporate than forest green
+  textPrimary: '#083E4A',
+  textSecondary: '#376B70',
+  textSoft: '#6D8A8F',
+
+  // Structure
+  borderSoft: 'rgba(8, 62, 74, 0.12)',
+  shadow: 'rgba(8, 62, 74, 0.16)',
+
+  // Semantic aliases
   success: '#19B765',
   warning: '#FFD24A',
   reward: '#FFA62B',
@@ -33,21 +46,21 @@ export const KIDS_COLOR = {
 
 export const KIDS_GRADIENT = {
   warmScreen: ['#FFF8E7', '#FFF3D8'],
-  mintScreen: ['#EEFBEF', '#DDF7E8'],
-  heroSky: ['#CFF7FF', '#FFF8E7'],
-  playZone: ['#FFF8E7', '#EEFBEF'],
+  skyScreen: ['#EFFAFF', '#FFF8E7'],
+  mintScreen: ['#F1FFF6', '#E7FAEF'],
+  playZone: ['#FFF8E7', '#EFFAFF'],
 };
 
 export const KIDS_SHADOW = {
   softCard: {
-    shadowColor: '#00422B',
+    shadowColor: '#083E4A',
     shadowOpacity: 0.12,
     shadowRadius: 18,
     shadowOffset: { width: 0, height: 10 },
     elevation: 4,
   },
   button: {
-    shadowColor: '#00422B',
+    shadowColor: '#083E4A',
     shadowOpacity: 0.18,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 7 },

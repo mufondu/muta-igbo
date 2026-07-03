@@ -1,4 +1,18 @@
-import type { AnimalId } from '../components/illustrations/AnimalIllustration';
+export type AnimalId =
+  | 'dog'
+  | 'cat'
+  | 'chicken'
+  | 'goat'
+  | 'fish'
+  | 'bird'
+  | 'leopard'
+  | 'lion'
+  | 'elephant'
+  | 'rabbit'
+  | 'rat'
+  | 'python'
+  | 'tortoise'
+  | 'grasshopper';
 
 const ANIMAL_ALIASES: Record<AnimalId, string[]> = {
   dog: ['dog', 'nkita'],
