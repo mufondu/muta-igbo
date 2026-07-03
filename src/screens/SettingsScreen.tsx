@@ -2,8 +2,6 @@
 import React, { useState } from 'react';
 import {
   Alert,
-  Image,
-  ImageSourcePropType,
   ScrollView,
   StyleSheet,
   Switch,
@@ -24,7 +22,7 @@ interface Props {
 }
 
 type LegalPage = null | 'terms' | 'privacy' | 'subscription';
-type SettingsIconName = keyof typeof SETTINGS_ICON_ASSETS;
+type SettingsIconName = string;
 
 function SettingRow({
   icon,
@@ -49,7 +47,7 @@ function SettingRow({
       disabled={!onPress}
     >
       <View style={[s.settingIcon, danger && s.settingIconDanger]}>
-        <Image source={SETTINGS_ICON_ASSETS[icon]} style={s.settingIconImage} resizeMode="contain" />
+        <Text style={[s.settingIconBadgeText, danger && s.settingIconBadgeTextDanger]}>{icon}</Text>
       </View>
       <View style={s.settingCopy}>
         <Text style={[s.settingLabel, danger && s.dangerText]}>{label}</Text>
@@ -230,7 +228,7 @@ export default function SettingsScreen({ onBack }: Props) {
         {!state.isPremium ? (
           <TouchableOpacity style={s.premiumCard} onPress={handleSubscribe} activeOpacity={0.88}>
             <View style={s.premiumIcon}>
-              <Image source={SETTINGS_ICON_ASSETS.premium} style={s.premiumIconImage} resizeMode="contain" />
+              <Text style={s.premiumIconText}>VIP</Text>
             </View>
             <View style={s.premiumCopy}>
               <Text style={s.premiumTitle}>Go Premium</Text>
@@ -241,7 +239,7 @@ export default function SettingsScreen({ onBack }: Props) {
         ) : (
           <View style={s.premiumActiveCard}>
             <View style={s.premiumIcon}>
-              <Image source={SETTINGS_ICON_ASSETS.check} style={s.premiumIconImage} resizeMode="contain" />
+              <Text style={s.premiumIconText}>OK</Text>
             </View>
             <View style={s.premiumCopy}>
               <Text style={s.premiumTitle}>Premium Active</Text>
@@ -294,14 +292,14 @@ export default function SettingsScreen({ onBack }: Props) {
                         style={s.iconButton}
                         activeOpacity={0.82}
                       >
-                        <Image source={SETTINGS_ICON_ASSETS.edit} style={s.smallIconImage} resizeMode="contain" />
+                        <Text style={s.iconButtonText}>EDIT</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={() => confirmDelete(profile.id, profile.name)}
                         style={s.iconButton}
                         activeOpacity={0.82}
                       >
-                        <Image source={SETTINGS_ICON_ASSETS.delete} style={s.smallIconImage} resizeMode="contain" />
+                        <Text style={[s.iconButtonText, s.iconButtonTextDanger]}>DEL</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -317,7 +315,7 @@ export default function SettingsScreen({ onBack }: Props) {
               {!addingChild ? (
                 <TouchableOpacity style={s.addChildCard} onPress={() => setAddingChild(true)} activeOpacity={0.86}>
                   <View style={s.addChildIcon}>
-                    <Image source={SETTINGS_ICON_ASSETS.add} style={s.addChildIconImage} resizeMode="contain" />
+                    <Text style={s.addChildIconText}>ADD</Text>
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={s.addChildTitle}>Add child profile</Text>
@@ -384,7 +382,7 @@ export default function SettingsScreen({ onBack }: Props) {
 
         <SettingsSection title="Learning experience" subtitle="Make the game feel right for your child.">
           <SettingRow
-            icon="sound"
+            icon="SND"
             label="Sound effects"
             sub="Play friendly sounds during lessons and games."
             right={
@@ -398,7 +396,7 @@ export default function SettingsScreen({ onBack }: Props) {
           />
           <MiniDivider />
           <SettingRow
-            icon="phone"
+            icon="HAP"
             label="Gentle vibration"
             sub="Use haptic feedback for taps, wins, and choices."
             right={
@@ -412,14 +410,14 @@ export default function SettingsScreen({ onBack }: Props) {
           />
           <MiniDivider />
           <SettingRow
-            icon="goal"
+            icon="GOAL"
             label="Daily learning goal"
             sub="Current goal: 3 activities per day. Editable goal coming soon."
             right={<Text style={s.comingSoonPill}>Soon</Text>}
           />
           <MiniDivider />
           <SettingRow
-            icon="safe"
+            icon="SAFE"
             label="Kid-safe mode"
             sub="Parent-managed settings and gentle reset protections."
             right={<Text style={s.safePill}>On</Text>}
@@ -428,29 +426,29 @@ export default function SettingsScreen({ onBack }: Props) {
 
         <SettingsSection title="Parent tools" subtitle="Modern controls for a children’s app.">
           <SettingRow
-            icon="progress"
+            icon="PROG"
             label="Progress snapshot"
             sub={`${totalWords} words learned across ${state.profiles.length} child profile${state.profiles.length === 1 ? '' : 's'}.`}
           />
           <MiniDivider />
           <SettingRow
-            icon="earth"
+            icon="IGBO"
             label="Dialect focus"
             sub="Central Igbo first · Enuani variants where available."
           />
           <MiniDivider />
           <SettingRow
-            icon="privacy"
+            icon="PRIV"
             label="Privacy-first setup"
             sub="Profiles stay parent-managed on this device."
           />
         </SettingsSection>
 
         <SettingsSection title="About & legal">
-          <SettingRow icon="version" label="App version" sub="Mụta Igbo v2.0.0" />
+          <SettingRow icon="APP" label="App version" sub="Mụta Igbo v2.0.0" />
           <MiniDivider />
           <SettingRow
-            icon="terms"
+            icon="DOC"
             label="Terms & Conditions"
             sub="Review app terms."
             right={<Text style={s.chevron}>›</Text>}
@@ -458,7 +456,7 @@ export default function SettingsScreen({ onBack }: Props) {
           />
           <MiniDivider />
           <SettingRow
-            icon="key"
+            icon="KEY"
             label="Privacy Policy"
             sub="How privacy is handled."
             right={<Text style={s.chevron}>›</Text>}
@@ -466,7 +464,7 @@ export default function SettingsScreen({ onBack }: Props) {
           />
           <MiniDivider />
           <SettingRow
-            icon="premium"
+            icon="STAR"
             label="Subscription Terms"
             sub="Premium billing and renewal details."
             right={<Text style={s.chevron}>›</Text>}
@@ -476,7 +474,7 @@ export default function SettingsScreen({ onBack }: Props) {
 
         <SettingsSection title="Data controls">
           <SettingRow
-            icon="reset"
+            icon="RST"
             label="Reset all progress"
             sub="Delete all profiles, streaks, words, and progress."
             right={<Text style={s.chevronDanger}>›</Text>}
@@ -496,22 +494,20 @@ export default function SettingsScreen({ onBack }: Props) {
 }
 
 const s = StyleSheet.create({
-  settingIconImage: {
-    width: 30,
-    height: 30,
+  settingIconBadgeText: {
+    color: KIDS_COLOR.white,
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 0.4,
+    textAlign: 'center',
   },
-  addChildIconImage: {
-    width: 34,
-    height: 34,
+  settingIconBadgeTextDanger: {
+    color: KIDS_COLOR.white,
   },
-  smallIconImage: {
-    width: 20,
-    height: 20,
+  iconButtonTextDanger: {
+    color: KIDS_COLOR.coral,
   },
-  premiumIconImage: {
-    width: 34,
-    height: 34,
-  },
+
 
   root: {
     flex: 1,
@@ -667,7 +663,10 @@ const s = StyleSheet.create({
     marginRight: 12,
   },
   premiumIconText: {
-    fontSize: 28,
+    color: KIDS_COLOR.deepForest,
+    fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 0.8,
   },
   premiumCopy: {
     flex: 1,
@@ -730,16 +729,16 @@ const s = StyleSheet.create({
     paddingHorizontal: SPACE.md,
   },
   settingIcon: {
-    width: 46,
-    height: 46,
+    width: 48,
+    height: 48,
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: KIDS_COLOR.mintMist,
+    backgroundColor: KIDS_COLOR.palmGreen,
     marginRight: 12,
   },
   settingIconDanger: {
-    backgroundColor: '#FFE8E8',
+    backgroundColor: KIDS_COLOR.coral,
   },
   settingCopy: {
     flex: 1,
@@ -882,8 +881,9 @@ const s = StyleSheet.create({
   },
   addChildIconText: {
     color: KIDS_COLOR.deepForest,
-    fontSize: 28,
+    fontSize: 11,
     fontWeight: '900',
+    letterSpacing: 0.6,
   },
   addChildTitle: {
     color: KIDS_COLOR.textPrimary,
