@@ -214,15 +214,17 @@ export default function MutaIgboApp() {
             </View>
           </View>
 
-          <TouchableOpacity
-            onPress={() => { haptics.tapLight(); setGate('settings'); }}
-            style={sh.parentCenterBtn}
-            accessibilityLabel="Open Parent Center settings"
-            activeOpacity={0.86}
-          >
-            <Text style={sh.parentCenterKicker}>PARENT</Text>
-            <Text style={sh.parentCenterText}>Settings</Text>
-          </TouchableOpacity>
+          {gate !== 'settings' ? (
+            <TouchableOpacity
+              onPress={() => { haptics.tapLight(); setGate('settings'); }}
+              style={sh.parentCenterBtn}
+              accessibilityLabel="Open Parent Center settings"
+              activeOpacity={0.86}
+            >
+              <Text style={sh.parentCenterKicker}>PARENT</Text>
+              <Text style={sh.parentCenterText}>Settings</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
 
         <ProfileSwitcher />
@@ -1488,8 +1490,8 @@ const sh = StyleSheet.create({
 
   root: { flex: 1, backgroundColor: COLOR.bg },
   appHeader: {
-    paddingTop: 16,
-    paddingBottom: 14,
+    paddingTop: 14,
+    paddingBottom: 12,
     paddingHorizontal: SPACE.md,
     backgroundColor: KIDS_COLOR.forestGreen,
     borderBottomLeftRadius: 30,
@@ -2614,8 +2616,8 @@ const sh = StyleSheet.create({
     height: '100%',
   },
   appLogoBox: {
-    width: 64,
-    height: 64,
+    width: 66,
+    height: 66,
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
@@ -2624,8 +2626,8 @@ const sh = StyleSheet.create({
     overflow: 'visible',
   },
   appLogoImage: {
-    width: 64,
-    height: 64,
+    width: 66,
+    height: 66,
   },
   levelTitle: {
     fontSize: FONT.xl,
