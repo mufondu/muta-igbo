@@ -205,13 +205,7 @@ export default function MutaIgboApp() {
       <View style={sh.appHeader}>
         <View style={sh.appHeaderTop}>
           <View style={sh.appHeaderLeft}>
-            <View style={sh.appLogoBox}>
-              <Image source={MUTA_LOGO} style={sh.appLogoImage} resizeMode="contain" />
-            </View>
-            <View style={sh.appTitleWrap}>
-              <Text style={sh.appTitle}>Mụta Igbo</Text>
-              <Text style={sh.appSub}>Central Igbo / Enuani Edition</Text>
-            </View>
+            <Image source={MUTA_LOGO} style={sh.appLogoImage} resizeMode="contain" />
           </View>
 
           {gate !== 'settings' ? (
@@ -1309,20 +1303,16 @@ const ld = StyleSheet.create({
   soundIcon: { fontSize: 18 },
 });
 
-const sh = StyleSheet.create({
-  appHeaderTop: {
+const sh = StyleSheet.create({\n  appHeaderTop: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  appTitleWrap: {
-    flex: 1,
-    minWidth: 0,
-  },
-  parentCenterBtn: {
+    marginBottom: 8,
+  },\n  appTitleWrap: {
+    display: 'none',
+  },\n  parentCenterBtn: {
     minWidth: 104,
-    minHeight: 52,
+    minHeight: 50,
     paddingHorizontal: 14,
     borderRadius: 20,
     alignItems: 'center',
@@ -1355,17 +1345,16 @@ const sh = StyleSheet.create({
   },
   profileSwitcherScroll: {
     maxWidth: '100%',
-  },
-  profileSwitcherRail: {
+  },\n  profileSwitcherRail: {
     gap: 8,
     paddingRight: 4,
-  },
-  profileAvatarPill: {
+  },\n  profileAvatarPill: {
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'flex-start',
     minWidth: 104,
     maxWidth: 148,
-    paddingVertical: 7,
+    paddingVertical: 6,
     paddingLeft: 8,
     paddingRight: 13,
     borderRadius: RADIUS.pill,
@@ -1488,37 +1477,26 @@ const sh = StyleSheet.create({
   },
   kidsChevron: { fontSize: 34, color: KIDS_COLOR.textSoft, fontWeight: '900' },
 
-  root: { flex: 1, backgroundColor: COLOR.bg },
-  appHeader: {
-    paddingTop: 14,
+  root: { flex: 1, backgroundColor: COLOR.bg },\n  appHeader: {
+    paddingTop: 12,
     paddingBottom: 12,
     paddingHorizontal: SPACE.md,
     backgroundColor: KIDS_COLOR.forestGreen,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-  },
-  appHeaderLeft: {
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
+  },\n  appHeaderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
     flex: 1,
     minWidth: 0,
   },
   logoBadge: {
     width: 36, height: 36, borderRadius: RADIUS.sm,
     backgroundColor: COLOR.gold, alignItems: 'center', justifyContent: 'center',
-  },
-  appTitle: {
-    fontSize: 26,
-    fontWeight: '900',
-    color: KIDS_COLOR.white,
-    letterSpacing: -0.4,
-  },
-  appSub: {
-    fontSize: FONT.xs,
-    color: '#DDF7E8',
-    fontWeight: '800',
-    marginTop: 2,
+  },\n  appTitle: {
+    display: 'none',
+  },\n  appSub: {
+    display: 'none',
   },
   headerRight: {
     flexDirection: 'row',
@@ -2614,20 +2592,16 @@ const sh = StyleSheet.create({
   logoImage: {
     width: '100%',
     height: '100%',
-  },
-  appLogoBox: {
-    width: 66,
-    height: 66,
-    borderRadius: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
+  },\n  appLogoBox: {
+    width: 0,
+    height: 0,
     backgroundColor: 'transparent',
     borderWidth: 0,
-    overflow: 'visible',
-  },
-  appLogoImage: {
-    width: 66,
-    height: 66,
+  },\n  appLogoImage: {
+    width: 92,
+    height: 92,
+    marginLeft: -8,
+    marginVertical: -16,
   },
   levelTitle: {
     fontSize: FONT.xl,
