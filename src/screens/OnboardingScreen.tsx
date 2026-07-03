@@ -576,7 +576,7 @@ const s = StyleSheet.create({
 overflow: 'visible',
   },
   avatarRosterImageWrapSelected: {
-    backgroundColor: 'transparent', 161, 42, 0.16)',
+    backgroundColor: 'rgba(212, 161, 42, 0.16)',
     borderWidth: 0,
     overflow: 'visible',
   },
@@ -1108,7 +1108,7 @@ overflow: 'visible',
   },
   checkBubbleText: { color: KIDS_COLOR.deepForest, fontSize: 18, fontWeight: '900' },
   friendAvatarRing: {
-    borderWidth: 0,255,255,0.14)',
+    borderWidth: 0,
     marginBottom: 8,
     backgroundColor: 'transparent',
     overflow: 'visible',
