@@ -203,12 +203,13 @@ export default function MutaIgboApp() {
   return (
     <SafeAreaView style={sh.root}>
       {/* App header */}
+      <View style={sh.brandTopRow}>
+        <Image source={MUTA_HEADER_LOGO} style={sh.standaloneLogo} resizeMode="contain" />
+      </View>
+
       <View style={sh.appHeader}>
-        <View style={sh.appHeaderTop}>
-          <View style={sh.compactBrandStack}>
-            <Image source={MUTA_HEADER_LOGO} style={sh.brandLogo} resizeMode="contain" />
-            <ProfileSwitcher />
-          </View>
+        <View style={sh.compactHudRow}>
+          <ProfileSwitcher />
 
           {gate !== 'settings' ? (
             <TouchableOpacity
@@ -1304,10 +1305,7 @@ const ld = StyleSheet.create({
 
 const sh = StyleSheet.create({
   appHeaderTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    minHeight: 86,
+    display: 'none',
   },
   appTitleWrap: {
     display: 'none',
@@ -1332,39 +1330,39 @@ const sh = StyleSheet.create({
     backgroundColor: KIDS_COLOR.palmCream,
   },
   profileSwitcherScroll: {
-    maxWidth: 104,
+    maxWidth: 170,
   },
   profileSwitcherRail: {
-    gap: 0,
-    paddingRight: 0,
+    gap: 8,
+    paddingRight: 4,
     paddingTop: 0,
   },
   profileAvatarPill: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    width: 86,
-    minHeight: 28,
-    paddingVertical: 0,
-    paddingHorizontal: 0,
-    borderRadius: 999,
-    backgroundColor: 'transparent',
-    borderWidth: 0,
+    minWidth: 116,
+    maxWidth: 164,
+    paddingVertical: 6,
+    paddingLeft: 7,
+    paddingRight: 14,
+    borderRadius: RADIUS.pill,
+    backgroundColor: KIDS_COLOR.sunshine,
+    borderWidth: 1.5,
+    borderColor: KIDS_COLOR.mango,
   },
   profileAvatarPillActive: {
-    backgroundColor: 'transparent',
-    borderWidth: 0,
+    backgroundColor: KIDS_COLOR.sunshine,
+    borderColor: KIDS_COLOR.mango,
   },
   profileAvatarPillText: {
-    marginLeft: 0,
-    marginTop: -2,
-    fontSize: 13,
-    color: KIDS_COLOR.sunshine,
+    flex: 1,
+    marginLeft: 7,
+    fontSize: FONT.sm,
+    color: KIDS_COLOR.deepForest,
     fontWeight: '900',
-    textAlign: 'center',
   },
   profileAvatarPillTextActive: {
-    color: KIDS_COLOR.sunshine,
+    color: KIDS_COLOR.deepForest,
   },
   kidsHeroCard: {
     ...KIDS_SHADOW.softCard,
@@ -1469,12 +1467,11 @@ const sh = StyleSheet.create({
 
   root: { flex: 1, backgroundColor: COLOR.bg },
   appHeader: {
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingHorizontal: SPACE.md,
+    marginHorizontal: SPACE.md,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     backgroundColor: KIDS_COLOR.forestGreen,
-    borderBottomLeftRadius: 22,
-    borderBottomRightRadius: 22,
+    borderRadius: 28,
   },
   appHeaderLeft: {
     display: 'none',
@@ -2609,18 +2606,14 @@ const sh = StyleSheet.create({
     display: 'none',
   },
   brandLogo: {
-    width: 68,
-    height: 68,
-    marginBottom: -2,
+    display: 'none',
   },
   compactBrandStack: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 96,
+    display: 'none',
   },
   settingsIconBtn: {
-    width: 52,
-    height: 52,
+    width: 48,
+    height: 48,
     borderRadius: 999,
     alignItems: 'center',
     justifyContent: 'center',
@@ -2630,7 +2623,24 @@ const sh = StyleSheet.create({
   },
   settingsIconText: {
     color: KIDS_COLOR.deepForest,
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '900',
     marginTop: -1,
+  },
+  brandTopRow: {
+    backgroundColor: KIDS_COLOR.palmCream,
+    paddingTop: 8,
+    paddingHorizontal: SPACE.md,
+    paddingBottom: 4,
+    alignItems: 'flex-start',
+  },
+  standaloneLogo: {
+    width: 76,
+    height: 76,
+  },
+  compactHudRow: {
+    minHeight: 54,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },});
