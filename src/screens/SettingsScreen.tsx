@@ -1,8 +1,9 @@
 // ─── Premium Settings Screen ─────────────────────────────────────────────────
 import React, { useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
 import {
   Alert,
+  Image,
+  ImageSourcePropType,
   ScrollView,
   StyleSheet,
   Switch,
@@ -23,7 +24,7 @@ interface Props {
 }
 
 type LegalPage = null | 'terms' | 'privacy' | 'subscription';
-type SettingsIconName = React.ComponentProps<typeof Ionicons>['name'];
+type SettingsIconName = keyof typeof SETTINGS_ICON_ASSETS;
 
 function SettingRow({
   icon,
@@ -48,11 +49,7 @@ function SettingRow({
       disabled={!onPress}
     >
       <View style={[s.settingIcon, danger && s.settingIconDanger]}>
-        <Ionicons
-          name={icon}
-          size={22}
-          color={danger ? KIDS_COLOR.coral : KIDS_COLOR.palmGreen}
-        />
+        <Image source={SETTINGS_ICON_ASSETS[icon]} style={s.settingIconImage} resizeMode="contain" />
       </View>
       <View style={s.settingCopy}>
         <Text style={[s.settingLabel, danger && s.dangerText]}>{label}</Text>
@@ -195,7 +192,7 @@ export default function SettingsScreen({ onBack }: Props) {
     <View style={s.root}>
       <View style={s.topBar}>
         <TouchableOpacity onPress={onBack} style={s.backBtn} accessibilityLabel="Go back" activeOpacity={0.84}>
-          <Ionicons name="chevron-back" size={28} color={KIDS_COLOR.deepForest} />
+          <Text style={s.backText}>‹</Text>
         </TouchableOpacity>
         <View style={s.topTitleWrap}>
           <Text style={s.topKicker}>PARENT CENTER</Text>
@@ -233,7 +230,7 @@ export default function SettingsScreen({ onBack }: Props) {
         {!state.isPremium ? (
           <TouchableOpacity style={s.premiumCard} onPress={handleSubscribe} activeOpacity={0.88}>
             <View style={s.premiumIcon}>
-              <Ionicons name="star" size={28} color={KIDS_COLOR.mango} />
+              <Image source={SETTINGS_ICON_ASSETS.premium} style={s.premiumIconImage} resizeMode="contain" />
             </View>
             <View style={s.premiumCopy}>
               <Text style={s.premiumTitle}>Go Premium</Text>
@@ -244,7 +241,7 @@ export default function SettingsScreen({ onBack }: Props) {
         ) : (
           <View style={s.premiumActiveCard}>
             <View style={s.premiumIcon}>
-              <Ionicons name="checkmark-circle" size={30} color={KIDS_COLOR.palmGreen} />
+              <Image source={SETTINGS_ICON_ASSETS.check} style={s.premiumIconImage} resizeMode="contain" />
             </View>
             <View style={s.premiumCopy}>
               <Text style={s.premiumTitle}>Premium Active</Text>
@@ -297,14 +294,14 @@ export default function SettingsScreen({ onBack }: Props) {
                         style={s.iconButton}
                         activeOpacity={0.82}
                       >
-                        <Ionicons name="create" size={18} color={KIDS_COLOR.palmGreen} />
+                        <Image source={SETTINGS_ICON_ASSETS.edit} style={s.smallIconImage} resizeMode="contain" />
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={() => confirmDelete(profile.id, profile.name)}
                         style={s.iconButton}
                         activeOpacity={0.82}
                       >
-                        <Ionicons name="trash" size={18} color={KIDS_COLOR.coral} />
+                        <Image source={SETTINGS_ICON_ASSETS.delete} style={s.smallIconImage} resizeMode="contain" />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -320,7 +317,7 @@ export default function SettingsScreen({ onBack }: Props) {
               {!addingChild ? (
                 <TouchableOpacity style={s.addChildCard} onPress={() => setAddingChild(true)} activeOpacity={0.86}>
                   <View style={s.addChildIcon}>
-                    <Ionicons name="add" size={30} color={KIDS_COLOR.deepForest} />
+                    <Image source={SETTINGS_ICON_ASSETS.add} style={s.addChildIconImage} resizeMode="contain" />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={s.addChildTitle}>Add child profile</Text>
@@ -387,7 +384,7 @@ export default function SettingsScreen({ onBack }: Props) {
 
         <SettingsSection title="Learning experience" subtitle="Make the game feel right for your child.">
           <SettingRow
-            icon="volume-high"
+            icon="sound"
             label="Sound effects"
             sub="Play friendly sounds during lessons and games."
             right={
@@ -401,7 +398,7 @@ export default function SettingsScreen({ onBack }: Props) {
           />
           <MiniDivider />
           <SettingRow
-            icon="phone-portrait"
+            icon="phone"
             label="Gentle vibration"
             sub="Use haptic feedback for taps, wins, and choices."
             right={
@@ -415,14 +412,14 @@ export default function SettingsScreen({ onBack }: Props) {
           />
           <MiniDivider />
           <SettingRow
-            icon="🎯"
+            icon="goal"
             label="Daily learning goal"
             sub="Current goal: 3 activities per day. Editable goal coming soon."
             right={<Text style={s.comingSoonPill}>Soon</Text>}
           />
           <MiniDivider />
           <SettingRow
-            icon="shield-checkmark"
+            icon="safe"
             label="Kid-safe mode"
             sub="Parent-managed settings and gentle reset protections."
             right={<Text style={s.safePill}>On</Text>}
@@ -431,7 +428,7 @@ export default function SettingsScreen({ onBack }: Props) {
 
         <SettingsSection title="Parent tools" subtitle="Modern controls for a children’s app.">
           <SettingRow
-            icon="trending-up"
+            icon="progress"
             label="Progress snapshot"
             sub={`${totalWords} words learned across ${state.profiles.length} child profile${state.profiles.length === 1 ? '' : 's'}.`}
           />
@@ -443,17 +440,17 @@ export default function SettingsScreen({ onBack }: Props) {
           />
           <MiniDivider />
           <SettingRow
-            icon="lock-closed"
+            icon="privacy"
             label="Privacy-first setup"
             sub="Profiles stay parent-managed on this device."
           />
         </SettingsSection>
 
         <SettingsSection title="About & legal">
-          <SettingRow icon="phone-portrait-outline" label="App version" sub="Mụta Igbo v2.0.0" />
+          <SettingRow icon="version" label="App version" sub="Mụta Igbo v2.0.0" />
           <MiniDivider />
           <SettingRow
-            icon="document-text"
+            icon="terms"
             label="Terms & Conditions"
             sub="Review app terms."
             right={<Text style={s.chevron}>›</Text>}
@@ -469,7 +466,7 @@ export default function SettingsScreen({ onBack }: Props) {
           />
           <MiniDivider />
           <SettingRow
-            icon="star"
+            icon="premium"
             label="Subscription Terms"
             sub="Premium billing and renewal details."
             right={<Text style={s.chevron}>›</Text>}
@@ -479,7 +476,7 @@ export default function SettingsScreen({ onBack }: Props) {
 
         <SettingsSection title="Data controls">
           <SettingRow
-            icon="trash"
+            icon="reset"
             label="Reset all progress"
             sub="Delete all profiles, streaks, words, and progress."
             right={<Text style={s.chevronDanger}>›</Text>}
@@ -499,6 +496,23 @@ export default function SettingsScreen({ onBack }: Props) {
 }
 
 const s = StyleSheet.create({
+  settingIconImage: {
+    width: 30,
+    height: 30,
+  },
+  addChildIconImage: {
+    width: 34,
+    height: 34,
+  },
+  smallIconImage: {
+    width: 20,
+    height: 20,
+  },
+  premiumIconImage: {
+    width: 34,
+    height: 34,
+  },
+
   root: {
     flex: 1,
     backgroundColor: KIDS_COLOR.palmCream,
