@@ -1301,14 +1301,17 @@ const ld = StyleSheet.create({
   soundIcon: { fontSize: 18 },
 });
 
-const sh = StyleSheet.create({\n  appHeaderTop: {
+const sh = StyleSheet.create({
+  appHeaderTop: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 8,
-  },\n  appTitleWrap: {
+  },
+  appTitleWrap: {
     display: 'none',
-  },\n  parentCenterBtn: {
+  },
+  parentCenterBtn: {
     minWidth: 104,
     minHeight: 50,
     paddingHorizontal: 14,
@@ -1343,10 +1346,12 @@ const sh = StyleSheet.create({\n  appHeaderTop: {
   },
   profileSwitcherScroll: {
     maxWidth: '100%',
-  },\n  profileSwitcherRail: {
+  },
+  profileSwitcherRail: {
     gap: 8,
     paddingRight: 4,
-  },\n  profileAvatarPill: {
+  },
+  profileAvatarPill: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
@@ -1475,14 +1480,16 @@ const sh = StyleSheet.create({\n  appHeaderTop: {
   },
   kidsChevron: { fontSize: 34, color: KIDS_COLOR.textSoft, fontWeight: '900' },
 
-  root: { flex: 1, backgroundColor: COLOR.bg },\n  appHeader: {
+  root: { flex: 1, backgroundColor: COLOR.bg },
+  appHeader: {
     paddingTop: 12,
     paddingBottom: 12,
     paddingHorizontal: SPACE.md,
     backgroundColor: KIDS_COLOR.forestGreen,
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
-  },\n  appHeaderLeft: {
+  },
+  appHeaderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
@@ -1491,9 +1498,11 @@ const sh = StyleSheet.create({\n  appHeaderTop: {
   logoBadge: {
     width: 36, height: 36, borderRadius: RADIUS.sm,
     backgroundColor: COLOR.gold, alignItems: 'center', justifyContent: 'center',
-  },\n  appTitle: {
+  },
+  appTitle: {
     display: 'none',
-  },\n  appSub: {
+  },
+  appSub: {
     display: 'none',
   },
   headerRight: {
@@ -2590,12 +2599,14 @@ const sh = StyleSheet.create({\n  appHeaderTop: {
   logoImage: {
     width: '100%',
     height: '100%',
-  },\n  appLogoBox: {
+  },
+  appLogoBox: {
     width: 0,
     height: 0,
     backgroundColor: 'transparent',
     borderWidth: 0,
-  },\n  appLogoImage: {
+  },
+  appLogoImage: {
     width: 92,
     height: 92,
     marginLeft: -8,
