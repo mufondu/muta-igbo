@@ -212,8 +212,13 @@ export default function MutaIgboApp() {
         </View>
         <View style={sh.headerRight}>
           <ProfileSwitcher />
-          <TouchableOpacity onPress={() => { haptics.tapLight(); setGate('settings'); }} style={sh.gearBtn} accessibilityLabel="Settings">
-            <Text style={{ fontSize: 22 }}>⚙️</Text>
+          <TouchableOpacity
+            onPress={() => { haptics.tapLight(); setGate('settings'); }}
+            style={sh.gearBtn}
+            accessibilityLabel="Parent settings"
+            activeOpacity={0.86}
+          >
+            <Text style={sh.parentBtnText}>Parent</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -234,12 +239,12 @@ export default function MutaIgboApp() {
       />
 
       {/* Bottom nav */}
-      {tab !== 'settings' && (
-        <View style={sh.bottomNav}>
+      <View style={sh.bottomNav}>
           {([
-            { id: 'home',     emoji: '🏠', label: 'Home' },
-            { id: 'progress', emoji: '📊', label: 'Progress' },
-            { id: 'quiz',     emoji: '🎯', label: 'Quiz', action: () => openInner('quiz') },
+            { id: 'home',     emoji: 'HOME', label: 'Home' },
+            { id: 'progress', emoji: 'PROG', label: 'Progress' },
+            { id: 'quiz',     emoji: 'QUIZ', label: 'Quiz', action: () => openInner('quiz') },
+            { id: 'settings', emoji: 'SET', label: 'Parent', action: () => setGate('settings') },
           ] as const).map(item => (
             <TouchableOpacity
               key={item.id}
@@ -252,7 +257,6 @@ export default function MutaIgboApp() {
             </TouchableOpacity>
           ))}
         </View>
-      )}
     </SafeAreaView>
   );
 }
@@ -1352,7 +1356,13 @@ const sh = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  appHeaderLeft: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  appHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flex: 1,
+    minWidth: 0,
+  },
   logoBadge: {
     width: 36, height: 36, borderRadius: RADIUS.sm,
     backgroundColor: COLOR.gold, alignItems: 'center', justifyContent: 'center',
@@ -1369,8 +1379,29 @@ const sh = StyleSheet.create({
     fontWeight: '800',
     marginTop: 2,
   },
-  headerRight: { flexDirection: 'row', alignItems: 'center', gap: SPACE.sm },
-  gearBtn: { padding: 10, minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flexShrink: 0,
+  },
+  gearBtn: {
+    minWidth: 78,
+    minHeight: 42,
+    paddingHorizontal: 14,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: KIDS_COLOR.sunshine,
+    borderWidth: 1.5,
+    borderColor: KIDS_COLOR.mango,
+  },
+  parentBtnText: {
+    color: KIDS_COLOR.deepForest,
+    fontSize: FONT.xs,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
 
   profileRow: { flexDirection: 'row', gap: 6 },
   profilePill: {
@@ -1408,7 +1439,19 @@ const sh = StyleSheet.create({
     elevation: 10,
   },
   navBtn: { flex: 1, paddingVertical: 10, alignItems: 'center', gap: 2, minHeight: 54 },
-  navIcon: { fontSize: 22 },
+  navIcon: {
+    minWidth: 40,
+    paddingHorizontal: 7,
+    paddingVertical: 4,
+    borderRadius: 999,
+    overflow: 'hidden',
+    backgroundColor: KIDS_COLOR.mintMist,
+    color: KIDS_COLOR.palmGreen,
+    fontSize: 9,
+    fontWeight: '900',
+    textAlign: 'center',
+    letterSpacing: 0.4,
+  },
   navLabel: {
     fontSize: FONT.xs,
     color: COLOR.textSecond,
