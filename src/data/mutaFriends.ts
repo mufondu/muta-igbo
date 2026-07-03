@@ -70,15 +70,25 @@ export function getMutaFriend(value: string | undefined | null): MutaFriend {
 }
 
 
-export function getLessonGuideFriend(activeAvatar: string | undefined | null, seed = ''): MutaFriend {
+export function getLessonGuideFriend(
+  activeAvatar: string | undefined | null,
+  seed = '',
+  preferredGuide?: string | undefined | null,
+): MutaFriend {
   const activeId = normalizeFriendId(activeAvatar);
+  const preferredId = preferredGuide ? normalizeFriendId(preferredGuide) : null;
+
+  if (preferredId && preferredId !== activeId) {
+    return getMutaFriend(preferredId);
+  }
+
   const available = MUTA_FRIENDS.filter(friend => friend.id !== activeId);
 
   if (available.length === 0) {
     return getMutaFriend(activeId);
   }
 
-  const stableSeed = String(seed || 'default');
+  const stableSeed = String(seed || preferredId || 'lesson');
   const hash = stableSeed.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
   return available[hash % available.length];
 }
