@@ -68,3 +68,17 @@ export function getMutaFriend(value: string | undefined | null): MutaFriend {
   const id = normalizeFriendId(value);
   return MUTA_FRIENDS.find(friend => friend.id === id) ?? MUTA_FRIENDS[0];
 }
+
+
+export function getLessonGuideFriend(activeAvatar: string | undefined | null, seed = ''): MutaFriend {
+  const activeId = normalizeFriendId(activeAvatar);
+  const available = MUTA_FRIENDS.filter(friend => friend.id !== activeId);
+
+  if (available.length === 0) {
+    return getMutaFriend(activeId);
+  }
+
+  const stableSeed = String(seed || 'default');
+  const hash = stableSeed.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return available[hash % available.length];
+}
