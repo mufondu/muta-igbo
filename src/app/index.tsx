@@ -205,25 +205,21 @@ export default function MutaIgboApp() {
       {/* App header */}
       <View style={sh.appHeader}>
         <View style={sh.appHeaderTop}>
-          <View style={sh.brandMark}>
+          <View style={sh.compactBrandStack}>
             <Image source={MUTA_HEADER_LOGO} style={sh.brandLogo} resizeMode="contain" />
+            <ProfileSwitcher />
           </View>
 
           {gate !== 'settings' ? (
             <TouchableOpacity
               onPress={() => { haptics.tapLight(); setGate('settings'); }}
-              style={sh.parentCenterBtn}
+              style={sh.settingsIconBtn}
               accessibilityLabel="Open Parent Center settings"
               activeOpacity={0.86}
             >
-              <Text style={sh.parentCenterKicker}>PARENT</Text>
-              <Text style={sh.parentCenterText}>Settings</Text>
+              <Text style={sh.settingsIconText}>⚙</Text>
             </TouchableOpacity>
           ) : null}
-        </View>
-
-        <View style={sh.profileRow}>
-          <ProfileSwitcher />
         </View>
       </View>
 
@@ -1311,33 +1307,19 @@ const sh = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    minHeight: 58,
+    minHeight: 86,
   },
   appTitleWrap: {
     display: 'none',
   },
   parentCenterBtn: {
-    minWidth: 104,
-    minHeight: 46,
-    paddingHorizontal: 14,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: KIDS_COLOR.sunshine,
-    borderWidth: 1.5,
-    borderColor: KIDS_COLOR.mango,
+    display: 'none',
   },
   parentCenterKicker: {
-    color: KIDS_COLOR.deepForest,
-    fontSize: 9,
-    fontWeight: '900',
-    letterSpacing: 0.9,
+    display: 'none',
   },
   parentCenterText: {
-    color: KIDS_COLOR.deepForest,
-    fontSize: FONT.xs,
-    fontWeight: '900',
-    marginTop: 1,
+    display: 'none',
   },
   kidsHomeRoot: {
     flex: 1,
@@ -1350,40 +1332,39 @@ const sh = StyleSheet.create({
     backgroundColor: KIDS_COLOR.palmCream,
   },
   profileSwitcherScroll: {
-    maxWidth: '100%',
+    maxWidth: 104,
   },
   profileSwitcherRail: {
-    gap: 8,
-    paddingRight: 4,
+    gap: 0,
+    paddingRight: 0,
     paddingTop: 0,
   },
   profileAvatarPill: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    alignSelf: 'flex-start',
-    minWidth: 98,
-    maxWidth: 140,
-    paddingVertical: 5,
-    paddingLeft: 7,
-    paddingRight: 12,
-    borderRadius: RADIUS.pill,
-    backgroundColor: KIDS_COLOR.sunshine,
-    borderWidth: 1.5,
-    borderColor: KIDS_COLOR.mango,
+    justifyContent: 'center',
+    width: 86,
+    minHeight: 28,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    borderRadius: 999,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
   },
   profileAvatarPillActive: {
-    backgroundColor: KIDS_COLOR.sunshine,
-    borderColor: KIDS_COLOR.mango,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
   },
   profileAvatarPillText: {
-    flex: 1,
-    marginLeft: 6,
-    fontSize: FONT.xs,
-    color: KIDS_COLOR.deepForest,
+    marginLeft: 0,
+    marginTop: -2,
+    fontSize: 13,
+    color: KIDS_COLOR.sunshine,
     fontWeight: '900',
+    textAlign: 'center',
   },
   profileAvatarPillTextActive: {
-    color: KIDS_COLOR.deepForest,
+    color: KIDS_COLOR.sunshine,
   },
   kidsHeroCard: {
     ...KIDS_SHADOW.softCard,
@@ -1489,11 +1470,11 @@ const sh = StyleSheet.create({
   root: { flex: 1, backgroundColor: COLOR.bg },
   appHeader: {
     paddingTop: 8,
-    paddingBottom: 10,
+    paddingBottom: 8,
     paddingHorizontal: SPACE.md,
     backgroundColor: KIDS_COLOR.forestGreen,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
+    borderBottomLeftRadius: 22,
+    borderBottomRightRadius: 22,
   },
   appHeaderLeft: {
     display: 'none',
@@ -1524,8 +1505,7 @@ const sh = StyleSheet.create({
     letterSpacing: 0.5,
   },
   profileRow: {
-    marginTop: 0,
-    alignItems: 'flex-start',
+    display: 'none',
   },
   profilePill: {
     backgroundColor: COLOR.gold,
@@ -2626,15 +2606,31 @@ const sh = StyleSheet.create({
     fontWeight: '800',
   },
   brandMark: {
-    width: 62,
-    height: 62,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-    overflow: 'visible',
+    display: 'none',
   },
   brandLogo: {
-    width: 62,
-    height: 62,
+    width: 68,
+    height: 68,
+    marginBottom: -2,
+  },
+  compactBrandStack: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 96,
+  },
+  settingsIconBtn: {
+    width: 52,
+    height: 52,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: KIDS_COLOR.sunshine,
+    borderWidth: 1.5,
+    borderColor: KIDS_COLOR.mango,
+  },
+  settingsIconText: {
+    color: KIDS_COLOR.deepForest,
+    fontSize: 24,
+    fontWeight: '900',
+    marginTop: -1,
   },});
