@@ -1466,10 +1466,10 @@ const sh = StyleSheet.create({
   root: { flex: 1, backgroundColor: COLOR.bg },
   appHeader: {
     marginHorizontal: SPACE.md,
-    paddingVertical: 9,
-    paddingHorizontal: 12,
-    backgroundColor: KIDS_COLOR.forestGreen,
-    borderRadius: 28,
+    paddingVertical: 4,
+    paddingHorizontal: 0,
+    backgroundColor: 'transparent',
+    borderRadius: 0,
     marginBottom: SPACE.md,
   },
   appHeaderLeft: {
@@ -2611,8 +2611,8 @@ const sh = StyleSheet.create({
     display: 'none',
   },
   settingsIconBtn: {
-    width: 48,
-    height: 48,
+    width: 52,
+    height: 52,
     borderRadius: 999,
     alignItems: 'center',
     justifyContent: 'center',
