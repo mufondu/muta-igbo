@@ -32,7 +32,7 @@ function SettingRow({
   onPress,
   danger,
 }: {
-  icon: SettingsIconName;
+  icon?: SettingsIconName;
   label: string;
   sub?: string;
   right?: React.ReactNode;
@@ -46,9 +46,6 @@ function SettingRow({
       activeOpacity={onPress ? 0.84 : 1}
       disabled={!onPress}
     >
-      <View style={[s.settingIcon, danger && s.settingIconDanger]}>
-        <Text style={[s.settingIconBadgeText, danger && s.settingIconBadgeTextDanger]}>{icon}</Text>
-      </View>
       <View style={s.settingCopy}>
         <Text style={[s.settingLabel, danger && s.dangerText]}>{label}</Text>
         {sub ? <Text style={s.settingSub}>{sub}</Text> : null}
@@ -494,16 +491,6 @@ export default function SettingsScreen({ onBack }: Props) {
 }
 
 const s = StyleSheet.create({
-  settingIconBadgeText: {
-    color: KIDS_COLOR.white,
-    fontSize: 10,
-    fontWeight: '900',
-    letterSpacing: 0.4,
-    textAlign: 'center',
-  },
-  settingIconBadgeTextDanger: {
-    color: KIDS_COLOR.white,
-  },
   iconButtonTextDanger: {
     color: KIDS_COLOR.coral,
   },
@@ -723,36 +710,26 @@ const s = StyleSheet.create({
   settingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: SPACE.md,
+    paddingVertical: 18,
+    paddingHorizontal: SPACE.lg,
     backgroundColor: KIDS_COLOR.white,
-  },
-  settingIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: KIDS_COLOR.palmGreen,
-    marginRight: 12,
-  },
-  settingIconDanger: {
-    backgroundColor: KIDS_COLOR.coral,
   },
   settingCopy: {
     flex: 1,
+    paddingRight: 12,
   },
   settingLabel: {
     color: KIDS_COLOR.textPrimary,
-    fontSize: FONT.md,
+    fontSize: FONT.lg,
     fontWeight: '900',
+    letterSpacing: -0.2,
   },
   settingSub: {
     color: KIDS_COLOR.textSecondary,
-    fontSize: FONT.sm,
-    lineHeight: 19,
+    fontSize: FONT.md,
+    lineHeight: 23,
     fontWeight: '700',
-    marginTop: 2,
+    marginTop: 4,
   },
   dangerText: {
     color: KIDS_COLOR.coral,
@@ -770,8 +747,8 @@ const s = StyleSheet.create({
   comingSoonPill: {
     color: KIDS_COLOR.deepForest,
     backgroundColor: KIDS_COLOR.sunshine,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 13,
+    paddingVertical: 7,
     borderRadius: 999,
     fontSize: FONT.xs,
     fontWeight: '900',
@@ -780,8 +757,8 @@ const s = StyleSheet.create({
   safePill: {
     color: KIDS_COLOR.white,
     backgroundColor: KIDS_COLOR.palmGreen,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 13,
+    paddingVertical: 7,
     borderRadius: 999,
     fontSize: FONT.xs,
     fontWeight: '900',
