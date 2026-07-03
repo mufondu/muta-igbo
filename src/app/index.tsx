@@ -2618,7 +2618,7 @@ const sh = StyleSheet.create({
   appLogoBox: {
     width: 66,
     height: 66,
-    borderRadius: 18,
+    borderRadius: 0,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
