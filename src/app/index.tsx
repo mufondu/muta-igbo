@@ -369,20 +369,20 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
                 <Text style={sh.kidsHeroKicker}>TODAY'S IGBO QUEST</Text>
                 <Text style={sh.kidsHeroTitle}>Nnọọ, {profileName}!</Text>
               </View>
-
-              {state.profiles.length > 1 ? (
-                <TouchableOpacity
-                  style={sh.switchPlayerMiniBtn}
-                  activeOpacity={0.86}
-                  onPress={onOpenProfileSheet}
-                  accessibilityLabel="Switch child profile"
-                >
-                  <Text style={sh.switchPlayerMiniText}>Switch</Text>
-                </TouchableOpacity>
-              ) : null}
             </View>
 
             <Text style={sh.kidsHeroSub}>Ready to learn, play, and keep your Igbo growing?</Text>
+
+            {state.profiles.length > 1 ? (
+              <TouchableOpacity
+                style={sh.switchPlayerMiniBtn}
+                activeOpacity={0.86}
+                onPress={onOpenProfileSheet}
+                accessibilityLabel="Switch child profile"
+              >
+                <Text style={sh.switchPlayerMiniText}>Switch player</Text>
+              </TouchableOpacity>
+            ) : null}
           </View>
           {state.isPremium ? <View style={sh.kidsPremiumBadge}><Text style={sh.kidsPremiumBadgeText}>Premium</Text></View> : null}
         </View>
@@ -2852,20 +2852,20 @@ const sh = StyleSheet.create({
   heroTitleRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 8,
   },
   switchPlayerMiniBtn: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    alignSelf: 'flex-start',
+    marginTop: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: 999,
     backgroundColor: KIDS_COLOR.sunshine,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: KIDS_COLOR.mango,
-    marginTop: 2,
   },
   switchPlayerMiniText: {
     color: KIDS_COLOR.deepForest,
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '900',
   },
   navItem: {
