@@ -201,9 +201,9 @@ export default function SettingsScreen({ onBack }: Props) {
             <AvatarIllustration avatar={activeProfile?.avatar ?? 'adaeze'} size={104} />
           </View>
           <View style={s.heroCopy}>
-            <Text style={s.heroKicker}>ACTIVE CHILD</Text>
+            <Text style={s.heroKicker}>ACTIVE PLAYER</Text>
             <Text style={s.heroTitle}>{activeProfile?.name ?? 'Nwa Igbo'}</Text>
-            <Text style={s.heroSub}>{activeFriend.description}</Text>
+            <Text style={s.heroSub}>Playing as {activeFriend.name}</Text>
           </View>
         </View>
 
