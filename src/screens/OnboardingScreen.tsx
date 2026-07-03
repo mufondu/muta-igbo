@@ -560,7 +560,7 @@ const s = StyleSheet.create({
     overflow: 'visible',
   },
   avatarRosterCardSelected: {
-    backgroundColor: 'transparent', 161, 42, 0.22)',
+    backgroundColor: 'rgba(212, 161, 42, 0.22)',
     borderWidth: 0,
     transform: [{ scale: 1.04 }],
     overflow: 'visible',
