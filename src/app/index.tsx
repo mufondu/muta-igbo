@@ -36,6 +36,7 @@ import ParentGate from '../components/ParentGate';
 import { GuideBanner } from '../components/LevelGuide';
 
 const MUTA_LOGO = require('../../assets/muta-logo.png');
+const MUTA_HEADER_LOGO = require('../../assets/muta-logo-header.png');
 const APP_ICON = require('../../assets/muta-logo.png');
 
 const LEVEL_ICONS: Record<string, any> = {
@@ -204,7 +205,9 @@ export default function MutaIgboApp() {
       {/* App header */}
       <View style={sh.appHeader}>
         <View style={sh.appHeaderTop}>
-          <Image source={MUTA_LOGO} style={sh.appLogoImage} resizeMode="contain" />
+          <View style={sh.brandMark}>
+            <Image source={MUTA_HEADER_LOGO} style={sh.brandLogo} resizeMode="contain" />
+          </View>
 
           {gate !== 'settings' ? (
             <TouchableOpacity
@@ -219,7 +222,9 @@ export default function MutaIgboApp() {
           ) : null}
         </View>
 
-        <ProfileSwitcher />
+        <View style={sh.profileRow}>
+          <ProfileSwitcher />
+        </View>
       </View>
 
       {/* Body */}
@@ -1306,16 +1311,16 @@ const sh = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    minHeight: 72,
   },
   appTitleWrap: {
     display: 'none',
   },
   parentCenterBtn: {
-    minWidth: 104,
-    minHeight: 50,
+    minWidth: 108,
+    minHeight: 52,
     paddingHorizontal: 14,
-    borderRadius: 20,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: KIDS_COLOR.sunshine,
@@ -1490,10 +1495,7 @@ const sh = StyleSheet.create({
     borderBottomRightRadius: 28,
   },
   appHeaderLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    minWidth: 0,
+    display: 'none',
   },
   logoBadge: {
     width: 36, height: 36, borderRadius: RADIUS.sm,
@@ -1520,8 +1522,10 @@ const sh = StyleSheet.create({
     fontWeight: '900',
     letterSpacing: 0.5,
   },
-
-  profileRow: { flexDirection: 'row', gap: 6 },
+  profileRow: {
+    marginTop: 6,
+    alignItems: 'flex-start',
+  },
   profilePill: {
     backgroundColor: COLOR.gold,
     borderRadius: RADIUS.pill,
@@ -2601,16 +2605,10 @@ const sh = StyleSheet.create({
     height: '100%',
   },
   appLogoBox: {
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-    borderWidth: 0,
+    display: 'none',
   },
   appLogoImage: {
-    width: 92,
-    height: 92,
-    marginLeft: -8,
-    marginVertical: -16,
+    display: 'none',
   },
   levelTitle: {
     fontSize: FONT.xl,
@@ -2626,68 +2624,16 @@ const sh = StyleSheet.create({
     lineHeight: 20,
     fontWeight: '800',
   },
-  appHeader: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingHorizontal: SPACE.md,
-    backgroundColor: KIDS_COLOR.forestGreen,
-    borderBottomLeftRadius: 26,
-    borderBottomRightRadius: 26,
-  },
-  appHeaderTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  appHeaderLeft: {
-    display: 'none',
-  },
-  appLogoBox: {
-    display: 'none',
-  },
-  appLogoImage: {
-    width: 118,
-    height: 118,
-    marginLeft: -14,
-    marginTop: -20,
-    marginBottom: -20,
-  },
-  appTitleWrap: {
-    display: 'none',
-  },
-  appTitle: {
-    display: 'none',
-  },
-  appSub: {
-    display: 'none',
-  },
-  parentCenterBtn: {
-    minWidth: 108,
-    minHeight: 50,
-    paddingHorizontal: 14,
-    borderRadius: 20,
+  brandMark: {
+    width: 78,
+    height: 78,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: KIDS_COLOR.sunshine,
-    borderWidth: 1.5,
-    borderColor: KIDS_COLOR.mango,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    overflow: 'visible',
   },
-  profileSwitcherRail: {
-    gap: 8,
-    paddingRight: 4,
-  },
-  profileAvatarPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    minWidth: 104,
-    maxWidth: 148,
-    paddingVertical: 6,
-    paddingLeft: 8,
-    paddingRight: 13,
-    borderRadius: RADIUS.pill,
-    backgroundColor: KIDS_COLOR.sunshine,
-    borderWidth: 1.5,
-    borderColor: KIDS_COLOR.mango,
+  brandLogo: {
+    width: 78,
+    height: 78,
   },});
