@@ -210,39 +210,19 @@ export default function MutaIgboApp() {
   return (
     <SafeAreaView style={sh.root}>
       {/* App header */}
-      <View style={sh.brandTopRow}>
+      <View style={sh.brandHeader}>
         <Image source={MUTA_HEADER_LOGO} style={sh.standaloneLogo} resizeMode="contain" />
-      </View>
 
-      <View style={sh.appHeader}>
-        <View style={sh.compactHudRow}>
+        {gate !== 'settings' ? (
           <TouchableOpacity
-            style={sh.activePlayerChip}
-            onPress={() => setProfileSheetOpen(true)}
+            onPress={() => { haptics.tapLight(); setGate('settings'); }}
+            style={sh.settingsIconBtn}
+            accessibilityLabel="Open Parent Center settings"
             activeOpacity={0.86}
-            accessibilityLabel="Switch child profile"
           >
-            <AvatarIllustration avatar={headerProfile?.avatar ?? 'adaeze'} size={44} />
-            <View style={sh.activePlayerTextWrap}>
-              <Text style={sh.activePlayerKicker}>PLAYER</Text>
-              <Text style={sh.activePlayerName} numberOfLines={1}>
-                {headerProfile?.name ?? 'Nwa Igbo'}
-              </Text>
-            </View>
-            <Text style={sh.activePlayerChevron}>⌄</Text>
+            <Text style={sh.settingsIconText}>⚙</Text>
           </TouchableOpacity>
-
-          {gate !== 'settings' ? (
-            <TouchableOpacity
-              onPress={() => { haptics.tapLight(); setGate('settings'); }}
-              style={sh.settingsIconBtn}
-              accessibilityLabel="Open Parent Center settings"
-              activeOpacity={0.86}
-            >
-              <Text style={sh.settingsIconText}>⚙</Text>
-            </TouchableOpacity>
-          ) : null}
-        </View>
+        ) : null}
       </View>
 
       {/* Body */}
@@ -384,8 +364,24 @@ function HomeScreen({ openInner }: { openInner: (v: InnerView, levelId?: string)
             <AvatarIllustration avatar={avatar} size={96} />
           </View>
           <View style={sh.kidsHeroCopy}>
-            <Text style={sh.kidsHeroKicker}>TODAY'S IGBO QUEST</Text>
-            <Text style={sh.kidsHeroTitle}>Nnọọ, {profileName}!</Text>
+            <View style={sh.heroTitleRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={sh.kidsHeroKicker}>TODAY'S IGBO QUEST</Text>
+                <Text style={sh.kidsHeroTitle}>Nnọọ, {profileName}!</Text>
+              </View>
+
+              {state.profiles.length > 1 ? (
+                <TouchableOpacity
+                  style={sh.switchPlayerMiniBtn}
+                  activeOpacity={0.86}
+                  onPress={() => setProfileSheetOpen(true)}
+                  accessibilityLabel="Switch child profile"
+                >
+                  <Text style={sh.switchPlayerMiniText}>Switch</Text>
+                </TouchableOpacity>
+              ) : null}
+            </View>
+
             <Text style={sh.kidsHeroSub}>Ready to learn, play, and keep your Igbo growing?</Text>
           </View>
           {state.isPremium ? <View style={sh.kidsPremiumBadge}><Text style={sh.kidsPremiumBadgeText}>Premium</Text></View> : null}
@@ -1459,11 +1455,7 @@ const sh = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   activePlayerChevron: {
-    color: KIDS_COLOR.deepForest,
-    fontSize: 16,
-    fontWeight: '900',
-    marginLeft: 8,
-    marginTop: -4,
+    display: 'none',
   },
   appHeaderTop: {
     display: 'none',
@@ -1486,7 +1478,7 @@ const sh = StyleSheet.create({
   },
   kidsHomeScroll: {
     paddingHorizontal: SPACE.md,
-    paddingTop: SPACE.md,
+    paddingTop: 6,
     paddingBottom: 132,
     backgroundColor: KIDS_COLOR.palmCream,
   },
@@ -1519,10 +1511,14 @@ const sh = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#BDEFD2',
   },
-  kidsHeroTopRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  kidsHeroTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
   kidsHeroAvatarWrap: {
-    width: 98,
-    height: 98,
+    width: 104,
+    height: 104,
     borderRadius: 999,
     alignItems: 'center',
     justifyContent: 'center',
@@ -1530,7 +1526,10 @@ const sh = StyleSheet.create({
     borderWidth: 0,
     overflow: 'visible',
   },
-  kidsHeroCopy: { flex: 1 },
+  kidsHeroCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
   kidsHeroKicker: {
     color: KIDS_COLOR.mango,
     fontSize: FONT.xs,
@@ -1540,17 +1539,17 @@ const sh = StyleSheet.create({
   },
   kidsHeroTitle: {
     color: KIDS_COLOR.textPrimary,
-    fontSize: 30,
-    lineHeight: 34,
+    fontSize: 32,
+    lineHeight: 36,
     fontWeight: '900',
-    letterSpacing: -0.8,
+    letterSpacing: -0.9,
   },
   kidsHeroSub: {
     color: KIDS_COLOR.textSecondary,
     fontSize: FONT.sm,
     lineHeight: 20,
     fontWeight: '800',
-    marginTop: 5,
+    marginTop: 6,
   },
   kidsPremiumBadge: { position: 'absolute', top: -8, right: 10, backgroundColor: KIDS_COLOR.sunshine, borderRadius: RADIUS.pill, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: KIDS_COLOR.mango },
   kidsPremiumBadgeText: { color: KIDS_COLOR.deepForest, fontSize: FONT.xs, fontWeight: '900' },
@@ -1613,12 +1612,7 @@ const sh = StyleSheet.create({
 
   root: { flex: 1, backgroundColor: COLOR.bg },
   appHeader: {
-    marginHorizontal: SPACE.md,
-    paddingVertical: 4,
-    paddingHorizontal: 0,
-    backgroundColor: 'transparent',
-    borderRadius: 0,
-    marginBottom: SPACE.md,
+    display: 'none',
   },
   appHeaderLeft: {
     display: 'none',
@@ -2759,8 +2753,8 @@ const sh = StyleSheet.create({
     display: 'none',
   },
   settingsIconBtn: {
-    width: 52,
-    height: 52,
+    width: 50,
+    height: 50,
     borderRadius: 999,
     alignItems: 'center',
     justifyContent: 'center',
@@ -2775,50 +2769,52 @@ const sh = StyleSheet.create({
     marginTop: -1,
   },
   brandTopRow: {
-    backgroundColor: KIDS_COLOR.palmCream,
-    paddingTop: 8,
-    paddingHorizontal: SPACE.md,
-    paddingBottom: 4,
-    alignItems: 'flex-start',
+    display: 'none',
   },
   standaloneLogo: {
-    width: 76,
-    height: 76,
+    width: 72,
+    height: 72,
   },
   compactHudRow: {
-    minHeight: 56,
+    display: 'none',
+  },
+  activePlayerChip: {
+    display: 'none',
+  },
+  activePlayerTextWrap: {
+    display: 'none',
+  },
+  activePlayerKicker: {
+    display: 'none',
+  },
+  activePlayerName: {
+    display: 'none',
+  },
+  brandHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingTop: 8,
+    paddingHorizontal: SPACE.md,
+    paddingBottom: 8,
+    backgroundColor: KIDS_COLOR.palmCream,
   },
-  activePlayerChip: {
+  heroTitleRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    maxWidth: 220,
-    minHeight: 54,
-    paddingVertical: 5,
-    paddingLeft: 8,
-    paddingRight: 14,
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  switchPlayerMiniBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     borderRadius: 999,
     backgroundColor: KIDS_COLOR.sunshine,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: KIDS_COLOR.mango,
+    marginTop: 2,
   },
-  activePlayerTextWrap: {
-    marginLeft: 8,
-    minWidth: 0,
-    flexShrink: 1,
-  },
-  activePlayerKicker: {
+  switchPlayerMiniText: {
     color: KIDS_COLOR.deepForest,
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '900',
-    letterSpacing: 0.9,
-    opacity: 0.72,
-  },
-  activePlayerName: {
-    color: KIDS_COLOR.deepForest,
-    fontSize: FONT.md,
-    fontWeight: '900',
-    marginTop: -1,
   },});
