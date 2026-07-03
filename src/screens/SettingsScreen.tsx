@@ -570,13 +570,13 @@ const s = StyleSheet.create({
     borderColor: '#BDEFD2',
   },
   heroAvatarWrap: {
+    backgroundColor: 'transparent',
     width: 104,
     height: 104,
     borderRadius: 999,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: KIDS_COLOR.white,
-    marginRight: 14,
+marginRight: 14,
     overflow: 'visible',
   },
   heroCopy: {

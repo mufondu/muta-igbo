@@ -429,6 +429,8 @@ const s = StyleSheet.create({
     letterSpacing: 1.8,
   },
   termsAvatarStack: {
+    overflow: 'visible',
+    backgroundColor: 'transparent',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -560,13 +562,13 @@ const s = StyleSheet.create({
     transform: [{ scale: 1.04 }],
   },
   avatarRosterImageWrap: {
+    backgroundColor: 'transparent',
     width: 78,
     height: 78,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 999,
-    backgroundColor: KIDS_COLOR.white,
-    overflow: 'visible',
+overflow: 'visible',
   },
   avatarRosterImageWrapSelected: {
     backgroundColor: 'rgba(212, 161, 42, 0.16)',
@@ -629,7 +631,7 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'transparent',
     borderWidth: 0,
-    overflow: 'visible',
+overflow: 'visible',
   },
   heroAura: {
     position: 'absolute',
@@ -809,6 +811,8 @@ const s = StyleSheet.create({
     marginBottom: 14,
   },
   selectedAvatarWrap: {
+    overflow: 'visible',
+    backgroundColor: 'transparent',
     width: 112,
     height: 112,
     alignItems: 'center',
@@ -939,13 +943,14 @@ const s = StyleSheet.create({
     overflow: 'visible',
   },
   friendGlow: {
+    overflow: 'visible',
+    backgroundColor: 'transparent',
     width: 76,
     height: 76,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 999,
-    backgroundColor: KIDS_COLOR.white,
-  },
+},
   friendGlowSelected: {
     backgroundColor: 'rgba(212, 161, 42, 0.18)',
   },
