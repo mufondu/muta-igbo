@@ -415,20 +415,33 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
         <Text style={sh.kidsQuestArrow}>›</Text>
       </TouchableOpacity>
 
-      <View style={sh.kidsSectionHeader}>
+      <View style={sh.kidsPlaygroundHeader}>
         <Text style={sh.kidsSectionLabel}>PLAY ZONE</Text>
-        <Text style={sh.kidsSectionTitle}>Choose an adventure</Text>
+        <Text style={sh.kidsSectionTitle}>Choose your adventure</Text>
+        <Text style={sh.kidsSectionSub}>Pick a game path and keep your Igbo growing.</Text>
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={sh.kidsFeatureRail}>
         {[
-          { icon: '🎙️', title: 'Speak', sub: 'Say it back', bg: '#FFF1EA', accent: '#F64F72', action: () => openInner('sayItBack') },
-          { icon: '💬', title: 'Translate', sub: 'Words & phrases', bg: '#EAF5FF', accent: '#2B6CB0', action: () => openInner('translator') },
-          { icon: '📖', title: 'Stories', sub: 'Folktales', bg: '#FFF5D6', accent: '#FFA62B', action: () => openInner('folktales') },
-          { icon: '🌍', title: 'Culture', sub: 'History', bg: '#E6FAFA', accent: '#0B7F83', action: () => openInner('history') },
-          { icon: '🎮', title: 'Games', sub: 'Play & learn', bg: '#F0E7FF', accent: '#6B46C1', action: () => openInner('games' as InnerView) },
-        ].map(card => (
-          <TouchableOpacity key={card.title} style={[sh.kidsFeatureCard, { backgroundColor: card.bg, borderColor: card.accent + '33' }]} onPress={card.action} activeOpacity={0.86}>
+          { icon: '🎤', title: 'Say It!', sub: 'Talk like a star', bg: '#FFE6F0', accent: '#F64F72', action: () => openInner('sayItBack') },
+          { icon: '💬', title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openInner('translator') },
+          { icon: '📚', title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openInner('folktales') },
+          { icon: '🌍', title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openInner('history') },
+          { icon: '🎮', title: 'Game Land', sub: 'Play & earn stars', bg: '#F2E9FF', accent: '#7A45D8', action: () => openInner('games' as InnerView) },
+        ].map((card, index) => (
+          <TouchableOpacity
+            key={card.title}
+            style={[
+              sh.kidsFeatureCard,
+              {
+                backgroundColor: card.bg,
+                borderColor: card.accent + '44',
+                transform: [{ rotate: index % 2 === 0 ? '-1deg' : '1deg' }],
+              },
+            ]}
+            onPress={card.action}
+            activeOpacity={0.86}
+          >
             <View style={[sh.kidsFeatureBubble, { backgroundColor: card.accent }]}><Text style={sh.kidsFeatureIcon}>{card.icon}</Text></View>
             <Text style={sh.kidsFeatureTitle} numberOfLines={1}>{card.title}</Text>
             <Text style={sh.kidsFeatureSub} numberOfLines={2}>{card.sub}</Text>
@@ -1612,25 +1625,69 @@ const sh = StyleSheet.create({
   kidsQuestArrow: { color: KIDS_COLOR.white, fontSize: 34, fontWeight: '900' },
   kidsSectionHeader: { marginBottom: 10, marginTop: 4 },
   kidsSectionLabel: {
-    color: KIDS_COLOR.coral,
+    color: '#F64F72',
     fontSize: 12,
     fontWeight: '900',
     letterSpacing: 1.8,
     marginBottom: 5,
   },
   kidsSectionTitle: {
-    color: KIDS_COLOR.headingFun,
+    color: '#7A45D8',
     fontSize: 32,
     lineHeight: 36,
     fontWeight: '900',
     letterSpacing: -0.8,
   },
-  kidsFeatureRail: { gap: 12, paddingRight: SPACE.md, paddingBottom: SPACE.md },
-  kidsFeatureCard: { ...KIDS_SHADOW.softCard, width: 126, minHeight: 142, borderRadius: 28, padding: 12, borderWidth: 1.5 },
-  kidsFeatureBubble: { width: 48, height: 48, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
-  kidsFeatureIcon: { fontSize: 24 },
-  kidsFeatureTitle: { color: KIDS_COLOR.textPrimary, fontSize: 17, fontWeight: '900', marginBottom: 3 },
-  kidsFeatureSub: { color: KIDS_COLOR.textSecondary, fontSize: FONT.xs, fontWeight: '800', lineHeight: 16 },
+  kidsFeatureRail: {
+    gap: 15,
+    paddingHorizontal: 2,
+    paddingTop: 4,
+    paddingBottom: 14,
+  },
+  kidsFeatureCard: {
+    width: 174,
+    minHeight: 214,
+    borderRadius: 40,
+    padding: 16,
+    borderWidth: 2,
+    justifyContent: 'space-between',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.14,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 5,
+  },
+  kidsFeatureBubble: {
+    width: 76,
+    height: 76,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACE.md,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 3,
+  },
+  kidsFeatureIcon: {
+    fontSize: 36,
+  },
+  kidsFeatureTitle: {
+    color: '#1B2A6B',
+    fontSize: 24,
+    lineHeight: 28,
+    fontWeight: '900',
+    letterSpacing: -0.7,
+    marginTop: 2,
+    marginBottom: 6,
+  },
+  kidsFeatureSub: {
+    color: '#436B8A',
+    fontSize: FONT.sm,
+    lineHeight: 20,
+    fontWeight: '800',
+  },
   kidsLevelCard: {
     ...KIDS_SHADOW.softCard,
     flexDirection: 'row',
@@ -2959,7 +3016,7 @@ const sh = StyleSheet.create({
     elevation: 3,
   },
   kidsSectionSub: {
-    color: KIDS_COLOR.textSecondary,
+    color: '#436B8A',
     fontSize: FONT.md,
     lineHeight: 22,
     fontWeight: '800',
@@ -3110,4 +3167,19 @@ const sh = StyleSheet.create({
     bottom: 18,
     alignItems: 'center',
     paddingHorizontal: SPACE.md,
+  },
+  kidsPlaygroundHeader: {
+    borderRadius: 34,
+    paddingHorizontal: SPACE.lg,
+    paddingVertical: 18,
+    backgroundColor: '#FFF1B8',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 166, 43, 0.34)',
+    marginTop: SPACE.md,
+    marginBottom: SPACE.md,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 3,
   },});
