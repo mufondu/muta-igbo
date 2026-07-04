@@ -379,6 +379,21 @@ function ProfileSwitcher() {
 function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerView, levelId?: string) => void; onOpenProfileSheet: () => void }) {
   const { activeProfile, state } = useApp();
   const [adventurePickerOpen, setAdventurePickerOpen] = useState(false);
+  const [returnToAdventurePicker, setReturnToAdventurePicker] = useState(false);
+
+  const openAdventureInner = (view: InnerView) => {
+    setReturnToAdventurePicker(true);
+    setAdventurePickerOpen(false);
+    openInner(view);
+  };
+
+  const closeAdventureInner = () => {
+    if (returnToAdventurePicker) {
+      setReturnToAdventurePicker(false);
+      setAdventurePickerOpen(true);
+    }
+  };
+
 
   const { width: screenWidth } = useWindowDimensions();
   const homeContentWidth = Math.min(screenWidth - 32, screenWidth >= 768 ? 680 : screenWidth);
@@ -483,11 +498,11 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
 
             <View style={sh.adventureSheetGrid}>
               {[
-                { icon: 'SAY', image: ADVENTURE_ART.sayIt, title: 'Say It!', sub: 'Talk like a star', bg: '#FFE6F0', accent: '#F64F72', action: () => openInner('sayItBack') },
-                { icon: 'ABC', image: ADVENTURE_ART.wordMagic, title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openInner('translator') },
-                { icon: 'STORY', image: ADVENTURE_ART.storyHut, title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openInner('folktales') },
-                { icon: 'IGBO', image: ADVENTURE_ART.cultureQuest, title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openInner('history') },
-                { icon: 'PLAY', image: ADVENTURE_ART.gameLand, title: 'Game Land', sub: 'Play & earn stars', bg: '#F2E9FF', accent: '#7A45D8', action: () => openInner('games' as InnerView) },
+                { icon: 'SAY', image: ADVENTURE_ART.sayIt, title: 'Say It!', sub: 'Talk like a star', bg: '#FFE6F0', accent: '#F64F72', action: () => openAdventureInner('sayItBack') },
+                { icon: 'ABC', image: ADVENTURE_ART.wordMagic, title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openAdventureInner('translator') },
+                { icon: 'STORY', image: ADVENTURE_ART.storyHut, title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openAdventureInner('folktales') },
+                { icon: 'IGBO', image: ADVENTURE_ART.cultureQuest, title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openAdventureInner('history') },
+                { icon: 'PLAY', image: ADVENTURE_ART.gameLand, title: 'Game Land', sub: 'Play & earn stars', bg: '#F2E9FF', accent: '#7A45D8', action: () => openAdventureInner('games' as InnerView) },
               ].map((card, index) => (
                 <TouchableOpacity
                   key={card.title}
