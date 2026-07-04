@@ -1472,11 +1472,11 @@ const ld = StyleSheet.create({
 const sh = StyleSheet.create({
   adventureSheetImage: {
     width: 104,
-    height: 92,
+    height: 104,
   },
   adventurePortalImage: {
-    width: 132,
-    height: 112,
+    width: 116,
+    height: 116,
   },
 
 
@@ -3581,17 +3581,14 @@ const sh = StyleSheet.create({
     gap: 14,
   },
   adventurePortalIcon: {
-    width: 104,
-    height: 94,
-    borderRadius: 32,
+    width: 96,
+    height: 96,
+    borderRadius: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#1B2A6B',
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 7 },
-    elevation: 4,
+    backgroundColor: 'transparent',
+    shadowOpacity: 0,
+    elevation: 0,
     overflow: 'visible',
   },
   adventurePortalEmoji: {
@@ -3675,14 +3672,12 @@ const sh = StyleSheet.create({
   },
   adventureSheetBubble: {
     width: 92,
-    height: 82,
-    borderRadius: 24,
+    height: 92,
+    borderRadius: 0,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
     overflow: 'visible',
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
-    borderColor: 'rgba(27, 42, 107, 0.08)',
   },
   adventureSheetIcon: {
     color: '#FFFFFF',
