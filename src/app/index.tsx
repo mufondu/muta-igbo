@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   View,
   Modal,
+  useWindowDimensions,
 } from 'react-native';
 import LessonIllustration from '../components/illustrations/LessonIllustration';
 import AvatarIllustration from '../components/illustrations/AvatarIllustration';
@@ -68,6 +69,8 @@ function playSoundFallback(label: string) {
 }
 
 // ─── Nav types ────────────────────────────────────────────────────────────────
+
+const MUTA_APP_ICON = require('../../assets/icon.png');
 type MainTab = 'home' | 'progress' | 'settings';
 
 type InnerView =
@@ -149,6 +152,9 @@ function LockBadge() {
 // ─── ROOT COMPONENT ───────────────────────────────────────────────────────────
 export default function MutaIgboApp() {
   const { state, completeOnboarding, incrementStreak, setActiveProfile } = useApp();
+  const { width: screenWidth } = useWindowDimensions();
+  const appContentWidth = Math.min(screenWidth - 32, screenWidth >= 768 ? 680 : screenWidth);
+
 
   const headerProfile =
     state.profiles.find(profile => profile.id === state.activeProfileId) ??
@@ -210,8 +216,8 @@ export default function MutaIgboApp() {
   return (
     <SafeAreaView style={sh.root}>
       {/* App header */}
-      <View style={sh.brandHeader}>
-        <Image source={MUTA_HEADER_LOGO} style={sh.standaloneLogo} resizeMode="contain" />
+      <View style={[sh.brandHeader, { width: appContentWidth }]}>
+        <Image source={MUTA_APP_ICON} style={sh.standaloneLogo} resizeMode="contain" />
 
         {gate !== 'settings' ? (
           <TouchableOpacity
@@ -294,7 +300,8 @@ export default function MutaIgboApp() {
 
       {/* Bottom nav */}
       {tab !== 'settings' && (
-        <View style={sh.bottomNav}>
+        <View pointerEvents="box-none" style={sh.bottomNavFrame}>
+          <View style={sh.bottomNav}>
           {([
             { id: 'home',     badge: 'HOME', label: 'Home' },
             { id: 'progress', badge: 'XP', label: 'Progress' },
@@ -311,6 +318,7 @@ export default function MutaIgboApp() {
               <Text style={[sh.navLabel, tab === item.id && sh.navLabelActive]}>{item.label}</Text>
             </TouchableOpacity>
           ))}
+          </View>
         </View>
       )}
     </SafeAreaView>
@@ -351,13 +359,16 @@ function ProfileSwitcher() {
 // ─── HOME SCREEN ──────────────────────────────────────────────────────────────
 function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerView, levelId?: string) => void; onOpenProfileSheet: () => void }) {
   const { activeProfile, state } = useApp();
+  const { width: screenWidth } = useWindowDimensions();
+  const homeContentWidth = Math.min(screenWidth - 32, screenWidth >= 768 ? 680 : screenWidth);
+
   const today = new Date().toDateString();
   const goalCount = activeProfile?.goalDate === today ? (activeProfile?.goalCount ?? 0) : 0;
   const profileName = activeProfile?.name ?? 'Nwa Igbo';
   const avatar = activeProfile?.avatar ?? 'adaeze';
 
   return (
-    <ScrollView style={sh.kidsHomeRoot} contentContainerStyle={sh.kidsHomeScroll} showsVerticalScrollIndicator={false}>
+    <ScrollView style={sh.kidsHomeRoot} contentContainerStyle={[sh.kidsHomeScroll, { width: homeContentWidth, alignSelf: 'center' }]} showsVerticalScrollIndicator={false}>
       <View style={sh.kidsHeroCard}>
         <View style={sh.kidsHeroTopRow}>
           <View style={sh.kidsHeroAvatarWrap}>
@@ -1656,8 +1667,10 @@ const sh = StyleSheet.create({
     overflow: 'hidden',
   },
   kidsChevron: { fontSize: 34, color: KIDS_COLOR.textSoft, fontWeight: '900' },
-
-  root: { flex: 1, backgroundColor: COLOR.bg },
+  root: {
+    flex: 1,
+    backgroundColor: KIDS_COLOR.palmCream,
+  },
   appHeader: {
     display: 'none',
   },
@@ -1709,10 +1722,8 @@ const sh = StyleSheet.create({
     fontWeight: '900',
   },
   bottomNav: {
-    position: 'absolute',
-    left: SPACE.md,
-    right: SPACE.md,
-    bottom: 18,
+    width: '100%',
+    maxWidth: 560,
     minHeight: 86,
     backgroundColor: KIDS_COLOR.white,
     borderWidth: 1.5,
@@ -2824,8 +2835,9 @@ const sh = StyleSheet.create({
     display: 'none',
   },
   standaloneLogo: {
-    width: 72,
-    height: 72,
+    width: 68,
+    height: 68,
+    borderRadius: 18,
   },
   compactHudRow: {
     display: 'none',
@@ -2843,6 +2855,7 @@ const sh = StyleSheet.create({
     display: 'none',
   },
   brandHeader: {
+    alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -3077,4 +3090,12 @@ const sh = StyleSheet.create({
     fontSize: FONT.sm,
     lineHeight: 20,
     fontWeight: '800',
+  },
+  bottomNavFrame: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 18,
+    alignItems: 'center',
+    paddingHorizontal: SPACE.md,
   },});
