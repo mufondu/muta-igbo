@@ -102,7 +102,8 @@ type InnerView =
   | 'games'
   | 'premium'
   | 'terms'
-  | 'privacy';
+  | 'privacy'
+  | 'adventurePicker';
 
 interface NavState {
   inner: InnerView | null;
@@ -183,6 +184,7 @@ export default function MutaIgboApp() {
   const [profileSheetOpen, setProfileSheetOpen] = React.useState(false);
   const [gate, setGate] = useState<null | 'settings' | 'premium'>(null);
   const [nav, setNav]     = useState<NavState>(NAV_RESET);
+  const [returnToAdventurePicker, setReturnToAdventurePicker] = useState(false);
 
   useEffect(() => {
     setNav(NAV_RESET);
@@ -194,7 +196,18 @@ export default function MutaIgboApp() {
     setNav({ inner: view, levelId: levelId ?? '7A', sectionId: sectionId ?? '' });
   }
 
-  function closeInner() { setNav(NAV_RESET); }
+  function openAdventureInner(view: InnerView) {
+    setReturnToAdventurePicker(true);
+    openInner(view);
+  }
+
+  function backToAdventurePicker() {
+    setReturnToAdventurePicker(false);
+    openInner('adventurePicker');
+  }
+
+
+  function closeInner() { setReturnToAdventurePicker(false); setNav(NAV_RESET); }
 
   // ── Onboarding flow ──
   if (!state.onboarded) {
@@ -217,13 +230,16 @@ export default function MutaIgboApp() {
         {inner === 'quiz' && (
           <QuizScreen onBack={closeInner} onPremium={() => openInner('premium')} />
         )}
-        {inner === 'translator' && <TranslatorScreen onBack={closeInner} />}
-        {inner === 'sayItBack' && <SayItBackScreen onBack={closeInner} />}
-        {inner === 'folktales' && (
-          <FolktalesScreen onBack={closeInner} onPremium={() => openInner('premium')} />
+        {inner === 'adventurePicker' && (
+          <AdventurePickerScreen onBack={closeInner} openAdventure={openAdventureInner} />
         )}
-        {inner === 'history'  && <HistoryScreen  onBack={closeInner} />}
-        {inner === 'games'    && <GamesHub isPremium={state.isPremium} onBack={closeInner} />}
+        {inner === 'translator' && <TranslatorScreen onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
+        {inner === 'sayItBack' && <SayItBackScreen onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
+        {inner === 'folktales' && (
+          <FolktalesScreen onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} onPremium={() => openInner('premium')} />
+        )}
+        {inner === 'history'  && <HistoryScreen  onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
+        {inner === 'games'    && <GamesHub isPremium={state.isPremium} onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
         {inner === 'premium' && <PremiumScreen onBack={closeInner} />}
         {inner === 'terms'   && <TermsScreen   onBack={closeInner} />}
         {inner === 'privacy' && <PrivacyScreen  onBack={closeInner} />}
@@ -375,6 +391,70 @@ function ProfileSwitcher() {
   );
 }
 
+
+// ─── ADVENTURE PICKER SCREEN ─────────────────────────────────────────────────
+function AdventurePickerScreen({
+  onBack,
+  openAdventure,
+}: {
+  onBack: () => void;
+  openAdventure: (view: InnerView) => void;
+}) {
+  const cards = [
+    { image: ADVENTURE_ART.sayIt, title: 'Say It!', sub: 'Talk like a star', bg: '#FFE6F0', accent: '#F64F72', action: () => openAdventure('sayItBack') },
+    { image: ADVENTURE_ART.wordMagic, title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openAdventure('translator') },
+    { image: ADVENTURE_ART.storyHut, title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openAdventure('folktales') },
+    { image: ADVENTURE_ART.cultureQuest, title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openAdventure('history') },
+    { image: ADVENTURE_ART.gameLand, title: 'Game Land', sub: 'Play & earn stars', bg: '#F2E9FF', accent: '#7A45D8', action: () => openAdventure('games' as InnerView) },
+  ];
+
+  return (
+    <ScrollView
+      style={sh.kidsHomeRoot}
+      contentContainerStyle={sh.adventurePickerScreenScroll}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={sh.adventurePickerScreenHeader}>
+        <TouchableOpacity style={sh.adventurePickerBackButton} onPress={onBack} activeOpacity={0.85}>
+          <Text style={sh.adventurePickerBackText}>‹</Text>
+        </TouchableOpacity>
+        <View style={{ flex: 1 }}>
+          <Text style={sh.kidsSectionLabel}>PLAYROOM</Text>
+          <Text style={sh.adventureSheetTitle}>Pick your adventure</Text>
+          <Text style={sh.adventureSheetSub}>Choose how you want to practice Igbo today.</Text>
+        </View>
+      </View>
+
+      <View style={sh.adventureSheetGrid}>
+        {cards.map((card, index) => (
+          <TouchableOpacity
+            key={card.title}
+            style={[
+              sh.adventureSheetCard,
+              {
+                backgroundColor: card.bg,
+                borderColor: card.accent + '44',
+                transform: [{ rotate: index % 2 === 0 ? '-0.7deg' : '0.7deg' }],
+              },
+            ]}
+            activeOpacity={0.88}
+            onPress={card.action}
+          >
+            <View style={sh.adventureSheetBubble}>
+              <Image source={card.image} style={sh.adventureSheetImage} resizeMode="contain" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={sh.adventureSheetCardTitle}>{card.title}</Text>
+              <Text style={sh.adventureSheetCardSub}>{card.sub}</Text>
+            </View>
+            <Text style={[sh.adventureSheetArrow, { color: card.accent }]}>›</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ScrollView>
+  );
+}
+
 // ─── HOME SCREEN ──────────────────────────────────────────────────────────────
 function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerView, levelId?: string) => void; onOpenProfileSheet: () => void }) {
   const { activeProfile, state } = useApp();
@@ -454,7 +534,7 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
       <TouchableOpacity
         style={sh.adventurePortalCard}
         activeOpacity={0.88}
-        onPress={() => setAdventurePickerOpen(true)}
+        onPress={() => openInner('adventurePicker')}
         accessibilityLabel="Choose your adventure"
       >
         <View style={sh.adventurePortalCloudOne} />
@@ -1483,6 +1563,40 @@ const ld = StyleSheet.create({
 });
 
 const sh = StyleSheet.create({
+  adventurePickerScreenScroll: {
+    paddingHorizontal: 18,
+    paddingTop: 10,
+    paddingBottom: 120,
+  },
+  adventurePickerScreenHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    marginBottom: 18,
+  },
+  adventurePickerBackButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#DDF6FF',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 2,
+  },
+  adventurePickerBackText: {
+    fontSize: 38,
+    lineHeight: 40,
+    fontWeight: '900',
+    color: '#1B2A6B',
+    marginTop: -2,
+  },
+
   adventureSheetImage: {
     width: 118,
     height: 118,
