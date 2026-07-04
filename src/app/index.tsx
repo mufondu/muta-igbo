@@ -80,6 +80,8 @@ function playSoundFallback(label: string) {
 const MUTA_APP_ICON = require('../../assets/icon.png');
 
 
+
+
 const ADVENTURE_ART = {
   sayIt: require('../../assets/illustrations/custom/adventures/say-it.png'),
   wordMagic: require('../../assets/illustrations/custom/adventures/word-magic.png'),
@@ -481,7 +483,7 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
 
             <View style={sh.adventureSheetGrid}>
               {[
-                { icon: '��', title: 'Say It!', sub: 'Talk like a star', bg: '#FFE6F0', accent: '#F64F72', action: () => openInner('sayItBack') },
+                { icon: 'SAY', image: ADVENTURE_ART.sayIt, title: 'Say It!', sub: 'Talk like a star', bg: '#FFE6F0', accent: '#F64F72', action: () => openInner('sayItBack') },
                 { icon: 'ABC', image: ADVENTURE_ART.wordMagic, title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openInner('translator') },
                 { icon: 'STORY', image: ADVENTURE_ART.storyHut, title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openInner('folktales') },
                 { icon: 'IGBO', image: ADVENTURE_ART.cultureQuest, title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openInner('history') },
@@ -503,12 +505,8 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
                     card.action();
                   }}
                 >
-                  <View style={[sh.adventureSheetBubble, { backgroundColor: '#FFFFFF' }]}>
-                    {'image' in card ? (
-                      <Image source={card.image} style={sh.adventureSheetImage} resizeMode="contain" />
-                    ) : (
-                      <Text style={[sh.adventureSheetIcon, { color: card.accent }]}>{card.icon}</Text>
-                    )}
+                  <View style={sh.adventureSheetBubble}>
+                    <Image source={card.image} style={sh.adventureSheetImage} resizeMode="contain" />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={sh.adventureSheetCardTitle}>{card.title}</Text>
@@ -1471,8 +1469,8 @@ const ld = StyleSheet.create({
 
 const sh = StyleSheet.create({
   adventureSheetImage: {
-    width: 104,
-    height: 104,
+    width: 118,
+    height: 118,
   },
   adventurePortalImage: {
     width: 116,
@@ -3671,12 +3669,13 @@ const sh = StyleSheet.create({
     elevation: 4,
   },
   adventureSheetBubble: {
-    width: 92,
-    height: 92,
+    width: 112,
+    height: 104,
     borderRadius: 0,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
+    borderWidth: 0,
     overflow: 'visible',
   },
   adventureSheetIcon: {
