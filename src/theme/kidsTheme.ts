@@ -5,13 +5,13 @@ export const KIDS_COLOR = {
   white: '#FFFFFF',
 
   // Kid-first learning surfaces
-  softSky: '#DFF5FF',
-  skyMist: '#EFFAFF',
+  softSky: '#DDF6FF',
+  skyMist: '#F0FBFF',
   softMint: '#E7FAEF',
   mintMist: '#F1FFF6',
-  softCoral: '#FFE8EF',
-  softPurple: '#F1E9FF',
-  softSunshine: '#FFF3C4',
+  softCoral: '#FFE6F0',
+  softPurple: '#F2E9FF',
+  softSunshine: '#FFF1B8',
 
   // Primary playful brand colors
   sky: '#31BDED',
@@ -27,13 +27,13 @@ export const KIDS_COLOR = {
   deepForest: '#00422B',
 
   // Text system: less corporate than forest green
-  textPrimary: '#083E4A',
-  textSecondary: '#376B70',
-  textSoft: '#6D8A8F',
+  textPrimary: '#1B2A6B',
+  textSecondary: '#436B8A',
+  textSoft: '#7E8FA8',
 
   // Structure
-  borderSoft: 'rgba(8, 62, 74, 0.12)',
-  shadow: 'rgba(8, 62, 74, 0.16)',
+  borderSoft: 'rgba(27, 42, 107, 0.12)',
+  shadow: 'rgba(27, 42, 107, 0.16)',
 
   // Semantic aliases
   success: '#19B765',
@@ -42,6 +42,16 @@ export const KIDS_COLOR = {
   audio: '#31BDED',
   story: '#7A45D8',
   quiz: '#F64F72',
+
+  // Playground aliases
+  playgroundBlue: '#31BDED',
+  playgroundPink: '#F64F72',
+  playgroundPurple: '#7A45D8',
+  playgroundYellow: '#FFD24A',
+  playgroundOrange: '#FFA62B',
+  playgroundGreen: '#19B765',
+  heading: '#1B2A6B',
+  headingFun: '#7A45D8',
 };
 
 export const KIDS_GRADIENT = {
@@ -53,14 +63,14 @@ export const KIDS_GRADIENT = {
 
 export const KIDS_SHADOW = {
   softCard: {
-    shadowColor: '#083E4A',
+    shadowColor: '#1B2A6B',
     shadowOpacity: 0.12,
     shadowRadius: 18,
     shadowOffset: { width: 0, height: 10 },
     elevation: 4,
   },
   button: {
-    shadowColor: '#083E4A',
+    shadowColor: '#1B2A6B',
     shadowOpacity: 0.18,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 7 },
