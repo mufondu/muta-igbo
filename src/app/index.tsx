@@ -79,14 +79,6 @@ function playSoundFallback(label: string) {
 
 const MUTA_APP_ICON = require('../../assets/icon.png');
 
-const ADVENTURE_ART = {
-  sayIt: require('../../assets/illustrations/custom/adventures/say-it.png'),
-  wordMagic: require('../../assets/illustrations/custom/adventures/word-magic.png'),
-  storyHut: require('../../assets/illustrations/custom/adventures/story-hut.png'),
-  cultureQuest: require('../../assets/illustrations/custom/adventures/culture-quest.png'),
-  gameLand: require('../../assets/illustrations/custom/adventures/game-land.png'),
-};
-
 type MainTab = 'home' | 'progress' | 'settings';
 
 type InnerView =
@@ -444,7 +436,7 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
 
         <View style={sh.adventurePortalTop}>
           <View style={sh.adventurePortalIcon}>
-            <Image source={ADVENTURE_ART.storyHut} style={sh.adventurePortalImage} resizeMode="contain" />
+            <Text style={sh.adventurePortalEmoji}>PLAY</Text>
           </View>
 
           <View style={{ flex: 1 }}>
@@ -481,10 +473,10 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
             <View style={sh.adventureSheetGrid}>
               {[
                 { icon: '��', title: 'Say It!', sub: 'Talk like a star', bg: '#FFE6F0', accent: '#F64F72', action: () => openInner('sayItBack') },
-                { icon: '💬', image: ADVENTURE_ART.wordMagic, title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openInner('translator') },
-                { icon: '📚', image: ADVENTURE_ART.storyHut, title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openInner('folktales') },
-                { icon: '🌍', image: ADVENTURE_ART.cultureQuest, title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openInner('history') },
-                { icon: '🎮', image: ADVENTURE_ART.gameLand, title: 'Game Land', sub: 'Play & earn stars', bg: '#F2E9FF', accent: '#7A45D8', action: () => openInner('games' as InnerView) },
+                { icon: 'ABC', title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openInner('translator') },
+                { icon: 'STORY', title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openInner('folktales') },
+                { icon: 'IGBO', title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openInner('history') },
+                { icon: 'PLAY', title: 'Game Land', sub: 'Play & earn stars', bg: '#F2E9FF', accent: '#7A45D8', action: () => openInner('games' as InnerView) },
               ].map((card, index) => (
                 <TouchableOpacity
                   key={card.title}
@@ -503,11 +495,7 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
                   }}
                 >
                   <View style={[sh.adventureSheetBubble, { backgroundColor: card.accent }]}>
-                    {'image' in card ? (
-                      <Image source={card.image} style={sh.adventureSheetImage} resizeMode="contain" />
-                    ) : (
-                      <Text style={sh.adventureSheetIcon}>{card.icon}</Text>
-                    )}
+                    <Text style={sh.adventureSheetIcon}>{card.icon}</Text>
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={sh.adventureSheetCardTitle}>{card.title}</Text>
@@ -3579,8 +3567,8 @@ const sh = StyleSheet.create({
     gap: 14,
   },
   adventurePortalIcon: {
-    width: 84,
-    height: 84,
+    width: 88,
+    height: 88,
     borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
@@ -3592,7 +3580,10 @@ const sh = StyleSheet.create({
     elevation: 4,
   },
   adventurePortalEmoji: {
-    fontSize: 42,
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '900',
+    letterSpacing: 1,
   },
   adventurePortalBottom: {
     flexDirection: 'row',
@@ -3668,14 +3659,20 @@ const sh = StyleSheet.create({
     elevation: 4,
   },
   adventureSheetBubble: {
-    width: 64,
-    height: 64,
-    borderRadius: 24,
+    width: 68,
+    height: 68,
+    borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   adventureSheetIcon: {
-    fontSize: 32,
+    color: '#FFFFFF',
+    fontSize: 13,
+    lineHeight: 16,
+    fontWeight: '900',
+    letterSpacing: 0.6,
+    textAlign: 'center',
   },
   adventureSheetCardTitle: {
     color: '#1B2A6B',
