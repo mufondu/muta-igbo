@@ -4,6 +4,8 @@
  * src/app/index.tsx
  */
 
+import { IGBO_FOLKTALES } from '../data/igboFolktales';
+import { AnimalIllustration } from '../components/illustrations/AnimalIllustration';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -1247,63 +1249,49 @@ function SayItBackScreen({ onBack }: { onBack: () => void }) {
 }
 
 function FolktalesScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () => void }) {
-  const { state } = useApp();
-  const [selected, setSelected] = useState<string | null>(null);
-
-  if (selected) {
-    const tale = FOLKTALES.find(f => f.id === selected)!;
-    return (
-      <View style={{ flex: 1, backgroundColor: COLOR.bg }}>
-        <InnerHeader title="Level 1A: Ife Ọdịnala" onBack={() => setSelected(null)} />
-        <ScrollView contentContainerStyle={sh.listPad}>
-          <View style={sh.storyCard}>
-            <View style={sh.storyCover}>
-              <Text style={{ fontSize: 48, marginBottom: 8 }}>{tale.coverEmoji}</Text>
-              <Text style={sh.storyCoverTitle}>{tale.title}</Text>
-              <Text style={sh.storyCoverSub}>{tale.subtitle}</Text>
-            </View>
-            <View style={sh.storyBody}>
-              <TouchableOpacity style={sh.storyListenBtn} onPress={() => playSoundFallback('Story')}>
-                <Text style={sh.storyListenText}>🔊 Listen to the story</Text>
-              </TouchableOpacity>
-              <Text style={sh.storyText}>{tale.body}</Text>
-              <View style={sh.moralBox}>
-                <Text style={sh.moralText}>💡 {tale.moral}</Text>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
-      </View>
-    );
-  }
-
   return (
-    <View style={{ flex: 1, backgroundColor: COLOR.bg }}>
-      <InnerHeader title="Level 1A: Ife Ọdịnala 📚" onBack={onBack} />
-      <ScrollView contentContainerStyle={sh.listPad}>
-        <Text style={{ fontSize: FONT.sm, color: COLOR.textSecond, marginBottom: SPACE.md }}>
-          Igbo folktales from Enuani, stories passed down through generations
-        </Text>
-        {FOLKTALES.map(tale => {
-          const isLocked = !tale.free && !state.isPremium;
-          return (
-            <TouchableOpacity
-              key={tale.id}
-              style={[sh.taleCard, isLocked && sh.levelCardLocked]}
-              onPress={() => isLocked ? onPremium() : setSelected(tale.id)}
-              activeOpacity={0.85}
-            >
-              <View style={sh.taleCover}>
-                <Text style={{ fontSize: 36 }}>{tale.coverEmoji}</Text>
+    <View style={sh.innerRoot}>
+      <InnerHeader title="Story Hut 📚" onBack={onBack} />
+
+      <ScrollView
+        style={sh.storyHutRoot}
+        contentContainerStyle={sh.storyHutScroll}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={sh.storyHutHero}>
+          <Text style={sh.storyHutKicker}>IGBO STORY HUT</Text>
+          <Text style={sh.storyHutTitle}>Igbo Folktales</Text>
+          <Text style={sh.storyHutSub}>
+            Animal stories with wisdom, kindness, courage, and community lessons.
+          </Text>
+        </View>
+
+        {IGBO_FOLKTALES.map((story, index) => (
+          <TouchableOpacity
+            key={story.id}
+            style={[sh.storyCard, index % 2 === 0 ? sh.storyCardSky : sh.storyCardSun]}
+            activeOpacity={0.88}
+          >
+            <View style={sh.storyCardTop}>
+              <View style={sh.storyAnimalBadge}>
+                <AnimalIllustration animal={story.animal} size={86} />
               </View>
+
               <View style={{ flex: 1 }}>
-                <Text style={sh.taleName}>{tale.title}</Text>
-                <Text style={sh.taleSub}>{tale.subtitle}</Text>
+                <Text style={sh.storyCharacter}>{story.character}</Text>
+                <Text style={sh.storyTitle}>{story.title}</Text>
+                <Text style={sh.storySubtitle}>{story.subtitle}</Text>
               </View>
-              {isLocked ? <LockBadge /> : <Text style={sh.chevron}>›</Text>}
-            </TouchableOpacity>
-          );
-        })}
+            </View>
+
+            <View style={sh.storyMoralPill}>
+              <Text style={sh.storyMoralLabel}>MORAL</Text>
+              <Text style={sh.storyMoralText}>{story.moral}</Text>
+            </View>
+
+            <Text style={sh.storyBody}>{story.story}</Text>
+          </TouchableOpacity>
+        ))}
       </ScrollView>
     </View>
   );
@@ -1397,6 +1385,135 @@ const ld = StyleSheet.create({
 });
 
 const sh = StyleSheet.create({
+  storyHutRoot: {
+    flex: 1,
+    backgroundColor: '#FFF7E8',
+  },
+  storyHutScroll: {
+    paddingHorizontal: SPACE.md,
+    paddingTop: SPACE.lg,
+    paddingBottom: 140,
+  },
+  storyHutHero: {
+    borderRadius: 36,
+    padding: SPACE.lg,
+    backgroundColor: '#F2E9FF',
+    borderWidth: 2,
+    borderColor: 'rgba(122, 69, 216, 0.24)',
+    marginBottom: SPACE.lg,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.10,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
+  },
+  storyHutKicker: {
+    color: '#F64F72',
+    fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 1.8,
+    marginBottom: 6,
+  },
+  storyHutTitle: {
+    color: '#7A45D8',
+    fontSize: 38,
+    lineHeight: 42,
+    fontWeight: '900',
+    letterSpacing: -1,
+  },
+  storyHutSub: {
+    color: '#436B8A',
+    fontSize: FONT.md,
+    lineHeight: 23,
+    fontWeight: '800',
+    marginTop: 8,
+  },
+  storyCard: {
+    borderRadius: 36,
+    padding: SPACE.md,
+    borderWidth: 2,
+    marginBottom: SPACE.md,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.10,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
+  },
+  storyCardSky: {
+    backgroundColor: '#DDF6FF',
+    borderColor: 'rgba(49, 189, 237, 0.30)',
+  },
+  storyCardSun: {
+    backgroundColor: '#FFF1B8',
+    borderColor: 'rgba(255, 166, 43, 0.34)',
+  },
+  storyCardTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    marginBottom: SPACE.md,
+  },
+  storyAnimalBadge: {
+    width: 100,
+    height: 100,
+    borderRadius: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: 'rgba(27, 42, 107, 0.08)',
+    overflow: 'visible',
+  },
+  storyCharacter: {
+    color: '#F64F72',
+    fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 1.4,
+    marginBottom: 3,
+  },
+  storyTitle: {
+    color: '#1B2A6B',
+    fontSize: 25,
+    lineHeight: 29,
+    fontWeight: '900',
+    letterSpacing: -0.6,
+  },
+  storySubtitle: {
+    color: '#436B8A',
+    fontSize: FONT.sm,
+    lineHeight: 20,
+    fontWeight: '800',
+    marginTop: 4,
+  },
+  storyMoralPill: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderWidth: 1.5,
+    borderColor: 'rgba(27, 42, 107, 0.08)',
+    marginBottom: SPACE.md,
+  },
+  storyMoralLabel: {
+    color: '#7A45D8',
+    fontSize: 11,
+    fontWeight: '900',
+    letterSpacing: 1.4,
+    marginBottom: 3,
+  },
+  storyMoralText: {
+    color: '#1B2A6B',
+    fontSize: FONT.sm,
+    fontWeight: '900',
+    lineHeight: 20,
+  },
+  storyBody: {
+    color: '#375A72',
+    fontSize: FONT.md,
+    lineHeight: 24,
+    fontWeight: '700',
+  },
+
   profileSheetAddText: {
     color: KIDS_COLOR.white,
     fontSize: FONT.sm,
