@@ -1250,7 +1250,7 @@ function SayItBackScreen({ onBack }: { onBack: () => void }) {
 
 function FolktalesScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () => void }) {
   return (
-    <View style={sh.innerRoot}>
+    <View style={sh.storyHutRoot}>
       <InnerHeader title="Story Hut 📚" onBack={onBack} />
 
       <ScrollView
@@ -1269,27 +1269,27 @@ function FolktalesScreen({ onBack, onPremium }: { onBack: () => void; onPremium:
         {IGBO_FOLKTALES.map((story, index) => (
           <TouchableOpacity
             key={story.id}
-            style={[sh.storyCard, index % 2 === 0 ? sh.storyCardSky : sh.storyCardSun]}
+            style={[sh.folktaleCard, index % 2 === 0 ? sh.folktaleCardSky : sh.folktaleCardSun]}
             activeOpacity={0.88}
           >
-            <View style={sh.storyCardTop}>
-              <View style={sh.storyAnimalBadge}>
+            <View style={sh.folktaleCardTop}>
+              <View style={sh.folktaleAnimalBadge}>
                 <AnimalIllustration animal={story.animal} size={86} />
               </View>
 
               <View style={{ flex: 1 }}>
-                <Text style={sh.storyCharacter}>{story.character}</Text>
-                <Text style={sh.storyTitle}>{story.title}</Text>
-                <Text style={sh.storySubtitle}>{story.subtitle}</Text>
+                <Text style={sh.folktaleCharacter}>{story.character}</Text>
+                <Text style={sh.folktaleTitle}>{story.title}</Text>
+                <Text style={sh.folktaleSubtitle}>{story.subtitle}</Text>
               </View>
             </View>
 
-            <View style={sh.storyMoralPill}>
-              <Text style={sh.storyMoralLabel}>MORAL</Text>
-              <Text style={sh.storyMoralText}>{story.moral}</Text>
+            <View style={sh.folktaleMoralPill}>
+              <Text style={sh.folktaleMoralLabel}>MORAL</Text>
+              <Text style={sh.folktaleMoralText}>{story.moral}</Text>
             </View>
 
-            <Text style={sh.storyBody}>{story.story}</Text>
+            <Text style={sh.folktaleBody}>{story.story}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -1385,6 +1385,91 @@ const ld = StyleSheet.create({
 });
 
 const sh = StyleSheet.create({
+  folktaleBody: {
+    color: '#375A72',
+    fontSize: FONT.md,
+    lineHeight: 24,
+    fontWeight: '700',
+  },
+  folktaleMoralText: {
+    color: '#1B2A6B',
+    fontSize: FONT.sm,
+    fontWeight: '900',
+    lineHeight: 20,
+  },
+  folktaleMoralLabel: {
+    color: '#7A45D8',
+    fontSize: 11,
+    fontWeight: '900',
+    letterSpacing: 1.4,
+    marginBottom: 3,
+  },
+  folktaleMoralPill: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderWidth: 1.5,
+    borderColor: 'rgba(27, 42, 107, 0.08)',
+    marginBottom: SPACE.md,
+  },
+  folktaleSubtitle: {
+    color: '#436B8A',
+    fontSize: FONT.sm,
+    lineHeight: 20,
+    fontWeight: '800',
+    marginTop: 4,
+  },
+  folktaleTitle: {
+    color: '#1B2A6B',
+    fontSize: 25,
+    lineHeight: 29,
+    fontWeight: '900',
+    letterSpacing: -0.6,
+  },
+  folktaleCharacter: {
+    color: '#F64F72',
+    fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 1.4,
+    marginBottom: 3,
+  },
+  folktaleAnimalBadge: {
+    width: 100,
+    height: 100,
+    borderRadius: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: 'rgba(27, 42, 107, 0.08)',
+    overflow: 'visible',
+  },
+  folktaleCardTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    marginBottom: SPACE.md,
+  },
+  folktaleCardSun: {
+    backgroundColor: '#FFF1B8',
+    borderColor: 'rgba(255, 166, 43, 0.34)',
+  },
+  folktaleCardSky: {
+    backgroundColor: '#DDF6FF',
+    borderColor: 'rgba(49, 189, 237, 0.30)',
+  },
+  folktaleCard: {
+    borderRadius: 36,
+    padding: SPACE.md,
+    borderWidth: 2,
+    marginBottom: SPACE.md,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.10,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
+  },
   storyHutRoot: {
     flex: 1,
     backgroundColor: '#FFF7E8',
@@ -1401,11 +1486,6 @@ const sh = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'rgba(122, 69, 216, 0.24)',
     marginBottom: SPACE.lg,
-    shadowColor: '#1B2A6B',
-    shadowOpacity: 0.10,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 4,
   },
   storyHutKicker: {
     color: '#F64F72',
@@ -1428,16 +1508,10 @@ const sh = StyleSheet.create({
     fontWeight: '800',
     marginTop: 8,
   },
+
   storyCard: {
-    borderRadius: 36,
-    padding: SPACE.md,
-    borderWidth: 2,
-    marginBottom: SPACE.md,
-    shadowColor: '#1B2A6B',
-    shadowOpacity: 0.10,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 4,
+    borderRadius: RADIUS.lg, overflow: 'hidden',
+    borderWidth: 1, borderColor: COLOR.border, marginBottom: 30,
   },
   storyCardSky: {
     backgroundColor: '#DDF6FF',
@@ -1507,12 +1581,7 @@ const sh = StyleSheet.create({
     fontWeight: '900',
     lineHeight: 20,
   },
-  storyBody: {
-    color: '#375A72',
-    fontSize: FONT.md,
-    lineHeight: 24,
-    fontWeight: '700',
-  },
+  storyBody: { backgroundColor: COLOR.card, padding: SPACE.md },
 
   profileSheetAddText: {
     color: KIDS_COLOR.white,
@@ -2432,15 +2501,9 @@ const sh = StyleSheet.create({
     borderRadius: RADIUS.md, paddingVertical: 12, alignItems: 'center',
   },
   pbBtnText: { color: COLOR.textWhite, fontWeight: '700', fontSize: FONT.sm },
-
-  storyCard: {
-    borderRadius: RADIUS.lg, overflow: 'hidden',
-    borderWidth: 1, borderColor: COLOR.border, marginBottom: 30,
-  },
   storyCover: { backgroundColor: COLOR.forestDark, padding: SPACE.lg, alignItems: 'center' },
   storyCoverTitle: { fontSize: FONT.xl, fontWeight: '800', color: COLOR.textCream, textAlign: 'center' },
   storyCoverSub: { fontSize: FONT.sm, color: '#7AB897', marginTop: 4, textAlign: 'center' },
-  storyBody: { backgroundColor: COLOR.card, padding: SPACE.md },
   storyListenBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
     padding: 10, backgroundColor: COLOR.forestLight,
