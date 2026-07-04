@@ -1259,11 +1259,21 @@ function FolktalesScreen({ onBack, onPremium }: { onBack: () => void; onPremium:
         showsVerticalScrollIndicator={false}
       >
         <View style={sh.storyHutHero}>
+          <View style={sh.storyCloudOne} />
+          <View style={sh.storyCloudTwo} />
+          <View style={sh.storySunDot} />
+
           <Text style={sh.storyHutKicker}>IGBO STORY HUT</Text>
           <Text style={sh.storyHutTitle}>Igbo Folktales</Text>
           <Text style={sh.storyHutSub}>
-            Animal stories with wisdom, kindness, courage, and community lessons.
+            Step into the story garden for animal tales, wisdom, courage, and kindness.
           </Text>
+
+          <View style={sh.storyHeroChips}>
+            <Text style={sh.storyHeroChip}>🐢 Mbe</Text>
+            <Text style={sh.storyHeroChip}>🦁 Ọdụm</Text>
+            <Text style={sh.storyHeroChip}>🐍 Eke</Text>
+          </View>
         </View>
 
         {IGBO_FOLKTALES.map((story, index) => (
@@ -1290,6 +1300,10 @@ function FolktalesScreen({ onBack, onPremium }: { onBack: () => void; onPremium:
             </View>
 
             <Text style={sh.folktaleBody}>{story.story}</Text>
+
+            <View style={sh.storyReadPill}>
+              <Text style={sh.storyReadPillText}>Read story ✨</Text>
+            </View>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -1388,7 +1402,7 @@ const sh = StyleSheet.create({
   folktaleBody: {
     color: '#375A72',
     fontSize: FONT.md,
-    lineHeight: 24,
+    lineHeight: 25,
     fontWeight: '700',
   },
   folktaleMoralText: {
@@ -1401,12 +1415,12 @@ const sh = StyleSheet.create({
     color: '#7A45D8',
     fontSize: 11,
     fontWeight: '900',
-    letterSpacing: 1.4,
+    letterSpacing: 1.5,
     marginBottom: 3,
   },
   folktaleMoralPill: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 24,
+    borderRadius: 28,
     paddingHorizontal: 14,
     paddingVertical: 12,
     borderWidth: 1.5,
@@ -1418,32 +1432,43 @@ const sh = StyleSheet.create({
     fontSize: FONT.sm,
     lineHeight: 20,
     fontWeight: '800',
-    marginTop: 4,
+    marginTop: 5,
   },
   folktaleTitle: {
     color: '#1B2A6B',
-    fontSize: 25,
-    lineHeight: 29,
+    fontSize: 27,
+    lineHeight: 31,
     fontWeight: '900',
-    letterSpacing: -0.6,
+    letterSpacing: -0.8,
   },
   folktaleCharacter: {
+    alignSelf: 'flex-start',
+    overflow: 'hidden',
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: '#FFE6F0',
     color: '#F64F72',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '900',
-    letterSpacing: 1.4,
-    marginBottom: 3,
+    letterSpacing: 1.2,
+    marginBottom: 7,
   },
   folktaleAnimalBadge: {
-    width: 100,
-    height: 100,
-    borderRadius: 34,
+    width: 106,
+    height: 106,
+    borderRadius: 38,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
+    borderWidth: 2,
     borderColor: 'rgba(27, 42, 107, 0.08)',
     overflow: 'visible',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 7 },
+    elevation: 3,
   },
   folktaleCardTop: {
     flexDirection: 'row',
@@ -1456,19 +1481,20 @@ const sh = StyleSheet.create({
     borderColor: 'rgba(255, 166, 43, 0.34)',
   },
   folktaleCardSky: {
-    backgroundColor: '#DDF6FF',
-    borderColor: 'rgba(49, 189, 237, 0.30)',
+    backgroundColor: '#F2E9FF',
+    borderColor: 'rgba(122, 69, 216, 0.24)',
   },
   folktaleCard: {
-    borderRadius: 36,
+    borderRadius: 40,
     padding: SPACE.md,
     borderWidth: 2,
-    marginBottom: SPACE.md,
+    marginBottom: SPACE.lg,
     shadowColor: '#1B2A6B',
-    shadowOpacity: 0.10,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 4,
+    shadowOpacity: 0.12,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 5,
+    overflow: 'visible',
   },
   storyHutRoot: {
     flex: 1,
@@ -1477,36 +1503,47 @@ const sh = StyleSheet.create({
   storyHutScroll: {
     paddingHorizontal: SPACE.md,
     paddingTop: SPACE.lg,
-    paddingBottom: 140,
+    paddingBottom: 150,
+    backgroundColor: '#FFF7E8',
   },
   storyHutHero: {
-    borderRadius: 36,
-    padding: SPACE.lg,
-    backgroundColor: '#F2E9FF',
+    position: 'relative',
+    overflow: 'hidden',
+    borderRadius: 40,
+    paddingHorizontal: SPACE.lg,
+    paddingTop: SPACE.xl,
+    paddingBottom: SPACE.lg,
+    backgroundColor: '#DDF6FF',
     borderWidth: 2,
-    borderColor: 'rgba(122, 69, 216, 0.24)',
+    borderColor: 'rgba(49, 189, 237, 0.32)',
     marginBottom: SPACE.lg,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.12,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 5,
   },
   storyHutKicker: {
     color: '#F64F72',
     fontSize: 12,
     fontWeight: '900',
-    letterSpacing: 1.8,
-    marginBottom: 6,
+    letterSpacing: 1.9,
+    marginBottom: 7,
   },
   storyHutTitle: {
     color: '#7A45D8',
-    fontSize: 38,
-    lineHeight: 42,
+    fontSize: 42,
+    lineHeight: 46,
     fontWeight: '900',
-    letterSpacing: -1,
+    letterSpacing: -1.2,
   },
   storyHutSub: {
-    color: '#436B8A',
+    color: '#1B2A6B',
     fontSize: FONT.md,
     lineHeight: 23,
     fontWeight: '800',
-    marginTop: 8,
+    marginTop: 9,
+    maxWidth: 310,
   },
 
   storyCard: {
@@ -3362,4 +3399,64 @@ const sh = StyleSheet.create({
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 8 },
     elevation: 3,
+  },
+  storyCloudOne: {
+    position: 'absolute',
+    right: -24,
+    top: 18,
+    width: 110,
+    height: 58,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
+  },
+  storyCloudTwo: {
+    position: 'absolute',
+    left: -34,
+    bottom: 24,
+    width: 130,
+    height: 68,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255, 255, 255, 0.50)',
+  },
+  storySunDot: {
+    position: 'absolute',
+    right: 28,
+    bottom: 26,
+    width: 54,
+    height: 54,
+    borderRadius: 999,
+    backgroundColor: '#FFD24A',
+    borderWidth: 3,
+    borderColor: '#FFA62B',
+  },
+  storyHeroChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: SPACE.md,
+  },
+  storyHeroChip: {
+    overflow: 'hidden',
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    backgroundColor: '#FFFFFF',
+    color: '#1B2A6B',
+    fontSize: 12,
+    fontWeight: '900',
+  },
+  storyReadPill: {
+    alignSelf: 'flex-start',
+    marginTop: SPACE.md,
+    borderRadius: 999,
+    paddingHorizontal: 15,
+    paddingVertical: 9,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: 'rgba(27, 42, 107, 0.08)',
+  },
+  storyReadPillText: {
+    color: '#7A45D8',
+    fontSize: 12,
+    fontWeight: '900',
   },});
