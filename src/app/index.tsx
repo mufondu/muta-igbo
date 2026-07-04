@@ -79,6 +79,15 @@ function playSoundFallback(label: string) {
 
 const MUTA_APP_ICON = require('../../assets/icon.png');
 
+
+const ADVENTURE_ART = {
+  sayIt: require('../../assets/illustrations/custom/adventures/say-it.png'),
+  wordMagic: require('../../assets/illustrations/custom/adventures/word-magic.png'),
+  storyHut: require('../../assets/illustrations/custom/adventures/story-hut.png'),
+  cultureQuest: require('../../assets/illustrations/custom/adventures/culture-quest.png'),
+  gameLand: require('../../assets/illustrations/custom/adventures/game-land.png'),
+};
+
 type MainTab = 'home' | 'progress' | 'settings';
 
 type InnerView =
@@ -436,7 +445,7 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
 
         <View style={sh.adventurePortalTop}>
           <View style={sh.adventurePortalIcon}>
-            <Text style={sh.adventurePortalEmoji}>PLAY</Text>
+            <Image source={ADVENTURE_ART.storyHut} style={sh.adventurePortalImage} resizeMode="contain" />
           </View>
 
           <View style={{ flex: 1 }}>
@@ -473,10 +482,10 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
             <View style={sh.adventureSheetGrid}>
               {[
                 { icon: '��', title: 'Say It!', sub: 'Talk like a star', bg: '#FFE6F0', accent: '#F64F72', action: () => openInner('sayItBack') },
-                { icon: 'ABC', title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openInner('translator') },
-                { icon: 'STORY', title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openInner('folktales') },
-                { icon: 'IGBO', title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openInner('history') },
-                { icon: 'PLAY', title: 'Game Land', sub: 'Play & earn stars', bg: '#F2E9FF', accent: '#7A45D8', action: () => openInner('games' as InnerView) },
+                { icon: 'ABC', image: ADVENTURE_ART.wordMagic, title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openInner('translator') },
+                { icon: 'STORY', image: ADVENTURE_ART.storyHut, title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openInner('folktales') },
+                { icon: 'IGBO', image: ADVENTURE_ART.cultureQuest, title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openInner('history') },
+                { icon: 'PLAY', image: ADVENTURE_ART.gameLand, title: 'Game Land', sub: 'Play & earn stars', bg: '#F2E9FF', accent: '#7A45D8', action: () => openInner('games' as InnerView) },
               ].map((card, index) => (
                 <TouchableOpacity
                   key={card.title}
@@ -494,8 +503,12 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
                     card.action();
                   }}
                 >
-                  <View style={[sh.adventureSheetBubble, { backgroundColor: card.accent }]}>
-                    <Text style={sh.adventureSheetIcon}>{card.icon}</Text>
+                  <View style={[sh.adventureSheetBubble, { backgroundColor: '#FFFFFF' }]}>
+                    {'image' in card ? (
+                      <Image source={card.image} style={sh.adventureSheetImage} resizeMode="contain" />
+                    ) : (
+                      <Text style={[sh.adventureSheetIcon, { color: card.accent }]}>{card.icon}</Text>
+                    )}
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={sh.adventureSheetCardTitle}>{card.title}</Text>
@@ -1458,13 +1471,14 @@ const ld = StyleSheet.create({
 
 const sh = StyleSheet.create({
   adventureSheetImage: {
-    width: 94,
-    height: 94,
+    width: 104,
+    height: 92,
   },
   adventurePortalImage: {
-    width: 112,
+    width: 132,
     height: 112,
   },
+
 
   folktaleBody: {
     color: '#375A72',
@@ -3567,17 +3581,18 @@ const sh = StyleSheet.create({
     gap: 14,
   },
   adventurePortalIcon: {
-    width: 88,
-    height: 88,
+    width: 104,
+    height: 94,
     borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F64F72',
+    backgroundColor: '#FFFFFF',
     shadowColor: '#1B2A6B',
     shadowOpacity: 0.12,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 7 },
     elevation: 4,
+    overflow: 'visible',
   },
   adventurePortalEmoji: {
     color: '#FFFFFF',
@@ -3659,12 +3674,15 @@ const sh = StyleSheet.create({
     elevation: 4,
   },
   adventureSheetBubble: {
-    width: 68,
-    height: 68,
-    borderRadius: 26,
+    width: 92,
+    height: 82,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
+    overflow: 'visible',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: 'rgba(27, 42, 107, 0.08)',
   },
   adventureSheetIcon: {
     color: '#FFFFFF',
