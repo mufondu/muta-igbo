@@ -4,9 +4,14 @@
  * src/app/index.tsx
  */
 
-import { IGBO_FOLKTALES } from '../data/igboFolktales';
+import {
+  IGBO_FOLKTALES } from '../data/igboFolktales';
 import { AnimalIllustration } from '../components/illustrations/AnimalIllustration';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React,
+  { useCallback,
+  useEffect,
+  useRef,
+  useState } from 'react';
 import {
   Alert,
   Image,
@@ -361,6 +366,8 @@ function ProfileSwitcher() {
 // ─── HOME SCREEN ──────────────────────────────────────────────────────────────
 function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerView, levelId?: string) => void; onOpenProfileSheet: () => void }) {
   const { activeProfile, state } = useApp();
+  const [adventurePickerOpen, setAdventurePickerOpen] = useState(false);
+
   const { width: screenWidth } = useWindowDimensions();
   const homeContentWidth = Math.min(screenWidth - 32, screenWidth >= 768 ? 680 : screenWidth);
 
@@ -417,39 +424,89 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
         <Text style={sh.kidsQuestArrow}>›</Text>
       </TouchableOpacity>
 
-      <View style={sh.kidsPlaygroundHeader}>
-        <Text style={sh.kidsSectionLabel}>PLAY ZONE</Text>
-        <Text style={sh.kidsSectionTitle}>Choose your adventure</Text>
-        <Text style={sh.kidsSectionSub}>Pick a game path and keep your Igbo growing.</Text>
-      </View>
+      <TouchableOpacity
+        style={sh.adventurePortalCard}
+        activeOpacity={0.88}
+        onPress={() => setAdventurePickerOpen(true)}
+        accessibilityLabel="Choose your adventure"
+      >
+        <View style={sh.adventurePortalCloudOne} />
+        <View style={sh.adventurePortalCloudTwo} />
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={sh.kidsFeatureRail}>
-        {[
-          { icon: '🎤', title: 'Say It!', sub: 'Talk like a star', bg: '#FFE6F0', accent: '#F64F72', action: () => openInner('sayItBack') },
-          { icon: '💬', title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openInner('translator') },
-          { icon: '📚', title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openInner('folktales') },
-          { icon: '🌍', title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openInner('history') },
-          { icon: '🎮', title: 'Game Land', sub: 'Play & earn stars', bg: '#F2E9FF', accent: '#7A45D8', action: () => openInner('games' as InnerView) },
-        ].map((card, index) => (
-          <TouchableOpacity
-            key={card.title}
-            style={[
-              sh.kidsFeatureCard,
-              {
-                backgroundColor: card.bg,
-                borderColor: card.accent + '44',
-                transform: [{ rotate: index % 2 === 0 ? '-1deg' : '1deg' }],
-              },
-            ]}
-            onPress={card.action}
-            activeOpacity={0.86}
-          >
-            <View style={[sh.kidsFeatureBubble, { backgroundColor: card.accent }]}><Text style={sh.kidsFeatureIcon}>{card.icon}</Text></View>
-            <Text style={sh.kidsFeatureTitle} numberOfLines={1}>{card.title}</Text>
-            <Text style={sh.kidsFeatureSub} numberOfLines={2}>{card.sub}</Text>
+        <View style={sh.adventurePortalTop}>
+          <View style={sh.adventurePortalIcon}>
+            <Text style={sh.adventurePortalEmoji}>🛝</Text>
+          </View>
+
+          <View style={{ flex: 1 }}>
+            <Text style={sh.kidsSectionLabel}>PLAY ZONE</Text>
+            <Text style={sh.kidsSectionTitle}>Choose your adventure</Text>
+            <Text style={sh.kidsSectionSub}>Open the playroom and pick a game path.</Text>
+          </View>
+        </View>
+
+        <View style={sh.adventurePortalBottom}>
+          <Text style={sh.adventurePortalHint}>5 adventures waiting</Text>
+          <Text style={sh.adventurePortalArrow}>›</Text>
+        </View>
+      </TouchableOpacity>
+
+      <Modal
+        visible={adventurePickerOpen}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setAdventurePickerOpen(false)}
+      >
+        <TouchableOpacity
+          style={sh.adventureSheetBackdrop}
+          activeOpacity={1}
+          onPress={() => setAdventurePickerOpen(false)}
+        >
+          <TouchableOpacity activeOpacity={1} style={sh.adventureSheet}>
+            <View style={sh.profileSheetHandle} />
+
+            <Text style={sh.kidsSectionLabel}>PLAYROOM</Text>
+            <Text style={sh.adventureSheetTitle}>Pick your adventure</Text>
+            <Text style={sh.adventureSheetSub}>Choose how you want to practice Igbo today.</Text>
+
+            <View style={sh.adventureSheetGrid}>
+              {[
+                { icon: '��', title: 'Say It!', sub: 'Talk like a star', bg: '#FFE6F0', accent: '#F64F72', action: () => openInner('sayItBack') },
+                { icon: '💬', title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openInner('translator') },
+                { icon: '📚', title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openInner('folktales') },
+                { icon: '🌍', title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openInner('history') },
+                { icon: '🎮', title: 'Game Land', sub: 'Play & earn stars', bg: '#F2E9FF', accent: '#7A45D8', action: () => openInner('games' as InnerView) },
+              ].map((card, index) => (
+                <TouchableOpacity
+                  key={card.title}
+                  style={[
+                    sh.adventureSheetCard,
+                    {
+                      backgroundColor: card.bg,
+                      borderColor: card.accent + '44',
+                      transform: [{ rotate: index % 2 === 0 ? '-0.7deg' : '0.7deg' }],
+                    },
+                  ]}
+                  activeOpacity={0.88}
+                  onPress={() => {
+                    setAdventurePickerOpen(false);
+                    card.action();
+                  }}
+                >
+                  <View style={[sh.adventureSheetBubble, { backgroundColor: card.accent }]}>
+                    <Text style={sh.adventureSheetIcon}>{card.icon}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={sh.adventureSheetCardTitle}>{card.title}</Text>
+                    <Text style={sh.adventureSheetCardSub}>{card.sub}</Text>
+                  </View>
+                  <Text style={sh.adventureSheetArrow}>›</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </TouchableOpacity>
-        ))}
-      </ScrollView>
+        </TouchableOpacity>
+      </Modal>
 
       <View style={sh.kidsSectionHeader}>
         <Text style={sh.kidsSectionLabel}>LESSON PATH</Text>
@@ -3458,5 +3515,163 @@ const sh = StyleSheet.create({
   storyReadPillText: {
     color: '#7A45D8',
     fontSize: 12,
+    fontWeight: '900',
+  },
+  adventurePortalCard: {
+    position: 'relative',
+    overflow: 'hidden',
+    borderRadius: 40,
+    padding: SPACE.lg,
+    backgroundColor: '#FFF1B8',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 166, 43, 0.38)',
+    marginTop: SPACE.lg,
+    marginBottom: SPACE.xl,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.12,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 5,
+  },
+  adventurePortalCloudOne: {
+    position: 'absolute',
+    right: -28,
+    top: 16,
+    width: 110,
+    height: 62,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.55)',
+  },
+  adventurePortalCloudTwo: {
+    position: 'absolute',
+    left: -42,
+    bottom: 18,
+    width: 128,
+    height: 72,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.45)',
+  },
+  adventurePortalTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  adventurePortalIcon: {
+    width: 84,
+    height: 84,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F64F72',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 7 },
+    elevation: 4,
+  },
+  adventurePortalEmoji: {
+    fontSize: 42,
+  },
+  adventurePortalBottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: SPACE.lg,
+  },
+  adventurePortalHint: {
+    overflow: 'hidden',
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    backgroundColor: '#FFFFFF',
+    color: '#1B2A6B',
+    fontSize: 12,
+    fontWeight: '900',
+  },
+  adventurePortalArrow: {
+    width: 44,
+    height: 44,
+    borderRadius: 999,
+    backgroundColor: '#FFFFFF',
+    color: '#7A45D8',
+    fontSize: 36,
+    lineHeight: 42,
+    fontWeight: '900',
+    textAlign: 'center',
+    overflow: 'hidden',
+  },
+  adventureSheetBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(27, 42, 107, 0.28)',
+    justifyContent: 'flex-end',
+  },
+  adventureSheet: {
+    backgroundColor: '#FFF7E8',
+    borderTopLeftRadius: 38,
+    borderTopRightRadius: 38,
+    paddingHorizontal: SPACE.md,
+    paddingTop: 12,
+    paddingBottom: 34,
+  },
+  adventureSheetTitle: {
+    color: '#7A45D8',
+    fontSize: 34,
+    lineHeight: 38,
+    fontWeight: '900',
+    letterSpacing: -0.9,
+  },
+  adventureSheetSub: {
+    color: '#436B8A',
+    fontSize: FONT.md,
+    lineHeight: 22,
+    fontWeight: '800',
+    marginTop: 5,
+    marginBottom: SPACE.md,
+  },
+  adventureSheetGrid: {
+    gap: 12,
+  },
+  adventureSheetCard: {
+    minHeight: 96,
+    borderRadius: 32,
+    padding: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderWidth: 2,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.10,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
+  },
+  adventureSheetBubble: {
+    width: 64,
+    height: 64,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  adventureSheetIcon: {
+    fontSize: 32,
+  },
+  adventureSheetCardTitle: {
+    color: '#1B2A6B',
+    fontSize: 22,
+    lineHeight: 26,
+    fontWeight: '900',
+    letterSpacing: -0.5,
+  },
+  adventureSheetCardSub: {
+    color: '#436B8A',
+    fontSize: FONT.sm,
+    lineHeight: 19,
+    fontWeight: '800',
+    marginTop: 3,
+  },
+  adventureSheetArrow: {
+    color: '#7A45D8',
+    fontSize: 34,
+    lineHeight: 36,
     fontWeight: '900',
   },});
