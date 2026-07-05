@@ -200,9 +200,9 @@ export default function LessonIllustration({
         {
           width: size,
           height: size,
-          borderRadius: animalAsset ? 0 : Math.max(18, size * 0.24),
-          backgroundColor: animalAsset ? 'transparent' : backgroundColor,
-          borderWidth: animalAsset ? 0 : 1,
+          borderRadius: 0,
+          backgroundColor: 'transparent',
+          borderWidth: 0,
         },
       ]}
     >
@@ -211,7 +211,7 @@ export default function LessonIllustration({
           {fallback}
         </Text>
       ) : (
-        <Image source={source} style={[styles.image, animalAsset && styles.animalImage, { backgroundColor: imageBackgroundColor }]} resizeMode={imageResizeMode} />
+        <Image source={source} style={[styles.image, animalAsset && styles.animalImage]} resizeMode={imageResizeMode} />
       )}
     </View>
   );
@@ -221,17 +221,21 @@ const styles = StyleSheet.create({
   wrap: {
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
     overflow: 'visible',
-    borderWidth: 1,
-    borderColor: 'rgba(81, 55, 20, 0.10)',
+    borderWidth: 0,
+    elevation: 0,
+    shadowOpacity: 0,
   },
   image: {
     width: '100%',
     height: '100%',
+    backgroundColor: 'transparent',
   },
   animalImage: {
-    width: '120%',
-    height: '120%',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'transparent',
   },
   fallbackText: {
     color: '#171611',

@@ -1,53 +1,85 @@
-// ─── Level Guides: each Muta Friend hosts a level ─────────────────────────────
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
-import { getMutaFriend, MutaFriend } from '../data/mutaFriends';
-import { COLOR, FONT, RADIUS, SPACE } from '../utils/tokens';
+import { Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
 
-// Friend interests map naturally to levels:
-// Ada loves books → Alphabet; Amara loves animals → Animals & Colours;
-// Chioma loves songs → Greetings (call and response); Kelechi loves drums → Numbers (counting rhythm);
-// Chinedu loves stories → Body & Family (family stories); Obinna loves football → Verbs & Actions;
-// Ifeoma loves drawing → Grammar (drawing sentences); Ebuka loves puzzles → Games hub.
-export const LEVEL_GUIDE: Record<string, string> = {
-  '7A': 'ada',
-  '6A': 'chioma',
-  '5A': 'kelechi',
-  '4A': 'chinedu',
-  '3A': 'amara',
-  '2A': 'obinna',
-  '1A': 'ifeoma',
-  games: 'ebuka',
+type Props = {
+  activeAvatar?: string;
+  levelId?: string;
+  accent?: string;
 };
 
-export function getLevelGuide(levelId: string): MutaFriend {
-  return getMutaFriend(LEVEL_GUIDE[levelId] ?? 'ada');
+const MUTA_GUIDE_IMAGE: ImageSourcePropType = require('../../assets/illustrations/custom/mascot/muta-guide.png');
+
+function getGuideMessage(levelId?: string) {
+  switch (levelId) {
+    case '4A':
+    case '4B':
+    case '4':
+      return 'Tap the speaker to hear each family word.';
+    case '7A':
+      return 'Listen, repeat, and trace the sounds.';
+    default:
+      return 'Let’s learn this one together.';
+  }
 }
 
-// Small banner shown at the top of a level: friend avatar plus welcome line.
-export function GuideBanner({ levelId, accent }: { levelId: string; accent?: string }) {
-  const guide = getLevelGuide(levelId);
+export function GuideBanner({ levelId }: Props) {
   return (
-    <View style={[s.wrap, accent ? { borderColor: accent + '55' } : null]}>
-      <Image source={guide.image} style={s.img} resizeMode="contain" />
-      <View style={{ flex: 1 }}>
-        <Text style={s.name}>{guide.icon} {guide.name} is your guide!</Text>
-        <Text style={s.desc}>{guide.description}</Text>
+    <View style={s.card}>
+      <View style={s.avatarBubble}>
+        <Image source={MUTA_GUIDE_IMAGE} style={s.img} resizeMode="contain" />
+      </View>
+
+      <View style={s.copy}>
+        <Text style={s.name}>🌟 Mụta is your guide!</Text>
+        <Text style={s.desc}>{getGuideMessage(levelId)}</Text>
       </View>
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  wrap: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: '#FFF6D6',
-    borderWidth: 2, borderColor: '#F0C84A',
-    borderRadius: RADIUS.lg,
-    padding: SPACE.sm, paddingHorizontal: SPACE.md,
-    marginBottom: SPACE.md,
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: '#FFF7CF',
+    borderRadius: 28,
+    borderWidth: 2,
+    borderColor: '#9BE7B5',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 22,
   },
-  img: { width: 56, height: 56 },
-  name: { fontSize: FONT.md, fontWeight: '900', color: COLOR.clay },
-  desc: { fontSize: FONT.xs, color: COLOR.textSecond, marginTop: 2 },
+  avatarBubble: {
+    width: 64,
+    height: 64,
+    borderRadius: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    overflow: 'visible',
+    flexShrink: 0,
+  },
+  img: {
+    width: 70,
+    height: 70,
+  },
+  copy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  name: {
+    color: '#C74400',
+    fontSize: 18,
+    fontWeight: '900',
+    letterSpacing: -0.2,
+  },
+  desc: {
+    color: '#6B6A58',
+    fontSize: 14,
+    fontWeight: '700',
+    marginTop: 3,
+  },
 });
+
+export default GuideBanner;

@@ -499,7 +499,10 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
 
 
   const { width: screenWidth } = useWindowDimensions();
-  const homeContentWidth = Math.min(screenWidth - 32, screenWidth >= 768 ? 680 : screenWidth);
+  const homeContentWidth = Math.min(screenWidth - 32, screenWidth >= 768 ? 720 : screenWidth);
+  const isCompactHome = homeContentWidth < 390;
+  const portalIconSize = isCompactHome ? 86 : 112;
+  const portalImageSize = isCompactHome ? 80 : 106;
 
   const today = new Date().toDateString();
   const goalCount = activeProfile?.goalDate === today ? (activeProfile?.goalCount ?? 0) : 0;
@@ -555,7 +558,7 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={sh.adventurePortalCard}
+        style={[sh.adventurePortalCard, isCompactHome && sh.portalCardCompact]}
         activeOpacity={0.88}
         onPress={() => openInner('adventurePicker')}
         accessibilityLabel="Choose your adventure"
@@ -563,15 +566,15 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
         <View style={sh.adventurePortalCloudOne} />
         <View style={sh.adventurePortalCloudTwo} />
 
-        <View style={sh.adventurePortalTop}>
-          <View style={sh.adventurePortalIcon}>
-            <Image source={ADVENTURE_ART.storyHut} style={sh.adventurePortalImage} resizeMode="contain" />
+        <View style={[sh.adventurePortalTop, isCompactHome && sh.portalTopCompact]}>
+          <View style={[sh.adventurePortalIcon, { width: portalIconSize, height: portalIconSize }]}>
+            <Image source={ADVENTURE_ART.storyHut} style={[sh.adventurePortalImage, { width: portalImageSize, height: portalImageSize }]} resizeMode="contain" />
           </View>
 
           <View style={{ flex: 1 }}>
             <Text style={sh.kidsSectionLabel}>PLAY ZONE</Text>
-            <Text style={sh.kidsSectionTitle}>Choose your adventure</Text>
-            <Text style={sh.kidsSectionSub}>Open the playroom and pick a game path.</Text>
+            <Text style={[sh.kidsSectionTitle, isCompactHome && sh.portalTitleCompact]}>Choose your adventure</Text>
+            <Text style={[sh.kidsSectionSub, isCompactHome && sh.portalSubCompact]}>Open the playroom and pick a game path.</Text>
           </View>
         </View>
 
@@ -639,7 +642,7 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
       </Modal>
 
       <TouchableOpacity
-        style={sh.lessonPortalCard}
+        style={[sh.lessonPortalCard, isCompactHome && sh.portalCardCompact]}
         activeOpacity={0.88}
         onPress={() => openInner('lessonPath')}
         accessibilityLabel="Open Lesson Path"
@@ -647,15 +650,15 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
         <View style={sh.lessonPortalCloudOne} />
         <View style={sh.lessonPortalCloudTwo} />
 
-        <View style={sh.lessonPortalTop}>
-          <View style={sh.lessonPortalIcon}>
-            <Image source={require('../../assets/illustrations/custom/levels/lesson-path.png')} style={sh.lessonPortalImage} resizeMode="contain" />
+        <View style={[sh.lessonPortalTop, isCompactHome && sh.portalTopCompact]}>
+          <View style={[sh.lessonPortalIcon, { width: portalIconSize, height: portalIconSize }]}>
+            <Image source={require('../../assets/illustrations/custom/levels/lesson-path.png')} style={[sh.lessonPortalImage, { width: portalImageSize, height: portalImageSize }]} resizeMode="contain" />
           </View>
 
           <View style={{ flex: 1 }}>
             <Text style={sh.kidsSectionLabel}>LESSON PATH</Text>
-            <Text style={sh.lessonPortalTitle}>Keep moving forward</Text>
-            <Text style={sh.lessonPortalSub}>Open your learning map and pick a level.</Text>
+            <Text style={[sh.lessonPortalTitle, isCompactHome && sh.portalTitleCompact]}>Keep moving forward</Text>
+            <Text style={[sh.lessonPortalSub, isCompactHome && sh.portalSubCompact]}>Open your learning map and pick a level.</Text>
           </View>
         </View>
 
@@ -3916,6 +3919,24 @@ const sh = StyleSheet.create({
     fontSize: 12,
     fontWeight: '900',
   },
+  portalCardCompact: {
+    padding: 16,
+    borderRadius: 30,
+    marginBottom: 20,
+  },
+  portalTopCompact: {
+    gap: 12,
+  },
+  portalTitleCompact: {
+    fontSize: 27,
+    lineHeight: 31,
+    letterSpacing: -0.55,
+  },
+  portalSubCompact: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 4,
+  },
   adventurePortalCard: {
     backgroundColor: '#FFF1B8',
     borderRadius: 34,
@@ -3973,11 +3994,11 @@ const sh = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(255, 255, 255, 0.68)',
+    backgroundColor: 'rgba(255, 255, 255, 0.70)',
     borderRadius: 999,
     paddingVertical: 10,
     paddingHorizontal: 14,
-    marginTop: 16,
+    marginTop: 14,
   },
   adventurePortalHint: {
     color: '#1B2A6B',
@@ -4091,7 +4112,7 @@ const sh = StyleSheet.create({
   lessonPortalIcon: {
     width: 112,
     height: 112,
-    borderRadius: 0,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
@@ -4159,11 +4180,11 @@ const sh = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(255, 255, 255, 0.68)',
+    backgroundColor: 'rgba(255, 255, 255, 0.70)',
     borderRadius: 999,
     paddingVertical: 10,
     paddingHorizontal: 14,
-    marginTop: 16,
+    marginTop: 14,
   },
   lessonPortalHint: {
     color: '#1B2A6B',
