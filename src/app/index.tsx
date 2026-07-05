@@ -103,7 +103,7 @@ type InnerView =
   | 'premium'
   | 'terms'
   | 'privacy'
-  | 'adventurePicker';
+  | 'adventurePicker' | 'lessonPath';
 
 interface NavState {
   inner: InnerView | null;
@@ -184,6 +184,7 @@ export default function MutaIgboApp() {
   const [profileSheetOpen, setProfileSheetOpen] = React.useState(false);
   const [gate, setGate] = useState<null | 'settings' | 'premium'>(null);
   const [nav, setNav]     = useState<NavState>(NAV_RESET);
+  const [returnToLessonPath, setReturnToLessonPath] = useState(false);
   const [returnToAdventurePicker, setReturnToAdventurePicker] = useState(false);
 
   useEffect(() => {
@@ -207,7 +208,18 @@ export default function MutaIgboApp() {
   }
 
 
-  function closeInner() { setReturnToAdventurePicker(false); setNav(NAV_RESET); }
+  function closeInner() {
+    if (returnToLessonPath && nav.inner === 'levelDetail') {
+      setReturnToLessonPath(false);
+      setReturnToAdventurePicker(false);
+      setNav({ inner: 'lessonPath', levelId: '7A', sectionId: '' });
+      return;
+    }
+
+    setReturnToLessonPath(false);
+    setReturnToAdventurePicker(false);
+    setNav(NAV_RESET);
+  }
 
   // ── Onboarding flow ──
   if (!state.onboarded) {
@@ -240,6 +252,17 @@ export default function MutaIgboApp() {
         )}
         {inner === 'history'  && <HistoryScreen  onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
         {inner === 'games'    && <GamesHub isPremium={state.isPremium} onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
+        {inner === 'lessonPath' && (
+          <LessonPathScreen
+            onBack={closeInner}
+            openInner={(view, levelId, sectionId) => {
+              if (view === 'levelDetail') setReturnToLessonPath(true);
+              openInner(view, levelId, sectionId);
+            }}
+            activeProfile={state.profiles.find((profile) => profile.id === state.activeProfileId) ?? state.profiles[0]}
+            isPremium={state.isPremium}
+          />
+        )}
         {inner === 'premium' && <PremiumScreen onBack={closeInner} />}
         {inner === 'terms'   && <TermsScreen   onBack={closeInner} />}
         {inner === 'privacy' && <PrivacyScreen  onBack={closeInner} />}
@@ -615,40 +638,33 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
         </TouchableOpacity>
       </Modal>
 
-      <View style={sh.kidsSectionHeader}>
-        <Text style={sh.kidsSectionLabel}>LESSON PATH</Text>
-        <Text style={sh.kidsSectionTitle}>Keep moving forward</Text>
-      </View>
+      <TouchableOpacity
+        style={sh.lessonPortalCard}
+        activeOpacity={0.88}
+        onPress={() => openInner('lessonPath')}
+        accessibilityLabel="Open Lesson Path"
+      >
+        <View style={sh.lessonPortalCloudOne} />
+        <View style={sh.lessonPortalCloudTwo} />
 
-      {ALL_LEVELS.map((level, i) => {
-        const lc = LEVEL_COLOR[level.id];
-        const progress = activeProfile?.levelProgress[level.id] ?? 0;
-        const isLocked = !level.free && !state.isPremium;
-        return (
-          <BounceIn key={level.id} delay={i * 55}>
-            <TouchableOpacity
-              style={[sh.kidsLevelCard, isLocked && sh.levelCardLocked]}
-              onPress={() => { haptics.tapMedium(); isLocked ? openInner('premium') : openInner('levelDetail', level.id); }}
-              activeOpacity={0.84}
-            >
-              <View style={[sh.kidsLevelPip, { backgroundColor: lc.bg }]}>
-                {LEVEL_ICONS[level.id] ? <Image source={LEVEL_ICONS[level.id]} style={sh.levelPipImage} resizeMode="contain" /> : <Text style={[sh.featureIcon, { color: lc.pip }]}>{level.level}</Text>}
-              </View>
-              <View style={{ flex: 1 }}>
-                <View style={sh.levelTopRow}>
-                  <Text style={[sh.levelBadge, { color: lc.text }]}>{level.level}</Text>
-                  {isLocked && <LockBadge />}
-                  {!level.free && state.isPremium && <View style={sh.premiumTag}><Text style={sh.premiumTagText}>⭐</Text></View>}
-                </View>
-                <Text style={sh.kidsLevelName}>{level.title}</Text>
-                <Text style={sh.kidsLevelSub}>{level.igboTitle} · {level.description}</Text>
-                <View style={sh.kidsProgressTrack}><View style={[sh.progressFill, { width: `${Math.round(progress * 100)}%` as any, backgroundColor: lc.pip }]} /></View>
-              </View>
-              <Text style={sh.kidsChevron}>›</Text>
-            </TouchableOpacity>
-          </BounceIn>
-        );
-      })}
+        <View style={sh.lessonPortalTop}>
+          <View style={sh.lessonPortalIcon}>
+            <Image source={require('../../assets/illustrations/custom/levels/lesson-path.png')} style={sh.lessonPortalImage} resizeMode="contain" />
+          </View>
+
+          <View style={{ flex: 1 }}>
+            <Text style={sh.kidsSectionLabel}>LESSON PATH</Text>
+            <Text style={sh.lessonPortalTitle}>Keep moving forward</Text>
+            <Text style={sh.lessonPortalSub}>Open your learning map and pick a level.</Text>
+          </View>
+        </View>
+
+        <View style={sh.lessonPortalBottom}>
+          <Text style={sh.lessonPortalHint}>{ALL_LEVELS.length} lessons waiting</Text>
+          <Text style={sh.lessonPortalArrow}>›</Text>
+        </View>
+      </TouchableOpacity>
+
       <View style={{ height: 30 }} />
     </ScrollView>
   );
@@ -732,6 +748,93 @@ function getNumberCardColor(index: number) {
   return NUMBER_CARD_COLORS[index % NUMBER_CARD_COLORS.length];
 }
 
+
+function getFamilyAccent(english?: string) {
+  const value = (english ?? '').toLowerCase();
+
+  if (value.includes('father') || value.includes('mother') || value.includes('mum') || value.includes('dad')) {
+    return {
+      cardBg: '#F0FBFF',
+      border: '#B8ECFF',
+      portraitBg: '#DDF6FF',
+      audioBg: '#E8FAFF',
+      audioBorder: '#B8ECFF',
+    };
+  }
+
+  if (value.includes('grandfather') || value.includes('grandmother')) {
+    return {
+      cardBg: '#FFF8DF',
+      border: '#FFD76A',
+      portraitBg: '#FFF1B8',
+      audioBg: '#FFF7CF',
+      audioBorder: '#FFD76A',
+    };
+  }
+
+  if (value.includes('brother') || value.includes('sister')) {
+    return {
+      cardBg: '#FFF1F5',
+      border: '#FFB8CA',
+      portraitBg: '#FFE6F0',
+      audioBg: '#FFF0F5',
+      audioBorder: '#FFB8CA',
+    };
+  }
+
+  if (value.includes('child') || value.includes('children')) {
+    return {
+      cardBg: '#F1FFF6',
+      border: '#9BE7B5',
+      portraitBg: '#E7FAEF',
+      audioBg: '#ECFFF4',
+      audioBorder: '#9BE7B5',
+    };
+  }
+
+  if (value.includes('uncle') || value.includes('aunt') || value.includes('cousin')) {
+    return {
+      cardBg: '#F7F0FF',
+      border: '#D7BEFF',
+      portraitBg: '#F2E9FF',
+      audioBg: '#F8F1FF',
+      audioBorder: '#D7BEFF',
+    };
+  }
+
+  return {
+    cardBg: '#FFFDF6',
+    border: '#FFE8A3',
+    portraitBg: '#F0FBFF',
+    audioBg: '#E8FAFF',
+    audioBorder: '#B8ECFF',
+  };
+}
+
+function getFamilyVocabCardStyle(english?: string) {
+  const accent = getFamilyAccent(english);
+  return {
+    backgroundColor: accent.cardBg,
+    borderColor: accent.border,
+  };
+}
+
+function getFamilyPortraitSlotStyle(english?: string) {
+  const accent = getFamilyAccent(english);
+  return {
+    backgroundColor: accent.portraitBg,
+    borderColor: accent.border,
+  };
+}
+
+function getFamilyAudioButtonStyle(english?: string) {
+  const accent = getFamilyAccent(english);
+  return {
+    backgroundColor: accent.audioBg,
+    borderColor: accent.audioBorder,
+  };
+}
+
 function getManyPicture(emoji?: string): string {
   const safe = emoji || '●';
   return `${safe} ${safe} ${safe}`;
@@ -754,6 +857,80 @@ function isSingularPluralSection(title: string): boolean {
 }
 
 // ─── LEVEL DETAIL SCREEN ──────────────────────────────────────────────────────
+
+function LessonPathScreen({
+  onBack,
+  openInner,
+  activeProfile,
+  isPremium,
+}: {
+  onBack: () => void;
+  openInner: (view: InnerView, levelId?: string, sectionId?: string) => void;
+  activeProfile: any;
+  isPremium: boolean;
+}) {
+  return (
+    <ScrollView
+      style={sh.lessonPathScreen}
+      contentContainerStyle={sh.lessonPathScreenScroll}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={sh.lessonPathHeader}>
+        <TouchableOpacity style={sh.lessonPathBackButton} onPress={onBack} activeOpacity={0.84}>
+          <Text style={sh.lessonPathBackText}>‹</Text>
+        </TouchableOpacity>
+
+        <View style={{ flex: 1 }}>
+          <Text style={sh.kidsSectionLabel}>LESSON PATH</Text>
+          <Text style={sh.lessonPathTitle}>Choose your lesson</Text>
+          <Text style={sh.lessonPathSub}>Pick a level and keep building your Igbo superpowers.</Text>
+        </View>
+      </View>
+
+      {ALL_LEVELS.map((level, i) => {
+        const lc = LEVEL_COLOR[level.id];
+        const progress = activeProfile?.levelProgress[level.id] ?? 0;
+        const isLocked = !level.free && !isPremium;
+
+        return (
+          <BounceIn key={level.id} delay={i * 45}>
+            <TouchableOpacity
+              style={[sh.lessonPathLevelCard, isLocked && sh.levelCardLocked]}
+              onPress={() => { haptics.tapMedium(); isLocked ? openInner('premium') : openInner('levelDetail', level.id); }}
+              activeOpacity={0.86}
+            >
+              <View style={sh.lessonPathLevelArt}>
+                {LEVEL_ICONS[level.id] ? (
+                  <Image source={LEVEL_ICONS[level.id]} style={sh.lessonPathLevelImage} resizeMode="contain" />
+                ) : (
+                  <Text style={[sh.featureIcon, { color: lc.pip }]}>{level.level}</Text>
+                )}
+              </View>
+
+              <View style={sh.lessonPathLevelCopy}>
+                <View style={sh.levelTopRow}>
+                  <Text style={[sh.levelBadge, { color: lc.text }]}>{level.level}</Text>
+                  {isLocked && <LockBadge />}
+                  {!level.free && isPremium && <View style={sh.premiumTag}><Text style={sh.premiumTagText}>⭐</Text></View>}
+                </View>
+
+                <Text style={sh.lessonPathLevelName}>{level.title}</Text>
+                <Text style={sh.lessonPathLevelSub}>{level.igboTitle} · {level.description}</Text>
+
+                <View style={sh.kidsProgressTrack}>
+                  <View style={[sh.progressFill, { width: `${Math.round(progress * 100)}%` as any, backgroundColor: lc.pip }]} />
+                </View>
+              </View>
+
+              <Text style={sh.lessonPathChevron}>›</Text>
+            </TouchableOpacity>
+          </BounceIn>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
 function LevelDetailScreen({ levelId, onBack, onPremium }: {
   levelId: string; onBack: () => void; onPremium: () => void;
 }) {
@@ -812,7 +989,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
       )}
 
       <ScrollView contentContainerStyle={sh.listPad} showsVerticalScrollIndicator={false}>
-        <GuideBanner levelId={levelId} accent={lc.pip} />
+        <GuideBanner levelId={levelId} accent={lc.pip} activeAvatar={activeProfile?.avatar} />
         {isAlphabet ? (
           <>
             <View style={sh.alphaIntroCard}>
@@ -971,7 +1148,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
               return (
                 <BounceIn key={i} delay={i * 30}>
                   <TouchableOpacity
-                    style={sh.vocabCard}
+                    style={[sh.vocabCard, getFamilyVocabCardStyle(item.english)]}
                     onPress={() => { haptics.tapLight(); playSoundFallback(item.igbo); }}
                     accessibilityLabel={`${item.igbo}, ${item.english}`}
                     activeOpacity={0.8}
@@ -981,22 +1158,26 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                         <Text style={[sh.alphaLetter, { color: lc.pip }]}>{item.igbo}</Text>
                       </View>
                     ) : (
-                      <LessonIllustration
-                        igbo={item.igbo}
-                        english={item.english}
-                        emoji={item.emoji}
-                        backgroundColor={lc.bg}
-                        size={74}
-                      />
+                      <View style={[sh.vocabPortraitSlot, getFamilyPortraitSlotStyle(item.english)]}>
+                        <LessonIllustration
+                          igbo={item.igbo}
+                          english={item.english}
+                          emoji={item.emoji}
+                          backgroundColor="transparent"
+                          size={88}
+                        />
+                      </View>
                     )}
-                    <View style={{ flex: 1 }}>
+                    <View style={sh.vocabTextBlock}>
                       <Text style={sh.vocabIgbo}>{item.igbo}</Text>
                       <Text style={sh.vocabEn}>{item.english}</Text>
                       {item.example && (
                         <Text style={sh.vocabExample}>e.g. {item.example}</Text>
                       )}
                     </View>
-                    <Text style={sh.vocabAudio}>🔊</Text>
+                    <View style={[sh.vocabAudioButton, getFamilyAudioButtonStyle(item.english)]}>
+                      <Text style={sh.vocabAudio}>🔊</Text>
+                    </View>
                   </TouchableOpacity>
                 </BounceIn>
               );
@@ -1602,8 +1783,8 @@ const sh = StyleSheet.create({
     height: 118,
   },
   adventurePortalImage: {
-    width: 116,
-    height: 116,
+    width: 106,
+    height: 106,
   },
 
 
@@ -2056,17 +2237,17 @@ const sh = StyleSheet.create({
   kidsQuestArrow: { color: KIDS_COLOR.white, fontSize: 34, fontWeight: '900' },
   kidsSectionHeader: { marginBottom: 10, marginTop: 4 },
   kidsSectionLabel: {
-    color: '#F64F72',
-    fontSize: 12,
+    fontSize: 13,
+    lineHeight: 16,
     fontWeight: '900',
-    letterSpacing: 1.8,
-    marginBottom: 5,
+    letterSpacing: 3,
+    color: '#F64F72',
   },
   kidsSectionTitle: {
-    color: '#7A45D8',
-    fontSize: 32,
-    lineHeight: 36,
+    fontSize: 34,
+    lineHeight: 39,
     fontWeight: '900',
+    color: '#7A45D8',
     letterSpacing: -0.8,
   },
   kidsFeatureRail: {
@@ -2120,19 +2301,35 @@ const sh = StyleSheet.create({
     fontWeight: '800',
   },
   kidsLevelCard: {
-    ...KIDS_SHADOW.softCard,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
-    backgroundColor: KIDS_COLOR.white,
-    borderRadius: 30,
-    borderWidth: 1.5,
-    borderColor: KIDS_COLOR.borderSoft,
-    padding: SPACE.md,
-    marginBottom: SPACE.md,
-    minHeight: 120,
+    gap: 18,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 34,
+    borderWidth: 2,
+    borderColor: '#DDE5F4',
+    paddingVertical: 18,
+    paddingLeft: 18,
+    paddingRight: 18,
+    marginBottom: 24,
+    minHeight: 166,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.10,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
   },
-  kidsLevelPip: { width: 74, height: 74, borderRadius: 26, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  kidsLevelPip: {
+    width: 132,
+    height: 132,
+    borderRadius: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'visible',
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    flexShrink: 0,
+  },
   kidsLevelName: {
     fontSize: FONT.xl,
     fontWeight: '900',
@@ -2347,7 +2544,7 @@ const sh = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 7,
-    borderColor: 'rgba(255,255,255,0.25)',
+    borderColor: 'transparent',
     shadowColor: '#000',
     shadowOpacity: 0.16,
     shadowRadius: 14,
@@ -2387,8 +2584,8 @@ const sh = StyleSheet.create({
   },
   levelCardLocked: { opacity: 0.65 },
   levelPipImage: {
-    width: '100%',
-    height: '100%',
+    width: 124,
+    height: 124,
   },
   levelPip: {
     width: 76,
@@ -2455,7 +2652,7 @@ const sh = StyleSheet.create({
 
   listPad: { padding: SPACE.md, paddingBottom: 60 },
 
-  sectionTabs: { paddingHorizontal: SPACE.md, paddingVertical: SPACE.sm, gap: SPACE.sm, alignItems: 'center' },
+  sectionTabs: { paddingHorizontal: SPACE.md, paddingTop: SPACE.md, paddingBottom: SPACE.md, gap: SPACE.sm, alignItems: 'center', backgroundColor: '#FFF8E7' },
   sectionTab: {
     minWidth: 156,
     minHeight: 50,
@@ -2480,6 +2677,7 @@ const sh = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: SPACE.md,
     paddingVertical: SPACE.lg,
+    paddingBottom: SPACE.lg + SPACE.sm,
     gap: SPACE.md,
   },
   lessonBackBtn: {
@@ -2629,18 +2827,21 @@ const sh = StyleSheet.create({
   vocabCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SPACE.md,
-    backgroundColor: COLOR.card,
-    borderRadius: RADIUS.xl,
-    borderWidth: 1,
-    borderColor: COLOR.border,
-    padding: SPACE.md,
-    marginBottom: SPACE.md,
+    gap: 14,
+    backgroundColor: '#FFFDF6',
+    borderRadius: 34,
+    borderWidth: 1.5,
+    borderColor: '#FFE8A3',
+    paddingVertical: 12,
+    paddingLeft: 14,
+    paddingRight: 12,
+    marginBottom: 14,
     minHeight: 116,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 3,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.065,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 2,
   },
   vocabEmojiWrap: {
     width: 74,
@@ -2649,12 +2850,42 @@ const sh = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: COLOR.border,
+    borderWidth: 0,
+    borderColor: 'transparent',
+    backgroundColor: '#F0FBFF',
+    flexShrink: 0,
   },
   vocabEmoji: { fontSize: 26 },
-  vocabIgbo: { fontSize: FONT.lg, fontWeight: '800', color: COLOR.textPrimary },
-  vocabEn: { fontSize: FONT.sm, color: COLOR.textSecond, marginTop: 2 },
+  vocabPortraitSlot: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'visible',
+    backgroundColor: '#F0FBFF',
+    borderWidth: 2,
+    borderColor: '#B8ECFF',
+    flexShrink: 0,
+  },
+  vocabTextBlock: {
+    flex: 1,
+    minWidth: 0,
+    justifyContent: 'center',
+    paddingLeft: 2,
+  },
+  vocabIgbo: {
+    fontSize: FONT.lg,
+    fontWeight: '900',
+    color: '#14246B',
+    letterSpacing: -0.25,
+  },
+  vocabEn: {
+    fontSize: FONT.sm,
+    color: '#5F6459',
+    marginTop: 4,
+    fontWeight: '700',
+  },
   vocabExample: { fontSize: FONT.xs, color: COLOR.forest, marginTop: 3, fontStyle: 'italic' },
 
   progressTitle: { fontSize: FONT.xxl, fontWeight: '800', color: COLOR.textPrimary, marginBottom: SPACE.md },
@@ -2896,9 +3127,26 @@ const sh = StyleSheet.create({
     color: COLOR.textSecond,
     fontWeight: '700',
   },
+  vocabAudioButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#E8FAFF',
+    borderWidth: 2.5,
+    borderColor: '#31BDED',
+    flexShrink: 0,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 2,
+  },
   vocabAudio: {
-    fontSize: 18,
-    alignSelf: 'center',
+    fontSize: 20,
+    lineHeight: 24,
+    textAlign: 'center',
   },
 
   featureHeaderRow: {
@@ -2939,7 +3187,7 @@ const sh = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: SPACE.sm,
     borderWidth: 4,
-    borderColor: 'rgba(255,255,255,0.52)',
+    borderColor: 'transparent',
   },
   featureIcon: {
     fontSize: 32,
@@ -3441,11 +3689,11 @@ const sh = StyleSheet.create({
     elevation: 3,
   },
   kidsSectionSub: {
-    color: '#436B8A',
-    fontSize: FONT.md,
-    lineHeight: 22,
+    fontSize: 18,
+    lineHeight: 26,
+    color: '#326C92',
     fontWeight: '800',
-    marginTop: 7,
+    marginTop: 6,
   },
   kidsAdventureGrid: {
     flexDirection: 'row',
@@ -3669,19 +3917,17 @@ const sh = StyleSheet.create({
     fontWeight: '900',
   },
   adventurePortalCard: {
-    position: 'relative',
-    overflow: 'hidden',
-    borderRadius: 40,
-    padding: SPACE.lg,
     backgroundColor: '#FFF1B8',
+    borderRadius: 34,
     borderWidth: 2,
-    borderColor: 'rgba(255, 166, 43, 0.38)',
-    marginTop: SPACE.lg,
-    marginBottom: SPACE.xl,
+    borderColor: '#FFD76A',
+    padding: 18,
+    marginBottom: 24,
+    overflow: 'hidden',
     shadowColor: '#1B2A6B',
     shadowOpacity: 0.12,
     shadowRadius: 18,
-    shadowOffset: { width: 0, height: 10 },
+    shadowOffset: { width: 0, height: 9 },
     elevation: 5,
   },
   adventurePortalCloudOne: {
@@ -3705,18 +3951,17 @@ const sh = StyleSheet.create({
   adventurePortalTop: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
+    gap: 16,
   },
   adventurePortalIcon: {
-    width: 96,
-    height: 96,
-    borderRadius: 0,
+    width: 112,
+    height: 112,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
-    shadowOpacity: 0,
-    elevation: 0,
-    overflow: 'visible',
+    borderWidth: 0,
+    flexShrink: 0,
   },
   adventurePortalEmoji: {
     color: '#FFFFFF',
@@ -3728,29 +3973,22 @@ const sh = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: SPACE.lg,
+    backgroundColor: 'rgba(255, 255, 255, 0.68)',
+    borderRadius: 999,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    marginTop: 16,
   },
   adventurePortalHint: {
-    overflow: 'hidden',
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    backgroundColor: '#FFFFFF',
     color: '#1B2A6B',
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '900',
   },
   adventurePortalArrow: {
-    width: 44,
-    height: 44,
-    borderRadius: 999,
-    backgroundColor: '#FFFFFF',
-    color: '#7A45D8',
     fontSize: 36,
-    lineHeight: 42,
+    lineHeight: 36,
+    color: '#1B2A6B',
     fontWeight: '900',
-    textAlign: 'center',
-    overflow: 'hidden',
   },
   adventureSheetBackdrop: {
     flex: 1,
@@ -3834,4 +4072,233 @@ const sh = StyleSheet.create({
     fontSize: 34,
     lineHeight: 36,
     fontWeight: '900',
-  },});
+  },
+  lessonPortalCard: {
+    backgroundColor: '#DDF6FF',
+    borderRadius: 34,
+    borderWidth: 2,
+    borderColor: '#8EEAFF',
+    padding: 18,
+    marginBottom: 24,
+    overflow: 'hidden',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.12,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 9 },
+    elevation: 5,
+  },
+
+  lessonPortalIcon: {
+    width: 112,
+    height: 112,
+    borderRadius: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    borderColor: 'transparent',
+    overflow: 'visible',
+    flexShrink: 0,
+  },
+
+  lessonPortalImage: {
+    width: 112,
+    height: 112,
+  },
+
+  lessonPortalCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+
+  lessonPortalTitle: {
+    fontSize: 34,
+    lineHeight: 39,
+    fontWeight: '900',
+    color: '#1B2A6B',
+    letterSpacing: -0.8,
+    marginTop: 2,
+  },
+
+  lessonPortalSub: {
+    fontSize: 18,
+    lineHeight: 26,
+    color: '#326C92',
+    fontWeight: '800',
+    marginTop: 6,
+  },
+
+  lessonPortalTrack: {
+    height: 12,
+    borderRadius: 999,
+    backgroundColor: '#E7F0E5',
+    overflow: 'hidden',
+    marginTop: 12,
+  },
+
+  lessonPortalFill: {
+    width: '36%',
+    height: '100%',
+    borderRadius: 999,
+    backgroundColor: '#FFD24A',
+  },
+
+  lessonPortalArrow: {
+    fontSize: 36,
+    lineHeight: 36,
+    color: '#1B2A6B',
+    fontWeight: '900',
+  },
+
+  lessonPortalTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  lessonPortalBottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(255, 255, 255, 0.68)',
+    borderRadius: 999,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    marginTop: 16,
+  },
+  lessonPortalHint: {
+    color: '#1B2A6B',
+    fontSize: 14,
+    fontWeight: '900',
+  },
+  lessonPortalCloudOne: {
+    position: 'absolute',
+    width: 116,
+    height: 116,
+    borderRadius: 58,
+    backgroundColor: 'rgba(255, 255, 255, 0.34)',
+    right: -36,
+    top: -42,
+  },
+  lessonPortalCloudTwo: {
+    position: 'absolute',
+    width: 86,
+    height: 86,
+    borderRadius: 43,
+    backgroundColor: 'rgba(255, 210, 74, 0.28)',
+    left: -28,
+    bottom: -30,
+  },
+  lessonPathScreen: {
+    flex: 1,
+    backgroundColor: '#FFF8E7',
+  },
+
+  lessonPathScreenScroll: {
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 36,
+  },
+
+  lessonPathHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    marginBottom: 20,
+  },
+
+  lessonPathBackButton: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#008A4A',
+  },
+
+  lessonPathBackText: {
+    color: '#FFFFFF',
+    fontSize: 36,
+    lineHeight: 38,
+    fontWeight: '900',
+  },
+
+  lessonPathTitle: {
+    fontSize: 30,
+    fontWeight: '900',
+    color: '#1B2A6B',
+    letterSpacing: -0.6,
+  },
+
+  lessonPathSub: {
+    fontSize: 15,
+    lineHeight: 21,
+    color: '#436B8A',
+    fontWeight: '800',
+    marginTop: 3,
+  },
+
+  lessonPathLevelCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 18,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 34,
+    borderWidth: 2,
+    borderColor: '#DDE5F4',
+    paddingVertical: 18,
+    paddingLeft: 18,
+    paddingRight: 16,
+    marginBottom: 18,
+    minHeight: 162,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.10,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
+  },
+
+  lessonPathLevelArt: {
+    width: 128,
+    height: 128,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    flexShrink: 0,
+  },
+
+  lessonPathLevelImage: {
+    width: 124,
+    height: 124,
+  },
+
+  lessonPathLevelCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+
+  lessonPathLevelName: {
+    fontSize: 25,
+    fontWeight: '900',
+    color: '#1B2A6B',
+    letterSpacing: -0.45,
+    marginTop: 4,
+  },
+
+  lessonPathLevelSub: {
+    fontSize: 15,
+    lineHeight: 21,
+    color: '#326C92',
+    fontWeight: '800',
+    marginTop: 4,
+    marginBottom: 12,
+  },
+
+  lessonPathChevron: {
+    fontSize: 42,
+    lineHeight: 42,
+    color: '#7E8FA8',
+    fontWeight: '900',
+    flexShrink: 0,
+  },
+});
