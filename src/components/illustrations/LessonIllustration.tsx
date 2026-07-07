@@ -170,6 +170,10 @@ function isAnimalAsset(assetKey?: string): boolean {
   return Boolean(assetKey && assetKey.startsWith('animals:'));
 }
 
+function isFamilyAsset(assetKey?: string): boolean {
+  return !!assetKey && assetKey.startsWith('family:');
+}
+
 function isBodyAsset(assetKey?: string): boolean {
   return Boolean(assetKey && assetKey.startsWith('body:'));
 }
@@ -188,10 +192,11 @@ export default function LessonIllustration({
 
   const bodyAsset = isBodyAsset(entry?.assetKey);
   const animalAsset = isAnimalAsset(entry?.assetKey);
+  const familyAsset = isFamilyAsset(entry?.assetKey);
   const label = entry?.label || english || igbo;
   const fallback = entry?.fallback || label;
-  const imageResizeMode = bodyAsset || animalAsset ? 'contain' : 'cover';
-  const imageBackgroundColor = animalAsset ? '#FFFFFF' : bodyAsset ? '#FFF8EE' : 'transparent';
+  const imageResizeMode = bodyAsset || animalAsset || familyAsset ? 'contain' : 'cover';
+  const imageBackgroundColor = animalAsset || familyAsset ? 'transparent' : bodyAsset ? '#FFF8EE' : 'transparent';
 
   return (
     <View
@@ -211,7 +216,16 @@ export default function LessonIllustration({
           {fallback}
         </Text>
       ) : (
-        <Image source={source} style={[styles.image, animalAsset && styles.animalImage]} resizeMode={imageResizeMode} />
+        <Image
+          source={source}
+          style={[
+            styles.image,
+            animalAsset && styles.animalImage,
+            familyAsset && styles.familyImage,
+            { backgroundColor: imageBackgroundColor },
+          ]}
+          resizeMode={imageResizeMode}
+        />
       )}
     </View>
   );
@@ -235,6 +249,11 @@ const styles = StyleSheet.create({
   animalImage: {
     width: '100%',
     height: '100%',
+    backgroundColor: 'transparent',
+  },
+  familyImage: {
+    width: '118%',
+    height: '118%',
     backgroundColor: 'transparent',
   },
   fallbackText: {
