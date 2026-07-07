@@ -1,22 +1,22 @@
 /**
  * Mụta Igbo: Premium Kid Edition
- * Enuani / Ogwashi-Ukwu Igbo Learning App
+ * Central Igbo Learning App
  * src/app/index.tsx
  */
 
-import {
-  IGBO_FOLKTALES } from '../data/igboFolktales';
+import { IGBO_FOLKTALES } from '../data/igboFolktales';
 import { AnimalIllustration } from '../components/illustrations/AnimalIllustration';
-import React,
-  { useCallback,
+import React, {
+  useCallback,
   useEffect,
   useRef,
-  useState } from 'react';
+  useState,
+} from 'react';
 import {
   Alert,
-  Image,
   Animated,
   Easing,
+  Image,
   Platform,
   ScrollView,
   StyleSheet,
@@ -26,13 +26,17 @@ import {
   Modal,
   useWindowDimensions,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import LessonIllustration from '../components/illustrations/LessonIllustration';
 import AvatarIllustration from '../components/illustrations/AvatarIllustration';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ALL_LEVELS, buildQuizPool, FOLKTALES, TRANSLATOR_POOL, TranslatorItem, VocabItem } from '../data/lessons';
+import { ALL_LEVELS, buildQuizPool, FOLKTALES, VocabItem } from '../data/lessons';
 import { useApp } from '../hooks/useAppState';
 import HistoryScreen from '../screens/HistoryScreen';
 import GamesHub from '../screens/games/GamesHub';
+import PictureMatchGame from '../screens/games/PictureMatchGame';
+import ListenTapGame from '../screens/games/ListenTapGame';
+import WordMatchGame from '../screens/games/WordMatchGame';
 import { PrivacyScreen, TermsScreen } from '../screens/LegalScreens';
 import OnboardingScreen, { ProfileImage } from '../screens/OnboardingScreen';
 import PremiumScreen from '../screens/PremiumScreen';
@@ -58,6 +62,19 @@ const LEVEL_ICONS: Record<string, any> = {
   '1A': require('../../assets/illustrations/custom/levels/grammar-language.png'),
 };
 
+function AppBackButton({ onPress, style }: { onPress: () => void; style?: any }) {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={[sh.appBackButton, style]}
+      accessibilityLabel="Go back"
+      activeOpacity={0.84}
+    >
+      <Ionicons name="chevron-back" size={26} color="#1B2A6B" />
+    </TouchableOpacity>
+  );
+}
+
 // ─── Audio (optional, gracefully degraded) ───────────────────────────────────
 let Audio: any = null;
 try { Audio = require('expo-av').Audio; } catch (_) {}
@@ -82,23 +99,17 @@ const MUTA_APP_ICON = require('../../assets/icon.png');
 
 
 
-const ADVENTURE_ART = {
-  sayIt: require('../../assets/illustrations/custom/adventures/say-it.png'),
-  wordMagic: require('../../assets/illustrations/custom/adventures/word-magic.png'),
-  storyHut: require('../../assets/illustrations/custom/adventures/story-hut.png'),
-  cultureQuest: require('../../assets/illustrations/custom/adventures/culture-quest.png'),
-  gameLand: require('../../assets/illustrations/custom/adventures/game-land.png'),
-};
-
 type MainTab = 'home' | 'progress' | 'settings';
 
 type InnerView =
   | 'levelDetail'
   | 'quiz'
-  | 'translator'
   | 'sayItBack'
   | 'folktales'
   | 'history'
+  | 'listenTap'
+  | 'wordMatch'
+  | 'pictureMatch'
   | 'games'
   | 'premium'
   | 'terms'
@@ -240,17 +251,34 @@ export default function MutaIgboApp() {
             onPremium={() => openInner('premium')} />
         )}
         {inner === 'quiz' && (
-          <QuizScreen onBack={closeInner} onPremium={() => openInner('premium')} />
+          <QuizScreen onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} onPremium={() => openInner('premium')} />
         )}
         {inner === 'adventurePicker' && (
           <AdventurePickerScreen onBack={closeInner} openAdventure={openAdventureInner} />
         )}
-        {inner === 'translator' && <TranslatorScreen onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
         {inner === 'sayItBack' && <SayItBackScreen onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
         {inner === 'folktales' && (
           <FolktalesScreen onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} onPremium={() => openInner('premium')} />
         )}
         {inner === 'history'  && <HistoryScreen  onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
+        {inner === 'listenTap' && (
+          <ListenTapGame
+            isPremium={state.isPremium}
+            onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner}
+          />
+        )}
+        {inner === 'wordMatch' && (
+          <WordMatchGame
+            isPremium={state.isPremium}
+            onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner}
+          />
+        )}
+        {inner === 'pictureMatch' && (
+          <PictureMatchGame
+            isPremium={state.isPremium}
+            onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner}
+          />
+        )}
         {inner === 'games'    && <GamesHub isPremium={state.isPremium} onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
         {inner === 'lessonPath' && (
           <LessonPathScreen
@@ -275,8 +303,6 @@ export default function MutaIgboApp() {
     <SafeAreaView style={sh.root}>
       {/* App header */}
       <View style={[sh.brandHeader, { width: appContentWidth }]}>
-        <Image source={MUTA_APP_ICON} style={sh.standaloneLogo} resizeMode="contain" />
-
         {gate !== 'settings' ? (
           <TouchableOpacity
             onPress={() => { haptics.tapLight(); setGate('settings'); }}
@@ -357,28 +383,50 @@ export default function MutaIgboApp() {
       </Modal>
 
       {/* Bottom nav */}
-      {tab !== 'settings' && (
-        <View pointerEvents="box-none" style={sh.bottomNavFrame}>
-          <View style={sh.bottomNav}>
-          {([
-            { id: 'home',     badge: 'HOME', label: 'Home' },
-            { id: 'progress', badge: 'XP', label: 'Progress' },
-            { id: 'quiz',     badge: 'QUIZ', label: 'Quiz', action: () => openInner('quiz') },
-          ] as const).map(item => (
-            <TouchableOpacity
-              key={item.id}
-              style={sh.navBtn}
-              onPress={'action' in item ? item.action : (() => setTab(item.id as MainTab))}
-              accessibilityLabel={item.label}
-              activeOpacity={0.86}
-            >
-              <Text style={[sh.navIcon, tab === item.id && sh.navIconActive]}>{item.badge}</Text>
-              <Text style={[sh.navLabel, tab === item.id && sh.navLabelActive]}>{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-          </View>
+      <View pointerEvents="box-none" style={sh.bottomNavFrame}>
+        <View style={sh.bottomNav}>
+          <TouchableOpacity
+            style={[sh.navBtn, tab === 'home' && !gate && sh.navBtnActive]}
+            onPress={() => {
+              haptics.tapLight();
+              setGate(null);
+              setTab('home');
+            }}
+            accessibilityLabel="Go to Home"
+            activeOpacity={0.86}
+          >
+            <Text style={[sh.navIcon, tab === 'home' && !gate && sh.navIconActive]}>🏠</Text>
+            <Text style={[sh.navLabel, tab === 'home' && !gate && sh.navLabelActive]}>Home</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[sh.navBtn, tab === 'progress' && !gate && sh.navBtnActive]}
+            onPress={() => {
+              haptics.tapLight();
+              setGate(null);
+              setTab('progress');
+            }}
+            accessibilityLabel="Go to Progress"
+            activeOpacity={0.86}
+          >
+            <Text style={[sh.navIcon, tab === 'progress' && !gate && sh.navIconActive]}>⭐</Text>
+            <Text style={[sh.navLabel, tab === 'progress' && !gate && sh.navLabelActive]}>XP</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[sh.navBtn, gate === 'settings' && sh.navBtnActive]}
+            onPress={() => {
+              haptics.tapLight();
+              setGate('settings');
+            }}
+            accessibilityLabel="Open Parent Center"
+            activeOpacity={0.86}
+          >
+            <Text style={[sh.navIcon, gate === 'settings' && sh.navIconActive]}>⚙️</Text>
+            <Text style={[sh.navLabel, gate === 'settings' && sh.navLabelActive]}>Parent</Text>
+          </TouchableOpacity>
         </View>
-      )}
+      </View>
     </SafeAreaView>
   );
 }
@@ -424,11 +472,12 @@ function AdventurePickerScreen({
   openAdventure: (view: InnerView) => void;
 }) {
   const cards = [
-    { image: ADVENTURE_ART.sayIt, title: 'Say It!', sub: 'Talk like a star', bg: '#FFE6F0', accent: '#F64F72', action: () => openAdventure('sayItBack') },
-    { image: ADVENTURE_ART.wordMagic, title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openAdventure('translator') },
-    { image: ADVENTURE_ART.storyHut, title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openAdventure('folktales') },
-    { image: ADVENTURE_ART.cultureQuest, title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openAdventure('history') },
-    { image: ADVENTURE_ART.gameLand, title: 'Game Land', sub: 'Play & earn stars', bg: '#F2E9FF', accent: '#7A45D8', action: () => openAdventure('games' as InnerView) },
+    { modeIcon: 'mic', title: 'Say It', igboTitle: 'Kwuo ya', sub: 'Practice speaking', bg: '#FFE3EF', accent: '#F04483', action: () => openAdventure('sayItBack') },
+    { modeIcon: 'ear', title: 'Listen & Tap', igboTitle: 'Gee ntị ma pịa', sub: 'Hear it. Pick it.', bg: '#DDF6FF', accent: '#31BDED', action: () => openAdventure('listenTap') },
+    { modeIcon: 'swap-horizontal', title: 'Word Match', igboTitle: 'Dakọrịta okwu', sub: 'Match words fast', bg: '#E9FBEF', accent: '#19B36B', action: () => openAdventure('wordMatch') },
+    { modeIcon: 'flash', title: 'Quiz Sprint', igboTitle: 'Ajụjụ ọsọ', sub: 'Quick mixed review', bg: '#F0E3FF', accent: '#854CE6', action: () => openAdventure('quiz') },
+    { modeIcon: 'book', title: 'Story Hut', igboTitle: 'Ụlọ akụkọ', sub: 'Listen and learn', bg: '#FFF0B8', accent: '#F5A400', action: () => openAdventure('folktales') },
+    { modeIcon: 'images', title: 'Picture Match', igboTitle: 'Dakọrịta foto', sub: 'Drag pictures to words', bg: '#ECE2FF', accent: '#854CE6', action: () => openAdventure('pictureMatch') },
   ];
 
   return (
@@ -438,13 +487,11 @@ function AdventurePickerScreen({
       showsVerticalScrollIndicator={false}
     >
       <View style={sh.adventurePickerScreenHeader}>
-        <TouchableOpacity style={sh.adventurePickerBackButton} onPress={onBack} activeOpacity={0.85}>
-          <Text style={sh.adventurePickerBackText}>‹</Text>
-        </TouchableOpacity>
+        <AppBackButton onPress={onBack} />
         <View style={{ flex: 1 }}>
           <Text style={sh.kidsSectionLabel}>PLAYROOM</Text>
           <Text style={sh.adventureSheetTitle}>Pick your adventure</Text>
-          <Text style={sh.adventureSheetSub}>Choose how you want to practice Igbo today.</Text>
+          <Text style={sh.adventureSheetSub}>Practice the Central Igbo words you’ve unlocked.</Text>
         </View>
       </View>
 
@@ -464,11 +511,16 @@ function AdventurePickerScreen({
             onPress={card.action}
           >
             <View style={sh.adventureSheetBubble}>
-              <Image source={card.image} style={sh.adventureSheetImage} resizeMode="contain" />
+              <View style={[sh.adventureModeBadge, { backgroundColor: card.accent }]}>
+                <Ionicons name={card.modeIcon as any} size={42} color="#FFFFFF" />
+              </View>
             </View>
             <View style={{ flex: 1 }}>
               <Text style={sh.adventureSheetCardTitle}>{card.title}</Text>
-              <Text style={sh.adventureSheetCardSub}>{card.sub}</Text>
+              {card.igboTitle ? (
+                  <Text style={sh.adventureSheetCardIgbo}>{card.igboTitle}</Text>
+                ) : null}
+                <Text style={sh.adventureSheetCardSub}>{card.sub}</Text>
             </View>
             <Text style={[sh.adventureSheetArrow, { color: card.accent }]}>›</Text>
           </TouchableOpacity>
@@ -499,10 +551,20 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
 
 
   const { width: screenWidth } = useWindowDimensions();
-  const homeContentWidth = Math.min(screenWidth - 32, screenWidth >= 768 ? 720 : screenWidth);
+  const isTabletHome = screenWidth >= 768;
+  const homeHorizontalGutter = isTabletHome ? 56 : 16;
+  const homeContentWidth = Math.min(
+    screenWidth - homeHorizontalGutter * 2,
+    isTabletHome ? 680 : screenWidth - 32
+  );
   const isCompactHome = homeContentWidth < 390;
   const portalIconSize = isCompactHome ? 86 : 112;
   const portalImageSize = isCompactHome ? 80 : 106;
+  const playerName = activeProfile?.name?.trim() || 'Nwa Igbo';
+  const greetingText = `Nnọọ, ${playerName}!`;
+  const greetingIsLong = greetingText.length > 22;
+  const greetingIsVeryLong = greetingText.length > 34;
+
 
   const today = new Date().toDateString();
   const goalCount = activeProfile?.goalDate === today ? (activeProfile?.goalCount ?? 0) : 0;
@@ -510,7 +572,22 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
   const avatar = activeProfile?.avatar ?? 'adaeze';
 
   return (
-    <ScrollView style={sh.kidsHomeRoot} contentContainerStyle={[sh.kidsHomeScroll, { width: homeContentWidth, alignSelf: 'center' }]} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={sh.kidsHomeRoot}
+      contentContainerStyle={[
+        sh.kidsHomeScroll,
+        {
+          width: homeContentWidth,
+          alignSelf: 'center',
+        },
+      ]}
+      showsVerticalScrollIndicator={false}
+    >
+      <View pointerEvents="none" style={sh.homeBgSun} />
+      <View pointerEvents="none" style={sh.homeBgCloudOne} />
+      <View pointerEvents="none" style={sh.homeBgCloudTwo} />
+      <View pointerEvents="none" style={sh.homeBgConfettiOne} />
+      <View pointerEvents="none" style={sh.homeBgConfettiTwo} />
       <View style={sh.kidsHeroCard}>
         <View style={sh.kidsHeroTopRow}>
           <View style={sh.kidsHeroAvatarWrap}>
@@ -520,7 +597,20 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
             <View style={sh.heroTitleRow}>
               <View style={{ flex: 1 }}>
                 <Text style={sh.kidsHeroKicker}>TODAY'S IGBO QUEST</Text>
-                <Text style={sh.kidsHeroTitle}>Nnọọ, {profileName}!</Text>
+                <Text
+              style={[
+                sh.kidsHeroTitle,
+                isCompactHome && sh.kidsHeroTitleCompact,
+                greetingIsLong && sh.kidsHeroTitleLong,
+                greetingIsVeryLong && sh.kidsHeroTitleVeryLong,
+              ]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.68}
+              accessibilityLabel={greetingText}
+            >
+              {greetingText}
+            </Text>
               </View>
             </View>
 
@@ -568,7 +658,9 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
 
         <View style={[sh.adventurePortalTop, isCompactHome && sh.portalTopCompact]}>
           <View style={[sh.adventurePortalIcon, { width: portalIconSize, height: portalIconSize }]}>
-            <Image source={ADVENTURE_ART.storyHut} style={[sh.adventurePortalImage, { width: portalImageSize, height: portalImageSize }]} resizeMode="contain" />
+            <View style={[sh.adventurePortalImage, { width: portalImageSize, height: portalImageSize, alignItems: 'center', justifyContent: 'center' }]}>
+              <Ionicons name="game-controller" size={Math.round(portalImageSize * 0.62)} color="#FFFFFF" />
+            </View>
           </View>
 
           <View style={{ flex: 1 }}>
@@ -579,7 +671,7 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
         </View>
 
         <View style={sh.adventurePortalBottom}>
-          <Text style={sh.adventurePortalHint}>5 adventures waiting</Text>
+          <Text style={sh.adventurePortalHint}>6 adventures ready</Text>
           <Text style={sh.adventurePortalArrow}>›</Text>
         </View>
       </TouchableOpacity>
@@ -600,15 +692,16 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
 
             <Text style={sh.kidsSectionLabel}>PLAYROOM</Text>
             <Text style={sh.adventureSheetTitle}>Pick your adventure</Text>
-            <Text style={sh.adventureSheetSub}>Choose how you want to practice Igbo today.</Text>
+            <Text style={sh.adventureSheetSub}>Practice the Central Igbo words you’ve unlocked.</Text>
 
             <View style={sh.adventureSheetGrid}>
               {[
-                { icon: 'SAY', image: ADVENTURE_ART.sayIt, title: 'Say It!', sub: 'Talk like a star', bg: '#FFE6F0', accent: '#F64F72', action: () => openAdventureInner('sayItBack') },
-                { icon: 'ABC', image: ADVENTURE_ART.wordMagic, title: 'Word Magic', sub: 'Translate & discover', bg: '#DDF6FF', accent: '#31BDED', action: () => openAdventureInner('translator') },
-                { icon: 'STORY', image: ADVENTURE_ART.storyHut, title: 'Story Hut', sub: 'Hear folktales', bg: '#FFF1B8', accent: '#FFA62B', action: () => openAdventureInner('folktales') },
-                { icon: 'IGBO', image: ADVENTURE_ART.cultureQuest, title: 'Culture Quest', sub: 'Explore Igbo life', bg: '#E7FAEF', accent: '#19B765', action: () => openAdventureInner('history') },
-                { icon: 'PLAY', image: ADVENTURE_ART.gameLand, title: 'Game Land', sub: 'Play & earn stars', bg: '#F2E9FF', accent: '#7A45D8', action: () => openAdventureInner('games' as InnerView) },
+                { modeIcon: 'mic', title: 'Say It', igboTitle: 'Kwuo ya', sub: 'Practice speaking', bg: '#FFE3EF', accent: '#F04483', action: () => openAdventureInner('sayItBack') },
+                { modeIcon: 'ear', title: 'Listen & Tap', igboTitle: 'Gee ntị ma pịa', sub: 'Hear it. Pick it.', bg: '#DDF6FF', accent: '#31BDED', action: () => openAdventureInner('listenTap') },
+                { modeIcon: 'swap-horizontal', title: 'Word Match', igboTitle: 'Dakọrịta okwu', sub: 'Match words fast', bg: '#E9FBEF', accent: '#19B36B', action: () => openAdventureInner('wordMatch') },
+                { modeIcon: 'flash', title: 'Quiz Sprint', igboTitle: 'Ajụjụ ọsọ', sub: 'Quick mixed review', bg: '#F0E3FF', accent: '#854CE6', action: () => openAdventureInner('quiz') },
+                { modeIcon: 'book', title: 'Story Hut', igboTitle: 'Ụlọ akụkọ', sub: 'Listen and learn', bg: '#FFF0B8', accent: '#F5A400', action: () => openAdventureInner('folktales') },
+                { modeIcon: 'images', title: 'Picture Match', igboTitle: 'Dakọrịta foto', sub: 'Drag pictures to words', bg: '#ECE2FF', accent: '#854CE6', action: () => openAdventureInner('pictureMatch') },
               ].map((card, index) => (
                 <TouchableOpacity
                   key={card.title}
@@ -627,11 +720,16 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
                   }}
                 >
                   <View style={sh.adventureSheetBubble}>
-                    <Image source={card.image} style={sh.adventureSheetImage} resizeMode="contain" />
+                    <View style={[sh.adventureModeBadge, { backgroundColor: card.accent }]}>
+                <Ionicons name={card.modeIcon as any} size={42} color="#FFFFFF" />
+              </View>
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={sh.adventureSheetCardTitle}>{card.title}</Text>
-                    <Text style={sh.adventureSheetCardSub}>{card.sub}</Text>
+                    {card.igboTitle ? (
+                  <Text style={sh.adventureSheetCardIgbo}>{card.igboTitle}</Text>
+                ) : null}
+                <Text style={sh.adventureSheetCardSub}>{card.sub}</Text>
                   </View>
                   <Text style={sh.adventureSheetArrow}>›</Text>
                 </TouchableOpacity>
@@ -716,8 +814,6 @@ const IGBO_ALPHABET_EXAMPLES: Record<string, string> = {
 function getIgboAlphabetExample(letter: string, fallback: string): string {
   return IGBO_ALPHABET_EXAMPLES[String(letter).trim().toLowerCase()] || fallback;
 }
-
-
 
 
 const NUMBER_CARD_COLORS = [
@@ -861,6 +957,29 @@ function isSingularPluralSection(title: string): boolean {
 
 // ─── LEVEL DETAIL SCREEN ──────────────────────────────────────────────────────
 
+
+function getLessonPathCardSurface(levelId: string) {
+  switch (levelId) {
+    case '1':
+    case '1A':
+      return { backgroundColor: '#F0FBFF', borderColor: '#B8ECFF' };
+    case '2':
+      return { backgroundColor: '#FFF8DF', borderColor: '#FFD76A' };
+    case '3':
+      return { backgroundColor: '#F1FFF6', borderColor: '#9BE7B5' };
+    case '4':
+      return { backgroundColor: '#E7FAEF', borderColor: '#7BDEA0' };
+    case '5':
+      return { backgroundColor: '#F7F0FF', borderColor: '#D7BEFF' };
+    case '6':
+      return { backgroundColor: '#FFF1F5', borderColor: '#FFB8CA' };
+    case '7':
+      return { backgroundColor: '#E8FAFF', borderColor: '#8EEAFF' };
+    default:
+      return { backgroundColor: '#FFFDF6', borderColor: '#FFE8A3' };
+  }
+}
+
 function LessonPathScreen({
   onBack,
   openInner,
@@ -872,13 +991,29 @@ function LessonPathScreen({
   activeProfile: any;
   isPremium: boolean;
 }) {
-  return (
+    const { width: lessonPathScreenWidth } = useWindowDimensions();
+  const lessonPathContentWidth = Math.min(
+    lessonPathScreenWidth - 32,
+    lessonPathScreenWidth >= 768 ? 720 : lessonPathScreenWidth
+  );
+  const isCompactLessonPath = lessonPathContentWidth < 430;
+
+return (
     <ScrollView
       style={sh.lessonPathScreen}
       contentContainerStyle={sh.lessonPathScreenScroll}
       showsVerticalScrollIndicator={false}
-    >
-      <View style={sh.lessonPathHeader}>
+     stickyHeaderIndices={[0]}>
+      <View pointerEvents="none" style={sh.lessonPathBgSun} />
+      <View pointerEvents="none" style={sh.lessonPathBgCloudOne} />
+      <View pointerEvents="none" style={sh.lessonPathBgCloudTwo} />
+      <View pointerEvents="none" style={sh.lessonPathBgMintBlob} />
+      <Text pointerEvents="none" style={sh.lessonPathBgStarOne}>✦</Text>
+      <Text pointerEvents="none" style={sh.lessonPathBgStarTwo}>✧</Text>
+      <Text pointerEvents="none" style={sh.lessonPathBgDotOne}>●</Text>
+      <Text pointerEvents="none" style={sh.lessonPathBgDotTwo}>●</Text>
+
+      <View style={[sh.lessonPathHeader, sh.lessonPathStickyHeader]}>
         <TouchableOpacity style={sh.lessonPathBackButton} onPress={onBack} activeOpacity={0.84}>
           <Text style={sh.lessonPathBackText}>‹</Text>
         </TouchableOpacity>
@@ -898,13 +1033,16 @@ function LessonPathScreen({
         return (
           <BounceIn key={level.id} delay={i * 45}>
             <TouchableOpacity
-              style={[sh.lessonPathLevelCard, isLocked && sh.levelCardLocked]}
+              style={[sh.lessonPathLevelCard, isCompactLessonPath && sh.lessonPathLevelCardCompact, getLessonPathCardSurface(level.id), isLocked && sh.levelCardLocked]}
               onPress={() => { haptics.tapMedium(); isLocked ? openInner('premium') : openInner('levelDetail', level.id); }}
               activeOpacity={0.86}
             >
-              <View style={sh.lessonPathLevelArt}>
+              <View style={sh.lessonPathBlobOne} />
+              <View style={sh.lessonPathBlobTwo} />
+
+              <View style={[sh.lessonPathLevelArt, isCompactLessonPath && sh.lessonPathLevelArtCompact]}>
                 {LEVEL_ICONS[level.id] ? (
-                  <Image source={LEVEL_ICONS[level.id]} style={sh.lessonPathLevelImage} resizeMode="contain" />
+                  <Image source={LEVEL_ICONS[level.id]} style={[sh.lessonPathLevelImage, isCompactLessonPath && sh.lessonPathLevelImageCompact]} resizeMode="contain" />
                 ) : (
                   <Text style={[sh.featureIcon, { color: lc.pip }]}>{level.level}</Text>
                 )}
@@ -917,15 +1055,15 @@ function LessonPathScreen({
                   {!level.free && isPremium && <View style={sh.premiumTag}><Text style={sh.premiumTagText}>⭐</Text></View>}
                 </View>
 
-                <Text style={sh.lessonPathLevelName}>{level.title}</Text>
-                <Text style={sh.lessonPathLevelSub}>{level.igboTitle} · {level.description}</Text>
+                <Text style={[sh.lessonPathLevelName, isCompactLessonPath && sh.lessonPathLevelNameCompact]}>{level.title}</Text>
+                <Text style={[sh.lessonPathLevelSub, isCompactLessonPath && sh.lessonPathLevelSubCompact]}>{level.igboTitle} · {level.description}</Text>
 
                 <View style={sh.kidsProgressTrack}>
                   <View style={[sh.progressFill, { width: `${Math.round(progress * 100)}%` as any, backgroundColor: lc.pip }]} />
                 </View>
               </View>
 
-              <Text style={sh.lessonPathChevron}>›</Text>
+              <View style={sh.lessonPathChevronButton}><Text style={sh.lessonPathChevron}>›</Text></View>
             </TouchableOpacity>
           </BounceIn>
         );
@@ -1120,7 +1258,9 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                         </View>
                       </View>
 
-                      <Text style={sh.vocabAudio}>🔊</Text>
+                      <View style={sh.vocabAudioButton}>
+                        <Ionicons name="volume-high" size={20} color="#1B2A6B" />
+                      </View>
                     </TouchableOpacity>
                   </BounceIn>
                 );
@@ -1142,7 +1282,9 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                           <Text style={sh.vocabExample}>e.g. {item.example}</Text>
                         )}
                       </View>
-                      <Text style={sh.vocabAudio}>🔊</Text>
+                      <View style={sh.vocabAudioButton}>
+                        <Ionicons name="volume-high" size={20} color="#1B2A6B" />
+                      </View>
                     </TouchableOpacity>
                   </BounceIn>
                 );
@@ -1179,7 +1321,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                       )}
                     </View>
                     <View style={[sh.vocabAudioButton, getFamilyAudioButtonStyle(item.english)]}>
-                      <Text style={sh.vocabAudio}>🔊</Text>
+                      <Ionicons name="volume-high" size={20} color="#1B2A6B" />
                     </View>
                   </TouchableOpacity>
                 </BounceIn>
@@ -1197,40 +1339,101 @@ function ProgressScreen() {
   const { activeProfile, state } = useApp();
   const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   const HEIGHTS = [55, 70, 30, 85, 90, 20, 0];
+  const { width: xpScreenWidth } = useWindowDimensions();
+  const xpContentWidth = Math.min(xpScreenWidth - 32, xpScreenWidth >= 768 ? 720 : xpScreenWidth);
+  const isCompactXp = xpContentWidth < 390;
+
+  const progressValues = ALL_LEVELS.map(level => activeProfile?.levelProgress[level.id] ?? 0);
+  const totalProgress = progressValues.length
+    ? Math.round((progressValues.reduce((sum, value) => sum + value, 0) / progressValues.length) * 100)
+    : 0;
+
+  const stats = [
+    { label: 'Day streak', value: String(activeProfile?.streak ?? 0), icon: '🔥', bg: '#FFF1B8', accent: '#FFA62B' },
+    { label: 'Words', value: String(activeProfile?.wordsLearned ?? 0), icon: '⭐', bg: '#DDF6FF', accent: '#31BDED' },
+    { label: 'Quiz best', value: String(activeProfile?.quizBest ?? 0), icon: '🎯', bg: '#FFE6F0', accent: '#F64F72' },
+    { label: 'Plan', value: state.isPremium ? 'Premium' : 'Free', icon: '👑', bg: '#F2E9FF', accent: '#7A45D8' },
+  ];
 
   return (
-    <ScrollView contentContainerStyle={{ padding: SPACE.lg, paddingBottom: 100 }}>
-      <Text style={sh.progressTitle}>{activeProfile?.name ?? 'Progress'} 📊</Text>
-      <View style={sh.statGrid}>
-        {[
-          { label: 'Day streak',    value: `${activeProfile?.streak ?? 0} 🔥`,         color: COLOR.clay },
-          { label: 'Words learned', value: `${activeProfile?.wordsLearned ?? 0}`,        color: COLOR.success },
-          { label: 'Quiz best',     value: `${activeProfile?.quizBest ?? 0} 🌟`,        color: COLOR.purple },
-          { label: 'Plan',          value: state.isPremium ? '⭐ Premium' : 'Free', color: state.isPremium ? COLOR.gold : COLOR.textSecond },
-        ].map(stat => (
-          <View key={stat.label} style={sh.statCard}>
-            <Text style={sh.statLabel}>{stat.label}</Text>
-            <Text style={[sh.statValue, { color: stat.color }]}>{stat.value}</Text>
+    <ScrollView
+      style={sh.xpRoot}
+      contentContainerStyle={[sh.xpScroll, { width: xpContentWidth, alignSelf: 'center' }, isCompactXp && sh.xpScrollCompact]}
+      showsVerticalScrollIndicator={false}
+    >
+      <View pointerEvents="none" style={sh.xpBgSun} />
+      <View pointerEvents="none" style={sh.xpBgCloudOne} />
+      <View pointerEvents="none" style={sh.xpBgCloudTwo} />
+
+      <View style={[sh.xpHeroCard, isCompactXp && sh.xpHeroCardCompact]}>
+        <View style={sh.xpHeroBlob} />
+        <View style={[sh.xpHeroTop, isCompactXp && sh.xpHeroTopCompact]}>
+          <View style={[sh.xpAvatarRing, isCompactXp && sh.xpAvatarRingCompact]}>
+            <AvatarIllustration avatar={activeProfile?.avatar ?? 'adaeze'} size={isCompactXp ? 72 : 92} />
+          </View>
+
+          <View style={sh.xpHeroCopy}>
+            <Text style={sh.xpKicker}>XP JOURNEY</Text>
+            <Text style={[sh.xpHeroTitle, isCompactXp && sh.xpHeroTitleCompact]}>{activeProfile?.name ?? 'Nwa Igbo'}</Text>
+            <Text style={[sh.xpHeroSub, isCompactXp && sh.xpHeroSubCompact]}>Your Igbo superpowers are growing.</Text>
+          </View>
+
+          <View style={sh.xpPremiumPill}>
+            <Text style={sh.xpPremiumText}>{state.isPremium ? '👑 Premium' : 'Free'}</Text>
+          </View>
+        </View>
+
+        <View style={sh.xpHeroProgressCard}>
+          <View style={sh.xpHeroProgressTop}>
+            <Text style={sh.xpHeroProgressTitle}>Learning map</Text>
+            <Text style={sh.xpHeroProgressPercent}>{totalProgress}%</Text>
+          </View>
+          <View style={sh.xpHeroTrack}>
+            <View style={[sh.xpHeroFill, { width: `${totalProgress}%` as any }]} />
+          </View>
+          <Text style={sh.xpHeroHint}>Complete lessons, quizzes, and practice to fill your map.</Text>
+        </View>
+      </View>
+
+      <View style={[sh.xpStatGrid, isCompactXp && sh.xpStatGridCompact]}>
+        {stats.map(stat => (
+          <View key={stat.label} style={[sh.xpStatCard, isCompactXp && sh.xpStatCardCompact, { backgroundColor: stat.bg, borderColor: stat.accent + '55' }]}>
+            <View style={[sh.xpStatIconBubble, { backgroundColor: stat.accent }]}>
+              <Text style={sh.xpStatIcon}>{stat.icon}</Text>
+            </View>
+            <Text style={sh.xpStatValue}>{stat.value}</Text>
+            <Text style={sh.xpStatLabel}>{stat.label}</Text>
           </View>
         ))}
       </View>
 
-      <Text style={[sh.sectionLabel, { marginTop: SPACE.lg }]}>Level Progress</Text>
+      <View style={sh.xpSectionHeader}>
+        <Text style={sh.xpSectionKicker}>LEVEL PROGRESS</Text>
+        <Text style={sh.xpSectionTitle}>Keep climbing</Text>
+      </View>
+
       {ALL_LEVELS.map(level => {
         const lc = LEVEL_COLOR[level.id];
         const progress = activeProfile?.levelProgress[level.id] ?? 0;
-        const isLocked = !level.free && !state.isPremium;
+
         return (
-          <View key={level.id} style={sh.progressRow}>
-            <Text style={{ fontSize: 20, width: 32 }}>{level.emoji}</Text>
-            <View style={{ flex: 1 }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={sh.progressRowLabel}>{level.level}: {level.title}</Text>
-                <Text style={[sh.progressRowLabel, { color: lc.pip }]}>
-                  {isLocked ? '🔒' : `${Math.round(progress * 100)}%`}
-                </Text>
+          <View key={level.id} style={[sh.xpLevelCard, isCompactXp && sh.xpLevelCardCompact, { backgroundColor: getLessonPathCardSurface(level.id).backgroundColor, borderColor: getLessonPathCardSurface(level.id).borderColor }]}>
+            <View style={[sh.xpLevelArt, isCompactXp && sh.xpLevelArtCompact]}>
+              {LEVEL_ICONS[level.id] ? (
+                <Image source={LEVEL_ICONS[level.id]} style={[sh.xpLevelImage, isCompactXp && sh.xpLevelImageCompact]} resizeMode="contain" />
+              ) : (
+                <Text style={[sh.featureIcon, { color: lc.pip }]}>{level.level}</Text>
+              )}
+            </View>
+
+            <View style={sh.xpLevelCopy}>
+              <View style={sh.levelTopRow}>
+                <Text style={[sh.levelBadge, { color: lc.text }]}>{level.level}</Text>
+                <Text style={sh.xpLevelStar}>⭐</Text>
+                <Text style={[sh.xpLevelPercent, { color: lc.pip }]}>{Math.round(progress * 100)}%</Text>
               </View>
-              <View style={sh.progressTrack}>
+              <Text style={[sh.xpLevelName, isCompactXp && sh.xpLevelNameCompact]}>{level.title}</Text>
+              <View style={sh.xpLevelTrack}>
                 <View style={[sh.progressFill, { width: `${Math.round(progress * 100)}%` as any, backgroundColor: lc.pip }]} />
               </View>
             </View>
@@ -1238,16 +1441,21 @@ function ProgressScreen() {
         );
       })}
 
-      <Text style={[sh.sectionLabel, { marginTop: SPACE.lg }]}>This week</Text>
-      <View style={sh.barChart}>
-        {DAYS.map((d, i) => (
-          <View key={i} style={sh.barCol}>
-            <View style={sh.barTrack}>
-              <View style={[sh.barFill, { height: `${HEIGHTS[i]}%` as any, opacity: i === 4 ? 1 : 0.5 }]} />
+      <View style={sh.xpSectionHeader}>
+        <Text style={sh.xpSectionKicker}>THIS WEEK</Text>
+        <Text style={sh.xpSectionTitle}>Streak garden</Text>
+      </View>
+
+      <View style={sh.xpWeekCard}>
+        {DAYS.map((day, i) => {
+          const active = HEIGHTS[i] >= 70;
+          return (
+            <View key={`${day}-${i}`} style={sh.xpDayColumn}>
+              <View style={[sh.xpDayGem, active && sh.xpDayGemActive, { height: Math.max(18, HEIGHTS[i]) }]} />
+              <Text style={[sh.xpDayLabel, active && sh.xpDayLabelActive]}>{day}</Text>
             </View>
-            <Text style={sh.barDay}>{d}</Text>
-          </View>
-        ))}
+          );
+        })}
       </View>
     </ScrollView>
   );
@@ -1257,7 +1465,6 @@ function ProgressScreen() {
 function isQuizNumberItem(item: { english?: string }): boolean {
   return /^\d+\s*[—-]/.test(String(item.english || '').trim());
 }
-
 
 
 function getQuizOptionLabel(item: { english?: string }): string {
@@ -1429,67 +1636,6 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
   );
 }
 
-
-// ─── TRANSLATOR SCREEN ────────────────────────────────────────────────────────
-function TranslatorScreen({ onBack }: { onBack: () => void }) {
-  const [question, setQuestion] = useState<TranslatorItem | null>(null);
-  const [options, setOptions]   = useState<TranslatorItem[]>([]);
-  const [streak, setStreak]     = useState(0);
-  const [feedback, setFeedback] = useState<{ text: string; correct: boolean } | null>(null);
-  const wiggle = useWiggle();
-
-  const next = useCallback(() => {
-    const correct = randomFrom(TRANSLATOR_POOL);
-    const wrong   = shuffle(TRANSLATOR_POOL.filter(i => i.ogwashi !== correct.ogwashi)).slice(0, 3);
-    setQuestion(correct);
-    setOptions(shuffle([correct, ...wrong]));
-    setFeedback(null);
-  }, []);
-
-  useEffect(() => { next(); }, []);
-
-  function check(opt: TranslatorItem) {
-    if (!question) return;
-    if (opt.ogwashi === question.ogwashi) {
-      setStreak(s => s + 1);
-      setFeedback({ text: 'Ọma nị! Correct! 🎯', correct: true });
-      wiggle.trigger();
-      setTimeout(next, 1400);
-    } else {
-      setStreak(0);
-      setFeedback({ text: `Ewoo! That means ${opt.english}. Try again! 💪`, correct: false });
-    }
-  }
-
-  if (!question) return null;
-
-  return (
-    <View style={{ flex: 1, backgroundColor: COLOR.bg }}>
-      <InnerHeader title="Enuani Translator 🧠" onBack={onBack} accent={COLOR.sky} />
-      <View style={sh.gamePad}>
-        <Animated.View style={[sh.streakBanner, { backgroundColor: COLOR.skyLight }, wiggle.style]}>
-          <Text style={[sh.streakText, { color: COLOR.sky }]}>🧠 Dialect streak: {streak}</Text>
-        </Animated.View>
-        <View style={[sh.promptCard, { backgroundColor: COLOR.skyLight, borderColor: COLOR.skyBorder }]}>
-          <Text style={sh.promptSpeaker}>How do we say this in Ogwashi-Ukwu Enuani? </Text>
-          <Text style={{ fontSize: 26, fontWeight: '800', color: COLOR.sky, marginTop: 6 }}>{question.central}</Text>
-        </View>
-        {feedback && (
-          <Text style={[sh.feedbackText, feedback.correct ? sh.feedbackGood : sh.feedbackBad]}>{feedback.text}</Text>
-        )}
-        <View style={sh.quizGrid}>
-          {options.map((opt, i) => (
-            <TouchableOpacity key={i} style={sh.transOpt} onPress={() => check(opt)} activeOpacity={0.8}>
-              <Text style={{ fontSize: 22 }}>{opt.emoji}</Text>
-              <Text style={sh.transOptWord}>{opt.ogwashi}</Text>
-              <Text style={sh.transOptEn}>({opt.english})</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-    </View>
-  );
-}
 
 // ─── SAY IT BACK SCREEN ───────────────────────────────────────────────────────
 function SayItBackScreen({ onBack }: { onBack: () => void }) {
@@ -1781,9 +1927,44 @@ const sh = StyleSheet.create({
     marginTop: -2,
   },
 
-  adventureSheetImage: {
+  adventureVoiceBadge: {
+    width: 92,
+    height: 92,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.14,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 3,
+    flexShrink: 0,
+  },
+  adventureModeBadge: {
+    width: 94,
+    height: 94,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 3,
+    flexShrink: 0,
+  },
+  adventureIconTile: {
     width: 118,
     height: 118,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    flexShrink: 0,
+  },
+  adventureSheetImage: {
+    width: 114,
+    height: 114,
   },
   adventurePortalImage: {
     width: 106,
@@ -2113,13 +2294,12 @@ const sh = StyleSheet.create({
   },
   kidsHomeRoot: {
     flex: 1,
-    backgroundColor: '#FFF7E8',
+    backgroundColor: '#FFF8E7',
   },
   kidsHomeScroll: {
-    paddingHorizontal: SPACE.md,
-    paddingTop: 6,
-    paddingBottom: 140,
-    backgroundColor: '#FFF7E8',
+    paddingTop: 8,
+    paddingBottom: 128,
+    position: 'relative',
   },
   profileSwitcherScroll: {
     maxWidth: 0,
@@ -2140,6 +2320,51 @@ const sh = StyleSheet.create({
   },
   profileAvatarPillTextActive: {
     display: 'none',
+  },
+  homeBgSun: {
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: 'rgba(255, 210, 74, 0.20)',
+    right: -78,
+    top: 38,
+  },
+  homeBgCloudOne: {
+    position: 'absolute',
+    width: 150,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: 'rgba(221, 246, 255, 0.70)',
+    left: -72,
+    top: 260,
+  },
+  homeBgCloudTwo: {
+    position: 'absolute',
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    backgroundColor: 'rgba(242, 233, 255, 0.52)',
+    right: -64,
+    top: 540,
+  },
+  homeBgConfettiOne: {
+    position: 'absolute',
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: 'rgba(246, 79, 114, 0.22)',
+    left: 24,
+    top: 430,
+  },
+  homeBgConfettiTwo: {
+    position: 'absolute',
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: 'rgba(122, 69, 216, 0.18)',
+    right: 32,
+    top: 760,
   },
   kidsHeroCard: {
     ...KIDS_SHADOW.softCard,
@@ -2177,11 +2402,27 @@ const sh = StyleSheet.create({
     marginBottom: 2,
   },
   kidsHeroTitle: {
-    color: KIDS_COLOR.textPrimary,
     fontSize: 32,
-    lineHeight: 36,
+    lineHeight: 38,
     fontWeight: '900',
-    letterSpacing: -0.9,
+    color: '#1B2A6B',
+    letterSpacing: -0.7,
+    flexShrink: 1,
+    maxWidth: '100%',
+  },
+  kidsHeroTitleCompact: {
+    fontSize: 28,
+    lineHeight: 33,
+  },
+  kidsHeroTitleLong: {
+    fontSize: 29,
+    lineHeight: 34,
+    letterSpacing: -0.55,
+  },
+  kidsHeroTitleVeryLong: {
+    fontSize: 25,
+    lineHeight: 30,
+    letterSpacing: -0.35,
   },
   kidsHeroSub: {
     color: KIDS_COLOR.textSecondary,
@@ -2197,47 +2438,72 @@ const sh = StyleSheet.create({
   kidsStatEmoji: { fontSize: 15, marginRight: 5 },
   kidsStatText: { color: KIDS_COLOR.textPrimary, fontSize: FONT.xs, fontWeight: '900' },
   kidsQuestCard: {
-    ...KIDS_SHADOW.softCard,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
-    borderRadius: 32,
-    padding: SPACE.md,
-    marginBottom: SPACE.xl,
-    backgroundColor: KIDS_COLOR.coral,
-    borderWidth: 1.5,
-    borderColor: 'rgba(246, 79, 114, 0.22)',
+    gap: 16,
+    backgroundColor: '#FFE6F0',
+    borderRadius: 34,
+    borderWidth: 2,
+    borderColor: '#FFB8CA',
+    paddingVertical: 18,
+    paddingHorizontal: 18,
+    marginBottom: 24,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.10,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
   },
   kidsQuestIcon: {
-    width: 76,
-    height: 76,
-    borderRadius: 28,
+    width: 72,
+    height: 72,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: KIDS_COLOR.sunshine,
-    borderWidth: 0,
+    backgroundColor: '#FFD24A',
+    borderWidth: 2,
+    borderColor: '#FFF1B8',
+    flexShrink: 0,
   },
-  kidsQuestIconText: { fontSize: 34 },
+  kidsQuestIconText: {
+    fontSize: 34,
+  },
   kidsQuestKicker: {
-    color: KIDS_COLOR.sunshine,
-    fontSize: FONT.xs,
+    color: '#F64F72',
+    fontSize: 13,
+    lineHeight: 16,
     fontWeight: '900',
-    letterSpacing: 1.4,
-    marginBottom: 3,
+    letterSpacing: 2.6,
   },
   kidsQuestTitle: {
-    color: KIDS_COLOR.white,
-    fontSize: 28,
+    color: '#1B2A6B',
+    fontSize: 26,
+    lineHeight: 31,
     fontWeight: '900',
-    letterSpacing: -0.5,
+    letterSpacing: -0.45,
+    marginTop: 2,
   },
   kidsQuestSub: {
-    color: '#FFE8EF',
-    fontSize: FONT.sm,
+    color: '#326C92',
+    fontSize: 15,
+    lineHeight: 21,
     fontWeight: '800',
-    marginTop: 4,
+    marginTop: 3,
   },
-  kidsQuestArrow: { color: KIDS_COLOR.white, fontSize: 34, fontWeight: '900' },
+  kidsQuestArrow: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    overflow: 'hidden',
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
+    color: '#1B2A6B',
+    fontSize: 32,
+    lineHeight: 38,
+    fontWeight: '900',
+    flexShrink: 0,
+  },
   kidsSectionHeader: { marginBottom: 10, marginTop: 4 },
   kidsSectionLabel: {
     fontSize: 13,
@@ -2247,11 +2513,11 @@ const sh = StyleSheet.create({
     color: '#F64F72',
   },
   kidsSectionTitle: {
-    fontSize: 34,
-    lineHeight: 39,
+    fontSize: 30,
+    lineHeight: 35,
     fontWeight: '900',
     color: '#7A45D8',
-    letterSpacing: -0.8,
+    letterSpacing: -0.65,
   },
   kidsFeatureRail: {
     gap: 15,
@@ -2412,56 +2678,51 @@ const sh = StyleSheet.create({
   bottomNav: {
     width: '100%',
     maxWidth: 560,
-    minHeight: 86,
-    backgroundColor: KIDS_COLOR.white,
-    borderWidth: 1.5,
-    borderColor: 'rgba(8, 62, 74, 0.10)',
-    borderRadius: 34,
+    minHeight: 78,
+    backgroundColor: 'rgba(255, 255, 255, 0.94)',
+    borderWidth: 2,
+    borderColor: 'rgba(221, 229, 244, 0.95)',
+    borderRadius: 39,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingHorizontal: 10,
-    paddingVertical: 10,
-    shadowColor: '#083E4A',
-    shadowOpacity: 0.14,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 8 },
+    paddingVertical: 8,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.16,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
     elevation: 8,
   },
   navBtn: {
     flex: 1,
-    paddingVertical: 6,
+    minHeight: 60,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 3,
-    minHeight: 56,
+    gap: 2,
+    paddingHorizontal: 8,
+  },
+  navBtnActive: {
+    backgroundColor: '#FFF1B8',
   },
   navIcon: {
-    minWidth: 48,
-    minHeight: 28,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 999,
-    overflow: 'hidden',
-    backgroundColor: KIDS_COLOR.skyMist,
-    color: KIDS_COLOR.sky,
-    fontSize: 12,
-    fontWeight: '900',
+    fontSize: 23,
+    lineHeight: 27,
     textAlign: 'center',
-    letterSpacing: 0.8,
   },
   navIconActive: {
-    backgroundColor: KIDS_COLOR.sunshine,
-    color: KIDS_COLOR.textPrimary,
+    transform: [{ scale: 1.08 }],
   },
   navLabel: {
-    fontSize: FONT.xs,
+    fontSize: 12,
+    lineHeight: 15,
     fontWeight: '900',
-    color: KIDS_COLOR.textSecondary,
+    color: '#436B8A',
     textAlign: 'center',
   },
   navLabelActive: {
-    color: KIDS_COLOR.textPrimary,
+    color: '#1B2A6B',
   },
 
   homeScroll: {
@@ -2646,12 +2907,28 @@ const sh = StyleSheet.create({
   premiumTagText: { fontSize: 10 },
 
   innerHeader: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    paddingVertical: 14, paddingHorizontal: SPACE.md,
+    backgroundColor: '#008A4A',
+    paddingHorizontal: 24,
+    paddingTop: 34,
+    paddingBottom: 28,
+    borderBottomLeftRadius: 34,
+    borderBottomRightRadius: 34,
+    overflow: 'hidden',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 5,
   },
   backBtn: { padding: 4 },
   backText: { fontSize: 22 },
-  innerTitle: { fontSize: FONT.md, fontWeight: '800', color: COLOR.textCream, flex: 1 },
+  innerTitle: {
+    color: '#FFFFFF',
+    fontSize: 30,
+    lineHeight: 35,
+    fontWeight: '900',
+    letterSpacing: -0.6,
+  },
 
   listPad: { padding: SPACE.md, paddingBottom: 60 },
 
@@ -2827,24 +3104,42 @@ const sh = StyleSheet.create({
     fontWeight: '900',
   },
 
+  levelDetailBgSun: {
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: 'rgba(255, 210, 74, 0.16)',
+    right: -78,
+    top: 180,
+  },
+  levelDetailBgCloud: {
+    position: 'absolute',
+    width: 150,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: 'rgba(221, 246, 255, 0.58)',
+    left: -76,
+    top: 420,
+  },
   vocabCard: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    backgroundColor: '#FFFDF6',
-    borderRadius: 34,
-    borderWidth: 1.5,
-    borderColor: '#FFE8A3',
-    paddingVertical: 12,
+    backgroundColor: '#F0FBFF',
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: '#9DEBFF',
+    paddingVertical: 13,
     paddingLeft: 14,
     paddingRight: 12,
     marginBottom: 14,
-    minHeight: 116,
+    minHeight: 112,
     shadowColor: '#1B2A6B',
-    shadowOpacity: 0.065,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 5 },
-    elevation: 2,
+    shadowOpacity: 0.085,
+    shadowRadius: 13,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 3,
   },
   vocabEmojiWrap: {
     width: 74,
@@ -2860,34 +3155,35 @@ const sh = StyleSheet.create({
   },
   vocabEmoji: { fontSize: 26 },
   vocabPortraitSlot: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
+    width: 82,
+    height: 82,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'visible',
-    backgroundColor: '#F0FBFF',
+    overflow: 'hidden',
+    backgroundColor: 'rgba(255,255,255,0.58)',
     borderWidth: 2,
-    borderColor: '#B8ECFF',
+    borderColor: 'rgba(255,255,255,0.72)',
     flexShrink: 0,
   },
   vocabTextBlock: {
     flex: 1,
     minWidth: 0,
     justifyContent: 'center',
-    paddingLeft: 2,
   },
   vocabIgbo: {
-    fontSize: FONT.lg,
+    fontSize: 22,
+    lineHeight: 27,
     fontWeight: '900',
-    color: '#14246B',
-    letterSpacing: -0.25,
+    color: '#1B2A6B',
+    letterSpacing: -0.35,
   },
   vocabEn: {
-    fontSize: FONT.sm,
-    color: '#5F6459',
-    marginTop: 4,
-    fontWeight: '700',
+    fontSize: 15,
+    lineHeight: 20,
+    color: '#596657',
+    marginTop: 3,
+    fontWeight: '800',
   },
   vocabExample: { fontSize: FONT.xs, color: COLOR.forest, marginTop: 3, fontStyle: 'italic' },
 
@@ -2938,13 +3234,6 @@ const sh = StyleSheet.create({
   quizOptEmoji: { fontSize: 38 },
   quizOptLabel: { fontSize: FONT.sm, fontWeight: '700', color: COLOR.textPrimary, textAlign: 'center' },
 
-  transOpt: {
-    width: '47%', backgroundColor: COLOR.card,
-    borderRadius: RADIUS.md, borderWidth: 1, borderColor: COLOR.border,
-    paddingVertical: 14, paddingHorizontal: 8, alignItems: 'center', gap: 3,
-  },
-  transOptWord: { fontSize: FONT.md, fontWeight: '800', color: COLOR.textPrimary, textAlign: 'center' },
-  transOptEn: { fontSize: FONT.xs, color: COLOR.textSecond },
 
   premiumNudge: {
     marginTop: SPACE.md, padding: SPACE.sm,
@@ -3033,17 +3322,20 @@ const sh = StyleSheet.create({
   grammarTextCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SPACE.md,
-    backgroundColor: COLOR.card,
-    borderRadius: RADIUS.xl,
-    borderWidth: 1,
-    borderColor: COLOR.border,
-    padding: SPACE.lg,
-    minHeight: 110,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 2,
+    gap: 14,
+    backgroundColor: '#FFFDF6',
+    borderRadius: 28,
+    borderWidth: 2,
+    borderColor: '#FFE8A3',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginBottom: 14,
+    minHeight: 96,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.075,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 3,
   },
   pairCard: {
     backgroundColor: COLOR.card,
@@ -3131,25 +3423,25 @@ const sh = StyleSheet.create({
     fontWeight: '700',
   },
   vocabAudioButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#E8FAFF',
-    borderWidth: 2.5,
-    borderColor: '#31BDED',
-    flexShrink: 0,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#9DEBFF',
     shadowColor: '#1B2A6B',
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 2,
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 3,
+    flexShrink: 0,
   },
   vocabAudio: {
-    fontSize: 20,
-    lineHeight: 24,
-    textAlign: 'center',
+    fontSize: 0,
+    width: 0,
+    height: 0,
   },
 
   featureHeaderRow: {
@@ -3549,14 +3841,19 @@ const sh = StyleSheet.create({
     display: 'none',
   },
   settingsIconBtn: {
-    width: 50,
-    height: 50,
-    borderRadius: 999,
+    width: 54,
+    height: 54,
+    borderRadius: 27,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: KIDS_COLOR.sunshine,
-    borderWidth: 1.5,
-    borderColor: KIDS_COLOR.mango,
+    backgroundColor: '#FFD24A',
+    borderWidth: 2,
+    borderColor: '#FFA62B',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 4,
   },
   settingsIconText: {
     color: KIDS_COLOR.textPrimary,
@@ -3588,14 +3885,7 @@ const sh = StyleSheet.create({
     display: 'none',
   },
   brandHeader: {
-    alignSelf: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: 8,
-    paddingHorizontal: SPACE.md,
-    paddingBottom: 8,
-    backgroundColor: '#FFF7E8',
+    display: 'none',
   },
   heroTitleRow: {
     flexDirection: 'row',
@@ -3692,11 +3982,11 @@ const sh = StyleSheet.create({
     elevation: 3,
   },
   kidsSectionSub: {
-    fontSize: 18,
-    lineHeight: 26,
+    fontSize: 16,
+    lineHeight: 23,
     color: '#326C92',
     fontWeight: '800',
-    marginTop: 6,
+    marginTop: 5,
   },
   kidsAdventureGrid: {
     flexDirection: 'row',
@@ -3721,10 +4011,7 @@ const sh = StyleSheet.create({
     backgroundColor: '#FFE6F0',
     borderColor: 'rgba(246, 79, 114, 0.28)',
   },
-  kidsAdventureCardTranslate: {
-    backgroundColor: '#DDF6FF',
-    borderColor: 'rgba(49, 189, 237, 0.30)',
-  },
+
   kidsAdventureCardStories: {
     backgroundColor: '#F2E9FF',
     borderColor: 'rgba(122, 69, 216, 0.26)',
@@ -3749,9 +4036,7 @@ const sh = StyleSheet.create({
   kidsAdventureIconSpeak: {
     backgroundColor: KIDS_COLOR.coral,
   },
-  kidsAdventureIconTranslate: {
-    backgroundColor: KIDS_COLOR.sky,
-  },
+
   kidsAdventureIconStories: {
     backgroundColor: KIDS_COLOR.purple,
   },
@@ -3842,7 +4127,7 @@ const sh = StyleSheet.create({
     right: 0,
     bottom: 18,
     alignItems: 'center',
-    paddingHorizontal: SPACE.md,
+    paddingHorizontal: 18,
   },
   kidsPlaygroundHeader: {
     borderRadius: 34,
@@ -3943,13 +4228,13 @@ const sh = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#FFD76A',
     padding: 18,
-    marginBottom: 24,
+    marginBottom: 22,
     overflow: 'hidden',
     shadowColor: '#1B2A6B',
-    shadowOpacity: 0.12,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 9 },
-    elevation: 5,
+    shadowOpacity: 0.11,
+    shadowRadius: 17,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
   },
   adventurePortalCloudOne: {
     position: 'absolute',
@@ -3994,7 +4279,7 @@ const sh = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(255, 255, 255, 0.70)',
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
     borderRadius: 999,
     paddingVertical: 10,
     paddingHorizontal: 14,
@@ -4006,8 +4291,8 @@ const sh = StyleSheet.create({
     fontWeight: '900',
   },
   adventurePortalArrow: {
-    fontSize: 36,
-    lineHeight: 36,
+    fontSize: 32,
+    lineHeight: 32,
     color: '#1B2A6B',
     fontWeight: '900',
   },
@@ -4081,12 +4366,19 @@ const sh = StyleSheet.create({
     fontWeight: '900',
     letterSpacing: -0.5,
   },
-  adventureSheetCardSub: {
-    color: '#436B8A',
-    fontSize: FONT.sm,
+  adventureSheetCardIgbo: {
+    color: '#008A4A',
+    fontSize: 15,
     lineHeight: 19,
+    fontWeight: '900',
+    marginTop: 2,
+  },
+  adventureSheetCardSub: {
+    color: '#2E6D91',
+    fontSize: 14,
+    lineHeight: 18,
     fontWeight: '800',
-    marginTop: 3,
+    marginTop: 1,
   },
   adventureSheetArrow: {
     color: '#7A45D8',
@@ -4100,13 +4392,13 @@ const sh = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#8EEAFF',
     padding: 18,
-    marginBottom: 24,
+    marginBottom: 22,
     overflow: 'hidden',
     shadowColor: '#1B2A6B',
-    shadowOpacity: 0.12,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 9 },
-    elevation: 5,
+    shadowOpacity: 0.11,
+    shadowRadius: 17,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
   },
 
   lessonPortalIcon: {
@@ -4133,20 +4425,20 @@ const sh = StyleSheet.create({
   },
 
   lessonPortalTitle: {
-    fontSize: 34,
-    lineHeight: 39,
+    fontSize: 30,
+    lineHeight: 35,
     fontWeight: '900',
     color: '#1B2A6B',
-    letterSpacing: -0.8,
+    letterSpacing: -0.65,
     marginTop: 2,
   },
 
   lessonPortalSub: {
-    fontSize: 18,
-    lineHeight: 26,
+    fontSize: 16,
+    lineHeight: 23,
     color: '#326C92',
     fontWeight: '800',
-    marginTop: 6,
+    marginTop: 5,
   },
 
   lessonPortalTrack: {
@@ -4165,8 +4457,8 @@ const sh = StyleSheet.create({
   },
 
   lessonPortalArrow: {
-    fontSize: 36,
-    lineHeight: 36,
+    fontSize: 32,
+    lineHeight: 32,
     color: '#1B2A6B',
     fontWeight: '900',
   },
@@ -4180,7 +4472,7 @@ const sh = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(255, 255, 255, 0.70)',
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
     borderRadius: 999,
     paddingVertical: 10,
     paddingHorizontal: 14,
@@ -4258,39 +4550,143 @@ const sh = StyleSheet.create({
     marginTop: 3,
   },
 
+  lessonPathChevronButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.76)',
+    flexShrink: 0,
+  },
+  lessonPathBlobOne: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    right: -42,
+    top: -42,
+    backgroundColor: 'rgba(255, 255, 255, 0.24)',
+  },
+  lessonPathBlobTwo: {
+    position: 'absolute',
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    left: -36,
+    bottom: -40,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+  },
+  lessonPathBgSun: {
+    position: 'absolute',
+    width: 210,
+    height: 210,
+    borderRadius: 105,
+    backgroundColor: 'rgba(255, 210, 74, 0.18)',
+    right: -92,
+    top: 36,
+  },
+  lessonPathBgCloudOne: {
+    position: 'absolute',
+    width: 170,
+    height: 104,
+    borderRadius: 52,
+    backgroundColor: 'rgba(221, 246, 255, 0.72)',
+    left: -86,
+    top: 210,
+  },
+  lessonPathBgCloudTwo: {
+    position: 'absolute',
+    width: 142,
+    height: 142,
+    borderRadius: 71,
+    backgroundColor: 'rgba(242, 233, 255, 0.52)',
+    right: -70,
+    top: 620,
+  },
+  lessonPathBgMintBlob: {
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: 'rgba(231, 250, 239, 0.70)',
+    left: -92,
+    top: 860,
+  },
+  lessonPathBgStarOne: {
+    position: 'absolute',
+    right: 36,
+    top: 182,
+    color: 'rgba(255, 166, 43, 0.34)',
+    fontSize: 34,
+    fontWeight: '900',
+  },
+  lessonPathBgStarTwo: {
+    position: 'absolute',
+    left: 28,
+    top: 720,
+    color: 'rgba(122, 69, 216, 0.26)',
+    fontSize: 30,
+    fontWeight: '900',
+  },
+  lessonPathBgDotOne: {
+    position: 'absolute',
+    right: 42,
+    top: 430,
+    color: 'rgba(246, 79, 114, 0.22)',
+    fontSize: 22,
+  },
+  lessonPathBgDotTwo: {
+    position: 'absolute',
+    left: 34,
+    top: 1040,
+    color: 'rgba(49, 189, 237, 0.24)',
+    fontSize: 24,
+  },
+  lessonPathStickyHeader: {
+    backgroundColor: '#FFF8E7',
+    paddingTop: 10,
+    paddingBottom: 18,
+    marginBottom: 6,
+    zIndex: 30,
+    elevation: 0,
+    shadowOpacity: 0,
+    borderWidth: 0,
+  },
   lessonPathLevelCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 18,
-    backgroundColor: '#FFFFFF',
+    gap: 16,
+    backgroundColor: '#FFFDF6',
     borderRadius: 34,
     borderWidth: 2,
-    borderColor: '#DDE5F4',
-    paddingVertical: 18,
-    paddingLeft: 18,
-    paddingRight: 16,
-    marginBottom: 18,
-    minHeight: 162,
+    borderColor: '#FFE8A3',
+    paddingVertical: 16,
+    paddingLeft: 16,
+    paddingRight: 14,
+    marginBottom: 16,
+    minHeight: 146,
+    overflow: 'hidden',
     shadowColor: '#1B2A6B',
-    shadowOpacity: 0.10,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 4,
+    shadowOpacity: 0.085,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 7 },
+    elevation: 3,
   },
 
   lessonPathLevelArt: {
-    width: 128,
-    height: 128,
-    borderRadius: 32,
+    width: 116,
+    height: 116,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(255, 255, 255, 0.64)',
     flexShrink: 0,
   },
 
   lessonPathLevelImage: {
-    width: 124,
-    height: 124,
+    width: 108,
+    height: 108,
   },
 
   lessonPathLevelCopy: {
@@ -4299,7 +4695,8 @@ const sh = StyleSheet.create({
   },
 
   lessonPathLevelName: {
-    fontSize: 25,
+    fontSize: 24,
+    lineHeight: 29,
     fontWeight: '900',
     color: '#1B2A6B',
     letterSpacing: -0.45,
@@ -4312,14 +4709,493 @@ const sh = StyleSheet.create({
     color: '#326C92',
     fontWeight: '800',
     marginTop: 4,
-    marginBottom: 12,
+    marginBottom: 11,
   },
 
   lessonPathChevron: {
-    fontSize: 42,
-    lineHeight: 42,
-    color: '#7E8FA8',
+    fontSize: 32,
+    lineHeight: 32,
+    color: '#1B2A6B',
     fontWeight: '900',
+    marginTop: -2,
+  },
+
+  xpScrollCompact: {
+    paddingTop: 6,
+    paddingBottom: 120,
+  },
+  xpHeroCardCompact: {
+    padding: 14,
+    borderRadius: 30,
+    marginBottom: 12,
+  },
+  xpHeroTopCompact: {
+    gap: 10,
+  },
+  xpAvatarRingCompact: {
+    width: 82,
+    height: 82,
+    borderRadius: 28,
+  },
+  xpHeroTitleCompact: {
+    fontSize: 25,
+    lineHeight: 30,
+  },
+  xpHeroSubCompact: {
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  xpStatGridCompact: {
+    gap: 8,
+  },
+  xpStatCardCompact: {
+    minHeight: 102,
+    padding: 10,
+    borderRadius: 24,
+  },
+  xpLevelCardCompact: {
+    gap: 10,
+    padding: 10,
+    minHeight: 94,
+    borderRadius: 24,
+  },
+  xpLevelArtCompact: {
+    width: 66,
+    height: 66,
+    borderRadius: 20,
+  },
+  xpLevelImageCompact: {
+    width: 62,
+    height: 62,
+  },
+  xpLevelNameCompact: {
+    fontSize: 15,
+    lineHeight: 20,
+    marginBottom: 6,
+  },
+  lessonPathLevelCardCompact: {
+    gap: 14,
+    minHeight: 138,
+    paddingVertical: 15,
+    paddingLeft: 14,
+    paddingRight: 12,
+    borderRadius: 32,
+    marginBottom: 15,
+  },
+  lessonPathLevelArtCompact: {
+    width: 102,
+    height: 102,
+    borderRadius: 28,
+  },
+  lessonPathLevelImageCompact: {
+    width: 96,
+    height: 96,
+  },
+  lessonPathLevelNameCompact: {
+    fontSize: 21,
+    lineHeight: 26,
+  },
+  lessonPathLevelSubCompact: {
+    fontSize: 13,
+    lineHeight: 19,
+    marginBottom: 9,
+  },
+  xpRoot: {
+    flex: 1,
+    backgroundColor: '#FFF8E7',
+  },
+
+  xpScroll: {
+    paddingHorizontal: 0,
+    paddingTop: 8,
+    paddingBottom: 128,
+    position: 'relative',
+  },
+
+  xpBgSun: {
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: 'rgba(255, 210, 74, 0.18)',
+    right: -78,
+    top: 32,
+  },
+
+  xpBgCloudOne: {
+    position: 'absolute',
+    width: 150,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: 'rgba(221, 246, 255, 0.66)',
+    left: -70,
+    top: 300,
+  },
+
+  xpBgCloudTwo: {
+    position: 'absolute',
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: 'rgba(242, 233, 255, 0.46)',
+    right: -70,
+    top: 650,
+  },
+
+  xpHeroCard: {
+    backgroundColor: '#DDF6FF',
+    borderRadius: 32,
+    borderWidth: 2,
+    borderColor: '#8EEAFF',
+    padding: 16,
+    marginBottom: 14,
+    overflow: 'hidden',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.10,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
+  },
+
+  xpHeroBlob: {
+    position: 'absolute',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255, 255, 255, 0.36)',
+    right: -48,
+    top: -58,
+  },
+
+  xpHeroTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+
+  xpAvatarRing: {
+    width: 100,
+    height: 100,
+    borderRadius: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.70)',
     flexShrink: 0,
+  },
+
+  xpHeroCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+
+  xpKicker: {
+    color: '#FFA62B',
+    fontSize: 13,
+    lineHeight: 16,
+    fontWeight: '900',
+    letterSpacing: 2.4,
+  },
+
+  xpHeroTitle: {
+    color: '#1B2A6B',
+    fontSize: 31,
+    lineHeight: 36,
+    fontWeight: '900',
+    letterSpacing: -0.65,
+    marginTop: 2,
+  },
+
+  xpHeroSub: {
+    color: '#326C92',
+    fontSize: 15,
+    lineHeight: 21,
+    fontWeight: '800',
+    marginTop: 3,
+  },
+
+  xpPremiumPill: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#FFD24A',
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: '#FFA62B',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+  },
+
+  xpPremiumText: {
+    color: '#1B2A6B',
+    fontSize: 12,
+    fontWeight: '900',
+  },
+
+  xpHeroProgressCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.74)',
+    borderRadius: 26,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.82)',
+    padding: 13,
+    marginTop: 14,
+  },
+
+  xpHeroProgressTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  xpHeroProgressTitle: {
+    color: '#1B2A6B',
+    fontSize: 16,
+    fontWeight: '900',
+  },
+
+  xpHeroProgressPercent: {
+    color: '#19B765',
+    fontSize: 18,
+    fontWeight: '900',
+  },
+
+  xpHeroTrack: {
+    height: 12,
+    borderRadius: 999,
+    backgroundColor: '#E7F0E5',
+    overflow: 'hidden',
+    marginTop: 10,
+  },
+
+  xpHeroFill: {
+    height: '100%',
+    borderRadius: 999,
+    backgroundColor: '#19B765',
+  },
+
+  xpHeroHint: {
+    color: '#436B8A',
+    fontSize: 12,
+    lineHeight: 17,
+    fontWeight: '800',
+    marginTop: 8,
+  },
+
+  xpStatGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 14,
+  },
+
+  xpStatCard: {
+    width: '48.5%',
+    borderRadius: 26,
+    borderWidth: 2,
+    padding: 12,
+    minHeight: 116,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.075,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 3,
+  },
+
+  xpStatIconBubble: {
+    width: 44,
+    height: 44,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+
+  xpStatIcon: {
+    fontSize: 23,
+  },
+
+  xpStatValue: {
+    color: '#1B2A6B',
+    fontSize: 25,
+    lineHeight: 30,
+    fontWeight: '900',
+  },
+
+  xpStatLabel: {
+    color: '#436B8A',
+    fontSize: 13,
+    fontWeight: '900',
+    marginTop: 3,
+  },
+
+  xpSectionHeader: {
+    marginTop: 8,
+    marginBottom: 10,
+  },
+
+  xpSectionKicker: {
+    color: '#F64F72',
+    fontSize: 13,
+    lineHeight: 16,
+    fontWeight: '900',
+    letterSpacing: 2.6,
+  },
+
+  xpSectionTitle: {
+    color: '#1B2A6B',
+    fontSize: 24,
+    lineHeight: 29,
+    fontWeight: '900',
+    letterSpacing: -0.45,
+    marginTop: 2,
+  },
+
+  xpLevelCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderRadius: 28,
+    borderWidth: 2,
+    padding: 12,
+    marginBottom: 10,
+    minHeight: 104,
+    overflow: 'hidden',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.07,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 3,
+  },
+
+  xpLevelArt: {
+    width: 78,
+    height: 78,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.62)',
+    flexShrink: 0,
+  },
+
+  xpLevelImage: {
+    width: 74,
+    height: 74,
+  },
+
+  xpLevelCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+
+  xpLevelStar: {
+    fontSize: 13,
+  },
+
+  xpLevelPercent: {
+    marginLeft: 'auto',
+    fontSize: 13,
+    fontWeight: '900',
+  },
+
+  xpLevelName: {
+    color: '#1B2A6B',
+    fontSize: 17,
+    lineHeight: 22,
+    fontWeight: '900',
+    letterSpacing: -0.25,
+    marginTop: 2,
+    marginBottom: 8,
+  },
+
+  xpLevelTrack: {
+    height: 10,
+    borderRadius: 999,
+    backgroundColor: 'rgba(231, 240, 229, 0.95)',
+    overflow: 'hidden',
+  },
+
+  xpWeekCard: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 28,
+    borderWidth: 2,
+    borderColor: '#DDE5F4',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 13,
+    marginBottom: 18,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.075,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 3,
+  },
+
+  xpDayColumn: {
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 8,
+    flex: 1,
+  },
+
+  xpDayGem: {
+    width: 28,
+    borderRadius: 14,
+    backgroundColor: '#BEE6D2',
+  },
+
+  xpDayGemActive: {
+    backgroundColor: '#19B765',
+  },
+
+  xpDayLabel: {
+    color: '#9A9587',
+    fontSize: 13,
+    fontWeight: '900',
+  },
+
+  xpDayLabelActive: {
+    color: '#1B2A6B',
+  },
+  adventureModeIcon: {
+    width: 92,
+    height: 92,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 3,
+  },
+
+  appBackButton: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#DDF6FF',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.1,
+    shadowRadius: 9,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 3,
+  },
+  adventurePlaceholderBadge: {
+    width: 92,
+    height: 92,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.48)',
+    borderWidth: 2,
+  },
+  adventurePlaceholderText: {
+    fontSize: 36,
+    lineHeight: 42,
+    fontWeight: '900',
   },
 });
