@@ -40,6 +40,7 @@ import WordMatchGame from '../screens/games/WordMatchGame';
 import { PrivacyScreen, TermsScreen } from '../screens/LegalScreens';
 import OnboardingScreen, { ProfileImage } from '../screens/OnboardingScreen';
 import PremiumScreen from '../screens/PremiumScreen';
+import { getPlanLabel, getPremiumBadgeLabel, hasPremiumEntitlement, shouldShowUpgradePrompt } from '../config/accessControl';
 import SettingsScreen from '../screens/SettingsScreen';
 import { COLOR, FONT, IS_TABLET, LEVEL_COLOR, RADIUS, SPACE } from '../utils/tokens';
 import * as haptics from '../utils/haptics';
@@ -183,6 +184,7 @@ function LockBadge() {
 // ─── ROOT COMPONENT ───────────────────────────────────────────────────────────
 export default function MutaIgboApp() {
   const { state, completeOnboarding, incrementStreak, setActiveProfile } = useApp();
+  const hasFullAccess = hasPremiumEntitlement(state.isPremium);
   const { width: screenWidth } = useWindowDimensions();
   const appContentWidth = Math.min(screenWidth - 32, screenWidth >= 768 ? 680 : screenWidth);
 
@@ -263,23 +265,23 @@ export default function MutaIgboApp() {
         {inner === 'history'  && <HistoryScreen  onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
         {inner === 'listenTap' && (
           <ListenTapGame
-            isPremium={state.isPremium}
+            isPremium={hasFullAccess}
             onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner}
           />
         )}
         {inner === 'wordMatch' && (
           <WordMatchGame
-            isPremium={state.isPremium}
+            isPremium={hasFullAccess}
             onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner}
           />
         )}
         {inner === 'pictureMatch' && (
           <PictureMatchGame
-            isPremium={state.isPremium}
+            isPremium={hasFullAccess}
             onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner}
           />
         )}
-        {inner === 'games'    && <GamesHub isPremium={state.isPremium} onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
+        {inner === 'games'    && <GamesHub isPremium={hasFullAccess} onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
         {inner === 'lessonPath' && (
           <LessonPathScreen
             onBack={closeInner}
@@ -288,7 +290,7 @@ export default function MutaIgboApp() {
               openInner(view, levelId, sectionId);
             }}
             activeProfile={state.profiles.find((profile) => profile.id === state.activeProfileId) ?? state.profiles[0]}
-            isPremium={state.isPremium}
+            isPremium={hasFullAccess}
           />
         )}
         {inner === 'premium' && <PremiumScreen onBack={closeInner} />}
@@ -627,7 +629,7 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
               </TouchableOpacity>
             ) : null}
           </View>
-          {state.isPremium ? <View style={sh.kidsPremiumBadge}><Text style={sh.kidsPremiumBadgeText}>Premium</Text></View> : null}
+          <View style={sh.kidsPremiumBadge}><Text style={sh.kidsPremiumBadgeText}>{getPremiumBadgeLabel(state.isPremium)}</Text></View>
         </View>
 
         <View style={sh.kidsStatsRow}>
@@ -1352,7 +1354,7 @@ function ProgressScreen() {
     { label: 'Day streak', value: String(activeProfile?.streak ?? 0), icon: '🔥', bg: '#FFF1B8', accent: '#FFA62B' },
     { label: 'Words', value: String(activeProfile?.wordsLearned ?? 0), icon: '⭐', bg: '#DDF6FF', accent: '#31BDED' },
     { label: 'Quiz best', value: String(activeProfile?.quizBest ?? 0), icon: '🎯', bg: '#FFE6F0', accent: '#F64F72' },
-    { label: 'Plan', value: state.isPremium ? 'Premium' : 'Free', icon: '👑', bg: '#F2E9FF', accent: '#7A45D8' },
+    { label: 'Plan', value: getPlanLabel(state.isPremium), icon: '👑', bg: '#F2E9FF', accent: '#7A45D8' },
   ];
 
   return (
@@ -1379,7 +1381,7 @@ function ProgressScreen() {
           </View>
 
           <View style={sh.xpPremiumPill}>
-            <Text style={sh.xpPremiumText}>{state.isPremium ? '👑 Premium' : 'Free'}</Text>
+            <Text style={sh.xpPremiumText}>{getPlanLabel(state.isPremium)}</Text>
           </View>
         </View>
 
@@ -1474,7 +1476,8 @@ function getQuizOptionLabel(item: { english?: string }): string {
 // ─── QUIZ SCREEN ──────────────────────────────────────────────────────────────
 function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () => void }) {
   const { state, updateQuizBest, addWordsLearned } = useApp();
-  const pool = buildQuizPool(state.isPremium);
+  const hasFullAccess = hasPremiumEntitlement(state.isPremium);
+  const pool = buildQuizPool(hasFullAccess);
   const [question, setQuestion] = useState<VocabItem | null>(null);
   const [options, setOptions] = useState<VocabItem[]>([]);
   const [streak, setStreak] = useState(0);
@@ -1625,7 +1628,7 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
           })}
         </View>
 
-        {!state.isPremium && (
+        {shouldShowUpgradePrompt(state.isPremium) && (
           <TouchableOpacity style={sh.quizPremiumNudge} onPress={onPremium} activeOpacity={0.86}>
             <Text style={sh.quizPremiumNudgeTitle}>Unlock more quiz words</Text>
             <Text style={sh.quizPremiumNudgeText}>Premium adds more lessons, games, stories, and songs.</Text>
