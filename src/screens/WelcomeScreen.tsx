@@ -45,7 +45,7 @@ export default function WelcomeScreen({ onGetStarted }: Props) {
           <View style={s.logoBadge}><Text style={s.logoLeaf}>🌿</Text></View>
           <View>
             <Text style={s.logoTitle}>Mụta Igbo</Text>
-            <Text style={s.logoSub}>Central Igbo · Ogwashi-Ukwu support</Text>
+            <Text style={s.logoSub}>Central Igbo · Kid-friendly lessons</Text>
           </View>
         </View>
 
@@ -96,7 +96,7 @@ export default function WelcomeScreen({ onGetStarted }: Props) {
 
         {/* Badges */}
         <View style={s.badgeRow}>
-          {['🇳🇬 Igbo', '🏡 Enuani', '✨ Progressive levels'].map(b => (
+          {['🇳🇬 Central Igbo', '🎧 Listen & repeat', '✨ Progressive levels'].map(b => (
             <View key={b} style={s.badge}><Text style={s.badgeText}>{b}</Text></View>
           ))}
         </View>

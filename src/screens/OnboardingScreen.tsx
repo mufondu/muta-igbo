@@ -186,7 +186,7 @@ export default function OnboardingScreen({ onComplete }: Props) {
 
             <Text style={s.welcomeTitle}>Start your child’s Igbo adventure</Text>
             <Text style={s.welcomeSub}>
-              A playful, story-rich learning game for Central Igbo and Enuani practice.
+              A playful, story-rich learning game for Central Igbo practice.
             </Text>
 
             <View style={s.heroStatsRow}>

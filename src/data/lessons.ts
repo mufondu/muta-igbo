@@ -189,16 +189,103 @@ const LEVEL_5A: Level = {
       ],
     },
     {
-      id: 'numbers_big', title: 'Big Numbers', igboTitle: 'Ọgụgụ Ukwu',
+      id: 'numbers_21_40', title: 'Numbers 21–40', igboTitle: 'Ọgụgụ 21–40',
       items: [
+        { igbo: 'Iri abụọ na otu', english: '21 — Twenty-one', emoji: '🔢' },
+        { igbo: 'Iri abụọ na abụọ', english: '22 — Twenty-two', emoji: '🔢' },
+        { igbo: 'Iri abụọ na atọ', english: '23 — Twenty-three', emoji: '🔢' },
+        { igbo: 'Iri abụọ na anọ', english: '24 — Twenty-four', emoji: '🔢' },
+        { igbo: 'Iri abụọ na ise', english: '25 — Twenty-five', emoji: '🔢' },
+        { igbo: 'Iri abụọ na isii', english: '26 — Twenty-six', emoji: '🔢' },
+        { igbo: 'Iri abụọ na asaa', english: '27 — Twenty-seven', emoji: '🔢' },
+        { igbo: 'Iri abụọ na asatọ', english: '28 — Twenty-eight', emoji: '🔢' },
+        { igbo: 'Iri abụọ na itoolu', english: '29 — Twenty-nine', emoji: '🔢' },
         { igbo: 'Iri atọ', english: '30 — Thirty', emoji: '🔢' },
+        { igbo: 'Iri atọ na otu', english: '31 — Thirty-one', emoji: '🔢' },
+        { igbo: 'Iri atọ na abụọ', english: '32 — Thirty-two', emoji: '🔢' },
+        { igbo: 'Iri atọ na atọ', english: '33 — Thirty-three', emoji: '🔢' },
+        { igbo: 'Iri atọ na anọ', english: '34 — Thirty-four', emoji: '🔢' },
+        { igbo: 'Iri atọ na ise', english: '35 — Thirty-five', emoji: '🔢' },
+        { igbo: 'Iri atọ na isii', english: '36 — Thirty-six', emoji: '🔢' },
+        { igbo: 'Iri atọ na asaa', english: '37 — Thirty-seven', emoji: '🔢' },
+        { igbo: 'Iri atọ na asatọ', english: '38 — Thirty-eight', emoji: '🔢' },
+        { igbo: 'Iri atọ na itoolu', english: '39 — Thirty-nine', emoji: '🔢' },
         { igbo: 'Iri anọ', english: '40 — Forty', emoji: '🔢' },
+      ],
+    },
+    {
+      id: 'numbers_41_60', title: 'Numbers 41–60', igboTitle: 'Ọgụgụ 41–60',
+      items: [
+        { igbo: 'Iri anọ na otu', english: '41 — Forty-one', emoji: '🔢' },
+        { igbo: 'Iri anọ na abụọ', english: '42 — Forty-two', emoji: '🔢' },
+        { igbo: 'Iri anọ na atọ', english: '43 — Forty-three', emoji: '🔢' },
+        { igbo: 'Iri anọ na anọ', english: '44 — Forty-four', emoji: '🔢' },
+        { igbo: 'Iri anọ na ise', english: '45 — Forty-five', emoji: '🔢' },
+        { igbo: 'Iri anọ na isii', english: '46 — Forty-six', emoji: '🔢' },
+        { igbo: 'Iri anọ na asaa', english: '47 — Forty-seven', emoji: '🔢' },
+        { igbo: 'Iri anọ na asatọ', english: '48 — Forty-eight', emoji: '🔢' },
+        { igbo: 'Iri anọ na itoolu', english: '49 — Forty-nine', emoji: '🔢' },
         { igbo: 'Iri ise', english: '50 — Fifty', emoji: '🔢' },
+        { igbo: 'Iri ise na otu', english: '51 — Fifty-one', emoji: '🔢' },
+        { igbo: 'Iri ise na abụọ', english: '52 — Fifty-two', emoji: '🔢' },
+        { igbo: 'Iri ise na atọ', english: '53 — Fifty-three', emoji: '🔢' },
+        { igbo: 'Iri ise na anọ', english: '54 — Fifty-four', emoji: '🔢' },
+        { igbo: 'Iri ise na ise', english: '55 — Fifty-five', emoji: '🔢' },
+        { igbo: 'Iri ise na isii', english: '56 — Fifty-six', emoji: '🔢' },
+        { igbo: 'Iri ise na asaa', english: '57 — Fifty-seven', emoji: '🔢' },
+        { igbo: 'Iri ise na asatọ', english: '58 — Fifty-eight', emoji: '🔢' },
+        { igbo: 'Iri ise na itoolu', english: '59 — Fifty-nine', emoji: '🔢' },
         { igbo: 'Iri isii', english: '60 — Sixty', emoji: '🔢' },
+      ],
+    },
+    {
+      id: 'numbers_61_80', title: 'Numbers 61–80', igboTitle: 'Ọgụgụ 61–80',
+      items: [
+        { igbo: 'Iri isii na otu', english: '61 — Sixty-one', emoji: '🔢' },
+        { igbo: 'Iri isii na abụọ', english: '62 — Sixty-two', emoji: '🔢' },
+        { igbo: 'Iri isii na atọ', english: '63 — Sixty-three', emoji: '🔢' },
+        { igbo: 'Iri isii na anọ', english: '64 — Sixty-four', emoji: '🔢' },
+        { igbo: 'Iri isii na ise', english: '65 — Sixty-five', emoji: '🔢' },
+        { igbo: 'Iri isii na isii', english: '66 — Sixty-six', emoji: '🔢' },
+        { igbo: 'Iri isii na asaa', english: '67 — Sixty-seven', emoji: '🔢' },
+        { igbo: 'Iri isii na asatọ', english: '68 — Sixty-eight', emoji: '🔢' },
+        { igbo: 'Iri isii na itoolu', english: '69 — Sixty-nine', emoji: '🔢' },
         { igbo: 'Iri asaa', english: '70 — Seventy', emoji: '🔢' },
+        { igbo: 'Iri asaa na otu', english: '71 — Seventy-one', emoji: '🔢' },
+        { igbo: 'Iri asaa na abụọ', english: '72 — Seventy-two', emoji: '🔢' },
+        { igbo: 'Iri asaa na atọ', english: '73 — Seventy-three', emoji: '🔢' },
+        { igbo: 'Iri asaa na anọ', english: '74 — Seventy-four', emoji: '🔢' },
+        { igbo: 'Iri asaa na ise', english: '75 — Seventy-five', emoji: '🔢' },
+        { igbo: 'Iri asaa na isii', english: '76 — Seventy-six', emoji: '🔢' },
+        { igbo: 'Iri asaa na asaa', english: '77 — Seventy-seven', emoji: '🔢' },
+        { igbo: 'Iri asaa na asatọ', english: '78 — Seventy-eight', emoji: '🔢' },
+        { igbo: 'Iri asaa na itoolu', english: '79 — Seventy-nine', emoji: '🔢' },
         { igbo: 'Iri asatọ', english: '80 — Eighty', emoji: '🔢' },
-        { igbo: 'Iri itoolu', english: '90 — Ninety', emoji: '🔢', partOfSpeech: 'number', verified: true },
-        { igbo: 'Otu narị', english: '100 — One hundred', emoji: '💯' },
+      ],
+    },
+    {
+      id: 'numbers_81_100', title: 'Numbers 81–100', igboTitle: 'Ọgụgụ 81–100',
+      items: [
+        { igbo: 'Iri asatọ na otu', english: '81 — Eighty-one', emoji: '🔢' },
+        { igbo: 'Iri asatọ na abụọ', english: '82 — Eighty-two', emoji: '🔢' },
+        { igbo: 'Iri asatọ na atọ', english: '83 — Eighty-three', emoji: '🔢' },
+        { igbo: 'Iri asatọ na anọ', english: '84 — Eighty-four', emoji: '🔢' },
+        { igbo: 'Iri asatọ na ise', english: '85 — Eighty-five', emoji: '🔢' },
+        { igbo: 'Iri asatọ na isii', english: '86 — Eighty-six', emoji: '🔢' },
+        { igbo: 'Iri asatọ na asaa', english: '87 — Eighty-seven', emoji: '🔢' },
+        { igbo: 'Iri asatọ na asatọ', english: '88 — Eighty-eight', emoji: '🔢' },
+        { igbo: 'Iri asatọ na itoolu', english: '89 — Eighty-nine', emoji: '🔢' },
+        { igbo: 'Iri itoolu', english: '90 — Ninety', emoji: '🔢' },
+        { igbo: 'Iri itoolu na otu', english: '91 — Ninety-one', emoji: '🔢' },
+        { igbo: 'Iri itoolu na abụọ', english: '92 — Ninety-two', emoji: '🔢' },
+        { igbo: 'Iri itoolu na atọ', english: '93 — Ninety-three', emoji: '🔢' },
+        { igbo: 'Iri itoolu na anọ', english: '94 — Ninety-four', emoji: '🔢' },
+        { igbo: 'Iri itoolu na ise', english: '95 — Ninety-five', emoji: '🔢' },
+        { igbo: 'Iri itoolu na isii', english: '96 — Ninety-six', emoji: '🔢' },
+        { igbo: 'Iri itoolu na asaa', english: '97 — Ninety-seven', emoji: '🔢' },
+        { igbo: 'Iri itoolu na asatọ', english: '98 — Ninety-eight', emoji: '🔢' },
+        { igbo: 'Iri itoolu na itoolu', english: '99 — Ninety-nine', emoji: '🔢' },
+        { igbo: 'Otu narị', english: '100 — One hundred', emoji: '🔢' },
       ],
     },
   ],
@@ -432,26 +519,6 @@ const LEVEL_1A: Level = {
 };
 
 // ─── OGWASHI-UKWU ENUANI TRANSLATOR ──────────────────────────────────────────
-export interface TranslatorItem {
-  central: string;
-  ogwashi: string;
-  english: string;
-  emoji: string;
-}
-
-export const TRANSLATOR_POOL: TranslatorItem[] = [
-  { central: 'Ihe (Thing)', ogwashi: 'Nhẹ / Ighẹ', english: 'Thing', emoji: '📦' },
-  { central: 'Gịnị (What)', ogwashi: 'Ngini', english: 'What', emoji: '❓' },
-  { central: 'Aha m', ogwashi: 'Afa m', english: 'My Name', emoji: '📛' },
-  { central: 'Bịa ebe a', ogwashi: 'Bịa ẹfẹ nị', english: 'Come here', emoji: '👇🏾' },
-  { central: 'Ebe gị', ogwashi: 'Ẹfẹ gị', english: 'Your place', emoji: '🏠' },
-  { central: 'Nna (Father)', ogwashi: 'Ịna', english: 'Father', emoji: '👨🏾' },
-  { central: 'Nne (Mother)', ogwashi: 'Ịne', english: 'Mother', emoji: '👩🏾' },
-  { central: 'Mmiri (Water)', ogwashi: 'Ẹmẹlị', english: 'Water', emoji: '💧' },
-  { central: 'Ọma (Good)', ogwashi: 'Ọma nị', english: 'Good', emoji: '✅' },
-  { central: 'Nwanne (Sibling)', ogwashi: 'Ọfọ', english: 'Sibling', emoji: '👫🏾' },
-];
-
 // ─── FOLKTALES ────────────────────────────────────────────────────────────────
 export interface Folktale {
   id: string;
@@ -467,7 +534,7 @@ export const FOLKTALES: Folktale[] = [
   {
     id: 'mbe_birds',
     title: 'Mbe na Ụmụ Nnunu',
-    subtitle: 'The Tortoise & The Birds · Enuani Edition',
+    subtitle: 'The Tortoise & The Birds · Central Igbo Edition',
     coverEmoji: '🐢🦅',
     body: 'Mbe (the Tortoise) wanted to fly to a feast in the sky. The birds gave him feathers, but Mbe was greedy and changed his afa (name) to "All of You" so he could eat all the nhẹ (things) at the feast! The birds got angry, took back their feathers, and Mbe crashed down, cracking his shell.',
     moral: 'Greed breaks a home. Be content with what you have.',

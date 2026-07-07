@@ -430,8 +430,8 @@ export default function SettingsScreen({ onBack }: Props) {
           <MiniDivider />
           <SettingRow
             icon="IGBO"
-            label="Dialect focus"
-            sub="Central Igbo first · Enuani variants where available."
+            label="Language focus"
+            sub="Central Igbo lessons, games, stories, and practice."
           />
           <MiniDivider />
           <SettingRow

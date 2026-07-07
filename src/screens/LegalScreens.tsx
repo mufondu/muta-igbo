@@ -40,7 +40,7 @@ export function TermsScreen({ onBack }: { onBack: () => void }) {
       <P>By downloading, installing, or using Mụta Igbo ("the App"), you confirm that you are a parent or legal guardian and that you agree to be bound by these Terms and Conditions. If you do not agree, please do not use the App. These terms apply to all users of the App across all platforms including iOS and Android.</P>
 
       <H2>2. Description of the App</H2>
-      <P>Mụta Igbo is an educational language learning application designed to help children learn the Igbo language. The App covers the Anambra (Standard Igbo) dialect as its primary teaching language, with a dedicated Ogwashi-Ukwu Enuani dialect translator module. Content is structured using a proprietary progressive level system from Level 7A through Level 1A.</P>
+      <P>Mụta Igbo is an educational language learning application designed to help children learn the Igbo language. The App focuses on Central Igbo as its primary teaching language. Content is structured using a proprietary progressive level system from Level 7A through Level 1A.</P>
 
       <H2>3. Eligibility and Parental Consent</H2>
       <P>The App is intended for use by children aged 3 and above, under the direct supervision of a parent or legal guardian. You must be at least 18 years old to create a profile, agree to these terms, and manage subscriptions. By creating a child profile, you confirm that you are that child's parent or legal guardian and that you consent to their use of the App under your supervision.</P>
@@ -59,10 +59,10 @@ export function TermsScreen({ onBack }: { onBack: () => void }) {
       <Li>Share your subscription access with individuals outside your immediate household</Li>
 
       <H2>7. Intellectual Property</H2>
-      <P>All content within Mụta Igbo, including lesson data, Igbo vocabulary, audio recordings, illustrations, animations, the app name, and branding, is the intellectual property of Mụta Igbo and its content contributors. Igbo language content has been prepared in consultation with native speakers. The Ogwashi-Ukwu Enuani dialect content reflects community knowledge and is presented with cultural respect.</P>
+      <P>All content within Mụta Igbo, including lesson data, Igbo vocabulary, audio recordings, illustrations, animations, the app name, and branding, is the intellectual property of Mụta Igbo and its content contributors. Igbo language content has been prepared with care and is presented with cultural respect.</P>
 
       <H2>8. Accuracy of Language Content</H2>
-      <P>We make reasonable efforts to ensure the accuracy of Igbo language content. However, Igbo is a tonal language with significant dialectal variation. The App primarily teaches Anambra (Central) Igbo alongside Ogwashi-Ukwu Enuani. We do not guarantee that all content reflects every regional variation. Users who identify inaccuracies are encouraged to contact us at content@mutaigbo.app.</P>
+      <P>We make reasonable efforts to ensure the accuracy of Igbo language content. However, Igbo is a tonal language with significant dialectal variation. The App primarily teaches Central Igbo. We do not guarantee that all content reflects every regional variation. Users who identify inaccuracies are encouraged to contact us at content@mutaigbo.app.</P>
 
       <H2>9. Disclaimer of Warranties</H2>
       <P>The App is provided on an "as is" basis without warranties of any kind, express or implied. We do not warrant that the App will be uninterrupted, error-free, or free from technical issues. We are not responsible for any loss of progress data due to technical failure.</P>
@@ -145,8 +145,7 @@ export function SubscriptionTermsScreen({ onBack }: { onBack: () => void }) {
       <Li>Level 7A: Alphabet, vowels and consonants</Li>
       <Li>Level 6A: Greetings and useful phrases</Li>
       <Li>One introductory folktale</Li>
-      <Li>The Ogwashi-Ukwu Enuani translator (limited questions)</Li>
-      <Li>Basic quiz mode covering free-tier content</Li>
+            <Li>Basic quiz mode covering free-tier content</Li>
       <P>Free tier content is available without any payment and will remain available even if you do not subscribe.</P>
 
       <H2>Premium Subscription</H2>
@@ -157,7 +156,7 @@ export function SubscriptionTermsScreen({ onBack }: { onBack: () => void }) {
       <Li>Animals and colours (Level 3A)</Li>
       <Li>Verbs, actions and tenses (Level 2A)</Li>
       <Li>Grammar, parts of speech, opposites and vocabulary (Level 1A)</Li>
-      <Li>All folktales and Enuani stories</Li>
+      <Li>All folktales and cultural stories</Li>
       <Li>Full quiz engine across all content</Li>
       <Li>Priority access to new content as it is released</Li>
       <Li>Native speaker audio recordings when available (coming soon)</Li>
