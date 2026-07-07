@@ -660,8 +660,11 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
 
         <View style={[sh.adventurePortalTop, isCompactHome && sh.portalTopCompact]}>
           <View style={[sh.adventurePortalIcon, { width: portalIconSize, height: portalIconSize }]}>
-            <View style={[sh.adventurePortalImage, { width: portalImageSize, height: portalImageSize, alignItems: 'center', justifyContent: 'center' }]}>
-              <Ionicons name="game-controller" size={Math.round(portalImageSize * 0.62)} color="#FFFFFF" />
+            <View style={[sh.homeStickerIcon, sh.homeStickerIconPlay, { width: portalImageSize, height: portalImageSize }]}>
+              <Ionicons name="game-controller" size={Math.round(portalImageSize * 0.54)} color="#854CE6" />
+              <View style={sh.homeStickerSparkle}>
+                <Text style={sh.homeStickerSparkleText}>✦</Text>
+              </View>
             </View>
           </View>
 
@@ -752,7 +755,12 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
 
         <View style={[sh.lessonPortalTop, isCompactHome && sh.portalTopCompact]}>
           <View style={[sh.lessonPortalIcon, { width: portalIconSize, height: portalIconSize }]}>
-            <Image source={require('../../assets/illustrations/custom/levels/lesson-path.png')} style={[sh.lessonPortalImage, { width: portalImageSize, height: portalImageSize }]} resizeMode="contain" />
+            <View style={[sh.homeStickerIcon, sh.homeStickerIconLesson, { width: portalImageSize, height: portalImageSize }]}>
+              <Ionicons name={'footsteps' as any} size={Math.round(portalImageSize * 0.54)} color="#1B2A6B" />
+              <View style={sh.homeStickerSparkle}>
+                <Text style={sh.homeStickerSparkleText}>★</Text>
+              </View>
+            </View>
           </View>
 
           <View style={{ flex: 1 }}>
@@ -1970,8 +1978,49 @@ const sh = StyleSheet.create({
     height: 114,
   },
   adventurePortalImage: {
-    width: 106,
-    height: 106,
+    borderRadius: 28,
+    backgroundColor: '#F0E3FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  homeStickerIcon: {
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.14,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 4,
+    transform: [{ rotate: '-2deg' }],
+  },
+  homeStickerIconPlay: {
+    backgroundColor: '#F0E3FF',
+    borderColor: '#D7B8FF',
+  },
+  homeStickerIconLesson: {
+    backgroundColor: '#E8FBFF',
+    borderColor: '#A9EFFB',
+  },
+  homeStickerSparkle: {
+    position: 'absolute',
+    right: -8,
+    top: -8,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#FFD33D',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+  },
+  homeStickerSparkleText: {
+    color: '#1B2A6B',
+    fontSize: 16,
+    lineHeight: 18,
+    fontWeight: '900',
   },
 
 
@@ -4228,48 +4277,54 @@ const sh = StyleSheet.create({
   adventurePortalCard: {
     backgroundColor: '#FFF1B8',
     borderRadius: 34,
-    borderWidth: 2,
-    borderColor: '#FFD76A',
-    padding: 18,
-    marginBottom: 22,
+    borderWidth: 3,
+    borderColor: '#FFD33D',
+    padding: 26,
+    marginBottom: 24,
+    minHeight: 244,
     overflow: 'hidden',
     shadowColor: '#1B2A6B',
-    shadowOpacity: 0.11,
-    shadowRadius: 17,
+    shadowOpacity: 0.14,
+    shadowRadius: 18,
     shadowOffset: { width: 0, height: 8 },
-    elevation: 4,
+    elevation: 5,
   },
   adventurePortalCloudOne: {
     position: 'absolute',
-    right: -28,
-    top: 16,
-    width: 110,
-    height: 62,
-    borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.55)',
+    width: 120,
+    height: 84,
+    borderRadius: 42,
+    backgroundColor: 'rgba(255,255,255,0.52)',
+    right: -26,
+    top: 30,
   },
   adventurePortalCloudTwo: {
     position: 'absolute',
-    left: -42,
-    bottom: 18,
-    width: 128,
-    height: 72,
-    borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.45)',
+    width: 118,
+    height: 118,
+    borderRadius: 59,
+    backgroundColor: 'rgba(255,255,255,0.42)',
+    left: -44,
+    bottom: -34,
   },
   adventurePortalTop: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    gap: 20,
+    marginBottom: 24,
   },
   adventurePortalIcon: {
-    width: 112,
-    height: 112,
-    borderRadius: 30,
+    borderRadius: 32,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'transparent',
-    borderWidth: 0,
+    borderWidth: 3,
+    borderColor: 'rgba(133,76,230,0.22)',
+    shadowColor: '#854CE6',
+    shadowOpacity: 0.16,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 4,
     flexShrink: 0,
   },
   adventurePortalEmoji: {
@@ -4279,24 +4334,25 @@ const sh = StyleSheet.create({
     letterSpacing: 1,
   },
   adventurePortalBottom: {
+    minHeight: 58,
+    borderRadius: 29,
+    backgroundColor: 'rgba(255,255,255,0.72)',
+    paddingHorizontal: 22,
+    paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(255, 255, 255, 0.72)',
-    borderRadius: 999,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    marginTop: 14,
   },
   adventurePortalHint: {
     color: '#1B2A6B',
-    fontSize: 14,
+    fontSize: 16,
+    lineHeight: 20,
     fontWeight: '900',
   },
   adventurePortalArrow: {
-    fontSize: 32,
-    lineHeight: 32,
     color: '#1B2A6B',
+    fontSize: 44,
+    lineHeight: 44,
     fontWeight: '900',
   },
   adventureSheetBackdrop: {
@@ -4392,34 +4448,39 @@ const sh = StyleSheet.create({
   lessonPortalCard: {
     backgroundColor: '#DDF6FF',
     borderRadius: 34,
-    borderWidth: 2,
-    borderColor: '#8EEAFF',
-    padding: 18,
-    marginBottom: 22,
+    borderWidth: 3,
+    borderColor: '#56DFF8',
+    padding: 26,
+    marginBottom: 24,
+    minHeight: 244,
     overflow: 'hidden',
     shadowColor: '#1B2A6B',
-    shadowOpacity: 0.11,
-    shadowRadius: 17,
+    shadowOpacity: 0.14,
+    shadowRadius: 18,
     shadowOffset: { width: 0, height: 8 },
-    elevation: 4,
+    elevation: 5,
   },
 
   lessonPortalIcon: {
-    width: 112,
-    height: 112,
-    borderRadius: 30,
+    borderRadius: 32,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-    borderColor: 'transparent',
-    overflow: 'visible',
+    borderWidth: 3,
+    borderColor: 'rgba(49,189,237,0.26)',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.14,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 4,
     flexShrink: 0,
   },
 
   lessonPortalImage: {
-    width: 112,
-    height: 112,
+    borderRadius: 28,
+    backgroundColor: '#E8FBFF',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   lessonPortalCopy: {
@@ -4460,49 +4521,51 @@ const sh = StyleSheet.create({
   },
 
   lessonPortalArrow: {
-    fontSize: 32,
-    lineHeight: 32,
     color: '#1B2A6B',
+    fontSize: 44,
+    lineHeight: 44,
     fontWeight: '900',
   },
 
   lessonPortalTop: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    gap: 20,
+    marginBottom: 24,
   },
   lessonPortalBottom: {
+    minHeight: 58,
+    borderRadius: 29,
+    backgroundColor: 'rgba(255,255,255,0.72)',
+    paddingHorizontal: 22,
+    paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(255, 255, 255, 0.72)',
-    borderRadius: 999,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    marginTop: 14,
   },
   lessonPortalHint: {
     color: '#1B2A6B',
-    fontSize: 14,
+    fontSize: 16,
+    lineHeight: 20,
     fontWeight: '900',
   },
   lessonPortalCloudOne: {
     position: 'absolute',
-    width: 116,
-    height: 116,
-    borderRadius: 58,
-    backgroundColor: 'rgba(255, 255, 255, 0.34)',
-    right: -36,
-    top: -42,
+    width: 120,
+    height: 84,
+    borderRadius: 42,
+    backgroundColor: 'rgba(255,255,255,0.46)',
+    right: -26,
+    top: 30,
   },
   lessonPortalCloudTwo: {
     position: 'absolute',
-    width: 86,
-    height: 86,
-    borderRadius: 43,
-    backgroundColor: 'rgba(255, 210, 74, 0.28)',
-    left: -28,
-    bottom: -30,
+    width: 118,
+    height: 118,
+    borderRadius: 59,
+    backgroundColor: 'rgba(255,255,255,0.36)',
+    left: -44,
+    bottom: -34,
   },
   lessonPathScreen: {
     flex: 1,
