@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mụta Igbo Recording Studio</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0D3320;
+    --panel: rgba(255,255,255,0.07);
+    --panel-strong: rgba(255,255,255,0.11);
+    --cream: #FFF8E7;
+    --gold: #D4A12A;
+    --green: #6FCF97;
+    --mint: #9CC4AE;
+    --red: #E8445A;
+    --orange: #C05A22;
+    --blue: #64C8FF;
+    --ink: #F8F0DC;
+    --muted: #C8E0D2;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background:
+      radial-gradient(circle at top left, rgba(212,161,42,0.18), transparent 34%),
+      radial-gradient(circle at top right, rgba(100,200,255,0.12), transparent 34%),
+      var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 22px 16px 56px;
+  }
+
+  .shell {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-size: 24px;
+    line-height: 30px;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: -0.3px;
+  }
+
+  .sub {
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--mint);
+    margin-top: 4px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 7px 11px;
+    background: rgba(212,161,42,0.16);
+    border: 1px solid rgba(212,161,42,0.38);
+    color: var(--gold);
+    font-weight: 900;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .setup,
+  .card,
+  .qa-panel,
+  .queue-panel {
+    background: var(--panel);
+    border: 1px solid rgba(255,255,255,0.13);
+    box-shadow: 0 18px 42px rgba(0,0,0,0.18);
+    border-radius: 24px;
+  }
+
+  .setup {
+    padding: 22px;
+    margin-bottom: 18px;
+  }
+
+  .setup p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 21px;
+    margin-bottom: 14px;
+  }
+
+  .setup-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .progress-wrap { margin-bottom: 16px; }
+  .progress-track {
+    height: 12px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--gold), #F5D56A);
+    border-radius: 999px;
+    transition: width 0.25s ease;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--mint);
+    margin-top: 7px;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .card {
+    padding: 26px 22px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .level-badge {
+    display: inline-flex;
+    font-size: 11px;
+    font-weight: 900;
+    background: rgba(212,161,42,0.18);
+    color: var(--gold);
+    border: 1px solid rgba(212,161,42,0.38);
+    border-radius: 999px;
+    padding: 5px 12px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .word {
+    font-size: clamp(36px, 8vw, 56px);
+    font-weight: 900;
+    color: #FFFFFF;
+    line-height: 1.08;
+    margin-bottom: 8px;
+    word-break: break-word;
+  }
+
+  .meaning {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    line-height: 22px;
+  }
+
+  .filename {
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    color: #7AB897;
+    background: rgba(0,0,0,0.26);
+    border-radius: 10px;
+    padding: 7px 10px;
+    display: inline-block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .record-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .rec-btn {
+    width: 132px;
+    height: 132px;
+    border-radius: 66px;
+    background: var(--orange);
+    border: 5px solid rgba(255,255,255,0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: #fff;
+    user-select: none;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .rec-btn.recording {
+    background: var(--red);
+    transform: scale(1.08);
+    box-shadow: 0 0 0 12px rgba(232,68,90,0.2);
+  }
+
+  .rec-hint,
+  .keys {
+    font-size: 13px;
+    color: var(--mint);
+    text-align: center;
+    line-height: 20px;
+  }
+
+  .rec-status {
+    font-size: 14px;
+    font-weight: 900;
+    min-height: 20px;
+    color: var(--gold);
+    text-align: center;
+  }
+
+  .rec-status.ok { color: var(--green); }
+  .rec-status.warn { color: #F0A800; }
+  .rec-status.bad { color: var(--red); }
+
+  audio {
+    width: 100%;
+    max-width: 560px;
+    margin: 6px 0 0;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 14px 0;
+  }
+
+  button.ctrl,
+  label.ctrl {
+    appearance: none;
+    background: rgba(255,255,255,0.08);
+    color: var(--ink);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 12px;
+    padding: 11px 15px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  button.ctrl:hover,
+  label.ctrl:hover { background: rgba(255,255,255,0.14); }
+
+  button.ctrl:disabled {
+    opacity: 0.38;
+    cursor: default;
+  }
+
+  button.primary,
+  label.primary {
+    background: var(--gold);
+    color: var(--bg);
+    border-color: var(--gold);
+  }
+
+  button.success {
+    background: var(--green);
+    color: #08331E;
+    border-color: var(--green);
+  }
+
+  button.danger {
+    background: rgba(232,68,90,0.2);
+    border-color: rgba(232,68,90,0.4);
+    color: #FFD2DA;
+  }
+
+  kbd {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.24);
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-family: monospace;
+    font-size: 11px;
+  }
+
+  .qa-panel {
+    padding: 16px;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .qa-panel.open { display: block; }
+
+  .qa-title {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--gold);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .qa-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .qa-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 700;
+  }
+
+  .qa-item input { transform: scale(1.1); }
+
+  .queue-panel {
+    padding: 14px;
+  }
+
+  .queue-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .queue-title {
+    font-size: 14px;
+    color: var(--gold);
+    font-weight: 900;
+  }
+
+  .word-list {
+    max-height: 330px;
+    overflow-y: auto;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .word-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 8px;
+    align-items: center;
+    padding: 9px 11px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+  }
+
+  .word-row:hover { background: rgba(255,255,255,0.05); }
+  .word-row.active { background: rgba(212,161,42,0.15); }
+
+  .wname { color: var(--ink); font-weight: 800; }
+  .wfile { color: #7AB897; font-family: monospace; font-size: 11px; }
+  .wdone { color: var(--green); font-size: 12px; font-weight: 900; }
+
+  .hidden { display: none !important; }
+
+  input[type="file"] { display: none; }
+
+  @media (max-width: 560px) {
+    .topbar { flex-direction: column; }
+    .qa-grid { grid-template-columns: 1fr; }
+    .word-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div>
+      <h1>Mụta Igbo Recording Studio</h1>
+      <div class="sub">Record, review, approve, and export Central Igbo voice files.</div>
+    </div>
+    <div class="badge" id="manifestBadge">Manifest loading</div>
+  </div>
+
+  <div id="setup" class="setup">
+    <p>
+      Run this page from a local server, not by opening the file directly. Recommended:
+      <strong>python3 -m http.server 8787 --directory tools/recording-studio</strong>.
+      Then open <strong>http://localhost:8787</strong>.
+    </p>
+    <p>
+      The studio records browser audio as .webm. After recording, use the processing script to convert, trim, and normalize to .m4a for the app.
+    </p>
+
+    <div class="setup-row">
+      <button class="ctrl primary" id="startBtn">Start recording session</button>
+      <label class="ctrl" for="manifestInput">Load manifest manually</label>
+      <input type="file" id="manifestInput" accept="application/json,.json" />
+    </div>
+  </div>
+
+  <div id="app" class="hidden">
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">0 / 0 approved</div>
+    </div>
+
+    <div class="card">
+      <div class="level-badge" id="levelBadge">Level</div>
+      <div class="word" id="wordText">-</div>
+      <div class="meaning" id="meaningText">-</div>
+      <div class="filename" id="filenameText">-</div>
+    </div>
+
+    <div class="record-zone">
+      <div class="rec-btn" id="recBtn">🎙️</div>
+      <div class="rec-status" id="recStatus"></div>
+      <div class="rec-hint">Hold to record. Release to preview. Approve only after listening.</div>
+      <audio id="player" controls class="hidden"></audio>
+    </div>
+
+    <div class="qa-panel" id="qaPanel">
+      <div class="qa-title">Production QA</div>
+      <div class="qa-grid">
+        <label class="qa-item"><input type="checkbox" id="qaPronunciation" /> Correct pronunciation</label>
+        <label class="qa-item"><input type="checkbox" id="qaNoise" /> No background noise</label>
+        <label class="qa-item"><input type="checkbox" id="qaClip" /> No clipping/distortion</label>
+        <label class="qa-item"><input type="checkbox" id="qaSilence" /> Clean start and end</label>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="ctrl" id="prevBtn">Back</button>
+      <button class="ctrl danger" id="redoBtn">Redo</button>
+      <button class="ctrl" id="skipBtn">Skip</button>
+      <button class="ctrl" id="nextBtn">Next</button>
+      <button class="ctrl success" id="approveBtn" disabled>Approve and download</button>
+      <button class="ctrl primary" id="sessionLogBtn">Download session log</button>
+    </div>
+
+    <div class="keys">
+      <kbd>Space</kbd> hold to record &nbsp; <kbd>←</kbd> back &nbsp; <kbd>→</kbd> next &nbsp; <kbd>R</kbd> redo
+    </div>
+
+    <div class="queue-panel" style="margin-top:18px;">
+      <div class="queue-top">
+        <div class="queue-title">Recording Queue</div>
+        <button class="ctrl" id="queueToggle">Hide queue</button>
+      </div>
+      <div class="word-list" id="wordList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = "muta_recording_studio_v2";
+let manifest = null;
+let queue = [];
+let idx = 0;
+let stream = null;
+let mediaRecorder = null;
+let chunks = [];
+let currentBlob = null;
+let currentUrl = null;
+let completed = {};
+let sessionEvents = [];
+let queueVisible = true;
+
+const el = (id) => document.getElementById(id);
+
+function setStatus(text, cls) {
+  const status = el("recStatus");
+  status.textContent = text || "";
+  status.className = "rec-status " + (cls || "");
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    idx = Math.min(data.idx || 0, Math.max(queue.length - 1, 0));
+    completed = data.completed || {};
+  } catch (error) {}
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ idx, completed }));
+}
+
+function resetQa() {
+  ["qaPronunciation", "qaNoise", "qaClip", "qaSilence"].forEach(id => {
+    el(id).checked = false;
+  });
+}
+
+function qaReady() {
+  return ["qaPronunciation", "qaNoise", "qaClip", "qaSilence"].every(id => el(id).checked);
+}
+
+function updateApproveState() {
+  el("approveBtn").disabled = !currentBlob || !qaReady();
+}
+
+function approvedCount() {
+  return Object.keys(completed).length;
+}
+
+function render() {
+  if (!queue.length) return;
+
+  const item = queue[idx];
+
+  el("manifestBadge").textContent = `${manifest.languageFocus || "Central Igbo"} · ${queue.length} items`;
+  el("levelBadge").textContent = `${item.levelTitle} · ${item.sectionTitle}`;
+  el("wordText").textContent = item.igbo;
+  el("meaningText").textContent = item.english;
+  el("filenameText").textContent = `target: ${item.targetFile} · capture: ${item.rawFile}`;
+
+  const pct = queue.length ? Math.round((approvedCount() / queue.length) * 100) : 0;
+  el("progressFill").style.width = pct + "%";
+  el("progressLabel").textContent = `${approvedCount()} / ${queue.length} approved`;
+
+  el("prevBtn").disabled = idx === 0;
+  el("nextBtn").disabled = idx >= queue.length - 1;
+
+  currentBlob = null;
+  if (currentUrl) URL.revokeObjectURL(currentUrl);
+  currentUrl = null;
+  el("player").classList.add("hidden");
+  el("player").removeAttribute("src");
+  el("qaPanel").classList.remove("open");
+  resetQa();
+  updateApproveState();
+
+  if (completed[item.id]) {
+    setStatus("Already approved. Recording again will replace the take.", "ok");
+  } else {
+    setStatus("Ready to record.", "");
+  }
+
+  renderQueue();
+  saveState();
+}
+
+function renderQueue() {
+  const list = el("wordList");
+  list.innerHTML = "";
+
+  queue.forEach((item, i) => {
+    const row = document.createElement("div");
+    row.className = "word-row" + (i === idx ? " active" : "");
+
+    row.innerHTML =
+      `<span class="wname">${item.igbo}</span>` +
+      `<span class="wfile">${item.rawFile}</span>` +
+      `<span class="wdone">${completed[item.id] ? "approved" : ""}</span>`;
+
+    row.onclick = () => {
+      idx = i;
+      render();
+    };
+
+    list.appendChild(row);
+  });
+}
+
+async function loadManifestFromFetch() {
+  const response = await fetch("./recording-manifest.json", { cache: "no-store" });
+  if (!response.ok) throw new Error("Manifest fetch failed");
+  return response.json();
+}
+
+async function loadManifestFromFile(file) {
+  const text = await file.text();
+  return JSON.parse(text);
+}
+
+function setManifest(data) {
+  manifest = data;
+  queue = data.items || [];
+
+  if (!queue.length) {
+    alert("Manifest has no recording items.");
+    return;
+  }
+
+  loadState();
+  el("setup").classList.add("hidden");
+  el("app").classList.remove("hidden");
+  render();
+}
+
+async function startSession() {
+  try {
+    if (!manifest) {
+      const data = await loadManifestFromFetch();
+      setManifest(data);
+    }
+
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false,
+      }
+    });
+
+    setStatus("Microphone ready.", "ok");
+  } catch (error) {
+    alert("Could not start session. Use a local server and allow microphone access. You can also load the manifest manually.");
+    console.error(error);
+  }
+}
+
+function beginRecording() {
+  if (!stream) {
+    alert("Start the recording session first.");
+    return;
+  }
+
+  if (mediaRecorder && mediaRecorder.state === "recording") return;
+
+  chunks = [];
+  currentBlob = null;
+  if (currentUrl) URL.revokeObjectURL(currentUrl);
+  currentUrl = null;
+
+  let options = {};
+  if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
+    options = { mimeType: "audio/webm;codecs=opus" };
+  }
+
+  mediaRecorder = new MediaRecorder(stream, options);
+  mediaRecorder.ondataavailable = (event) => {
+    if (event.data && event.data.size > 0) chunks.push(event.data);
+  };
+  mediaRecorder.onstop = onRecordingStop;
+  mediaRecorder.start();
+
+  el("recBtn").classList.add("recording");
+  el("qaPanel").classList.remove("open");
+  resetQa();
+  updateApproveState();
+  setStatus("Recording...", "warn");
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state === "recording") {
+    mediaRecorder.stop();
+  }
+
+  el("recBtn").classList.remove("recording");
+}
+
+function onRecordingStop() {
+  const item = queue[idx];
+  currentBlob = new Blob(chunks, { type: "audio/webm" });
+  currentUrl = URL.createObjectURL(currentBlob);
+
+  const player = el("player");
+  player.src = currentUrl;
+  player.classList.remove("hidden");
+
+  el("qaPanel").classList.add("open");
+  setStatus("Recorded. Listen, check QA, then approve.", "warn");
+  updateApproveState();
+
+  sessionEvents.push({
+    type: "recorded_preview",
+    itemId: item.id,
+    igbo: item.igbo,
+    rawFile: item.rawFile,
+    timestamp: new Date().toISOString(),
+    sizeBytes: currentBlob.size,
+  });
+}
+
+function approveAndDownload() {
+  if (!currentBlob || !qaReady()) {
+    setStatus("Complete QA checks before approving.", "bad");
+    return;
+  }
+
+  const item = queue[idx];
+  const url = URL.createObjectURL(currentBlob);
+  const anchor = document.createElement("a");
+
+  anchor.href = url;
+  anchor.download = item.rawFile;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+
+  setTimeout(() => URL.revokeObjectURL(url), 800);
+
+  completed[item.id] = {
+    itemId: item.id,
+    igbo: item.igbo,
+    english: item.english,
+    targetFile: item.targetFile,
+    rawFile: item.rawFile,
+    approvedAt: new Date().toISOString(),
+    sizeBytes: currentBlob.size,
+    qa: {
+      pronunciation: el("qaPronunciation").checked,
+      noise: el("qaNoise").checked,
+      clipping: el("qaClip").checked,
+      silence: el("qaSilence").checked,
+    },
+  };
+
+  sessionEvents.push({
+    type: "approved_downloaded",
+    ...completed[item.id],
+  });
+
+  setStatus("Approved and downloaded.", "ok");
+  saveState();
+
+  if (idx < queue.length - 1) {
+    setTimeout(() => {
+      idx++;
+      render();
+    }, 450);
+  } else {
+    render();
+  }
+}
+
+function goNext() {
+  if (idx < queue.length - 1) {
+    idx++;
+    render();
+  }
+}
+
+function goPrev() {
+  if (idx > 0) {
+    idx--;
+    render();
+  }
+}
+
+function redoWord() {
+  const item = queue[idx];
+  delete completed[item.id];
+  currentBlob = null;
+
+  if (currentUrl) URL.revokeObjectURL(currentUrl);
+  currentUrl = null;
+
+  sessionEvents.push({
+    type: "redo",
+    itemId: item.id,
+    igbo: item.igbo,
+    timestamp: new Date().toISOString(),
+  });
+
+  render();
+}
+
+function downloadSessionLog() {
+  const log = {
+    app: "Mụta Igbo",
+    generatedAt: new Date().toISOString(),
+    manifestVersion: manifest ? manifest.manifestVersion : null,
+    totalItems: queue.length,
+    approvedCount: approvedCount(),
+    completed,
+    events: sessionEvents,
+  };
+
+  const blob = new Blob([JSON.stringify(log, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+
+  anchor.href = url;
+  anchor.download = `recording-session-${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+
+  setTimeout(() => URL.revokeObjectURL(url), 800);
+}
+
+el("startBtn").onclick = startSession;
+el("approveBtn").onclick = approveAndDownload;
+el("nextBtn").onclick = goNext;
+el("prevBtn").onclick = goPrev;
+el("skipBtn").onclick = goNext;
+el("redoBtn").onclick = redoWord;
+el("sessionLogBtn").onclick = downloadSessionLog;
+
+el("manifestInput").onchange = async (event) => {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  try {
+    const data = await loadManifestFromFile(file);
+    setManifest(data);
+  } catch (error) {
+    alert("Could not load manifest JSON.");
+    console.error(error);
+  }
+};
+
+["qaPronunciation", "qaNoise", "qaClip", "qaSilence"].forEach(id => {
+  el(id).addEventListener("change", updateApproveState);
+});
+
+el("recBtn").addEventListener("mousedown", beginRecording);
+el("recBtn").addEventListener("mouseup", stopRecording);
+el("recBtn").addEventListener("mouseleave", stopRecording);
+el("recBtn").addEventListener("touchstart", (event) => {
+  event.preventDefault();
+  beginRecording();
+});
+el("recBtn").addEventListener("touchend", (event) => {
+  event.preventDefault();
+  stopRecording();
+});
+
+document.addEventListener("keydown", (event) => {
+  const appOpen = !el("app").classList.contains("hidden");
+
+  if (!appOpen) return;
+
+  if (event.code === "Space" && !event.repeat) {
+    event.preventDefault();
+    beginRecording();
+  } else if (event.code === "ArrowRight") {
+    goNext();
+  } else if (event.code === "ArrowLeft") {
+    goPrev();
+  } else if (event.key === "r" || event.key === "R") {
+    redoWord();
+  }
+});
+
+document.addEventListener("keyup", (event) => {
+  if (event.code === "Space") {
+    event.preventDefault();
+    stopRecording();
+  }
+});
+
+el("queueToggle").onclick = () => {
+  queueVisible = !queueVisible;
+  el("wordList").classList.toggle("hidden", !queueVisible);
+  el("queueToggle").textContent = queueVisible ? "Hide queue" : "Show queue";
+};
+
+loadManifestFromFetch()
+  .then(data => {
+    manifest = data;
+    queue = data.items || [];
+    el("manifestBadge").textContent = `${data.languageFocus || "Central Igbo"} · ${queue.length} items`;
+  })
+  .catch(() => {
+    el("manifestBadge").textContent = "Load manifest manually";
+  });
+</script>
+</body>
+</html>
