@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "M\u1ee5ta Igbo",
+    "name": "Mụta Igbo",
     "slug": "muta-igbo",
     "version": "2.0.0",
     "orientation": "portrait",
@@ -16,7 +16,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFF8E7"
-      }
+      },
+      "versionCode": 1
     },
     "web": {
       "bundler": "metro",
