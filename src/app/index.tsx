@@ -588,8 +588,15 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
       <View pointerEvents="none" style={sh.homeBgSun} />
       <View pointerEvents="none" style={sh.homeBgCloudOne} />
       <View pointerEvents="none" style={sh.homeBgCloudTwo} />
+      <View pointerEvents="none" style={sh.homeBgGrassOne} />
+      <View pointerEvents="none" style={sh.homeBgGrassTwo} />
       <View pointerEvents="none" style={sh.homeBgConfettiOne} />
       <View pointerEvents="none" style={sh.homeBgConfettiTwo} />
+      <Text pointerEvents="none" style={sh.homeBgPawOne}>🐾</Text>
+      <Text pointerEvents="none" style={sh.homeBgPawTwo}>🐾</Text>
+      <Text pointerEvents="none" style={sh.homeBgLeafOne}>🌿</Text>
+      <Text pointerEvents="none" style={sh.homeBgStarOne}>✦</Text>
+      <Text pointerEvents="none" style={sh.homeBgStarTwo}>★</Text>
       <View style={sh.kidsHeroCard}>
         <View style={sh.kidsHeroTopRow}>
           <View style={sh.kidsHeroAvatarWrap}>
@@ -2782,6 +2789,66 @@ const sh = StyleSheet.create({
     paddingTop: SPACE.lg,
     paddingBottom: 128,
     backgroundColor: '#FFFDF6',
+  },
+  homeBgGrassOne: {
+    position: 'absolute',
+    width: 260,
+    height: 118,
+    borderRadius: 90,
+    backgroundColor: 'rgba(25, 179, 107, 0.12)',
+    left: -110,
+    top: 980,
+  },
+  homeBgGrassTwo: {
+    position: 'absolute',
+    width: 235,
+    height: 104,
+    borderRadius: 82,
+    backgroundColor: 'rgba(86, 229, 154, 0.10)',
+    right: -96,
+    top: 1220,
+  },
+  homeBgPawOne: {
+    position: 'absolute',
+    left: 20,
+    top: 560,
+    fontSize: 32,
+    opacity: 0.13,
+    transform: [{ rotate: '-18deg' }],
+  },
+  homeBgPawTwo: {
+    position: 'absolute',
+    right: 26,
+    top: 1040,
+    fontSize: 30,
+    opacity: 0.12,
+    transform: [{ rotate: '16deg' }],
+  },
+  homeBgLeafOne: {
+    position: 'absolute',
+    left: 24,
+    top: 1320,
+    fontSize: 34,
+    opacity: 0.16,
+    transform: [{ rotate: '-12deg' }],
+  },
+  homeBgStarOne: {
+    position: 'absolute',
+    right: 30,
+    top: 420,
+    fontSize: 34,
+    color: '#FFD33D',
+    opacity: 0.24,
+    transform: [{ rotate: '12deg' }],
+  },
+  homeBgStarTwo: {
+    position: 'absolute',
+    left: 34,
+    top: 880,
+    fontSize: 28,
+    color: '#854CE6',
+    opacity: 0.14,
+    transform: [{ rotate: '-10deg' }],
   },
 
   greetBanner: {
