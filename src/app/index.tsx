@@ -81,15 +81,63 @@ let Audio: any = null;
 try { Audio = require('expo-av').Audio; } catch (_) {}
 
 async function playNativeAudio(file: any) {
-  if (!Audio || !file) return;
+  if (!Audio || !file) {
+    if (__DEV__) console.log('[audio] unavailable or missing file');
+    return;
+  }
+
   try {
-    const { sound } = await Audio.Sound.createAsync(file);
+    await Audio.setAudioModeAsync?.({
+      allowsRecordingIOS: false,
+      playsInSilentModeIOS: true,
+      staysActiveInBackground: false,
+      shouldDuckAndroid: true,
+      playThroughEarpieceAndroid: false,
+    });
+
+    const { sound } = await Audio.Sound.createAsync(
+      file,
+      {
+        shouldPlay: false,
+        volume: 1.0,
+        isLooping: false,
+      }
+    );
+
+    sound.setOnPlaybackStatusUpdate?.((status: any) => {
+      if (status?.didJustFinish) {
+        sound.unloadAsync?.().catch(() => {});
+      }
+    });
+
+    await sound.setVolumeAsync?.(1.0);
     await sound.playAsync();
-  } catch (e) { console.log('[audio]', e); }
+
+    if (__DEV__) console.log('[audio] played sfx');
+  } catch (e) {
+    console.log('[audio]', e);
+  }
 }
 
-function playSoundFallback(label: string) {
-  // Audio placeholder - plays when file is added to assets/audio/
+const SFX = {
+  tap: require('../../assets/audio/sfx/tap.wav'),
+  open: require('../../assets/audio/sfx/open.wav'),
+  correct: require('../../assets/audio/sfx/correct.wav'),
+  wrong: require('../../assets/audio/sfx/wrong.wav'),
+  reward: require('../../assets/audio/sfx/reward.wav'),
+  levelComplete: require('../../assets/audio/sfx/level_complete.wav'),
+} as const;
+
+type SfxKey = keyof typeof SFX;
+
+function playSfx(key: SfxKey, enabled = true) {
+  if (!enabled) return;
+  void playNativeAudio(SFX[key]);
+}
+
+function playSoundFallback(label: string, enabled = true) {
+  // Temporary pronunciation placeholder until native speaker recordings are added.
+  playSfx('tap', enabled);
   if (__DEV__) console.log('[sound placeholder]', label);
 }
 
@@ -1526,6 +1574,7 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
 
     if (sel.igbo === question.igbo) {
       const nextStreak = streak + 1;
+      playSfx('correct', state.soundEnabled);
       setStreak(nextStreak);
       setRound(current => current + 1);
       updateQuizBest(nextStreak);
@@ -1536,6 +1585,7 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
       return;
     }
 
+    playSfx('wrong', state.soundEnabled);
     setStreak(0);
     setFeedback({
       text: `Almost. That means ${getQuizOptionLabel(sel)}.`,
@@ -1581,20 +1631,12 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
             Find the match for
           </Text>
 
-          {numberQuestion && (
-            <View style={[sh.quizPromptNumberBadge, { backgroundColor: COLOR.card }]}>
-              <Text style={[sh.quizPromptNumberDigit, { color: promptColor.accent }]}>
-                {getNumberValue(question.english)}
-              </Text>
-            </View>
-          )}
-
           <Text style={[sh.quizPromptWord, { color: promptColor.accent }]}>
             {question.igbo}
           </Text>
 
           <Text style={sh.quizPromptHint}>
-            Choose the correct meaning below.
+            {numberQuestion ? 'What number is this?' : 'Choose the correct meaning below.'}
           </Text>
         </View>
 
