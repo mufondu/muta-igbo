@@ -21,10 +21,10 @@ export const KIDS_COLOR = {
   purple: '#7A45D8',
 
   // Support colors
-  palmGreen: '#19B765',
+  palmGreen: '#35D88D',
   leaf: '#22C55E',
-  forestGreen: '#008A4A',
-  deepForest: '#00422B',
+  forestGreen: '#35D88D',
+  deepForest: '#1B2A6B',
 
   // Text system: less corporate than forest green
   textPrimary: '#1B2A6B',
@@ -36,7 +36,7 @@ export const KIDS_COLOR = {
   shadow: 'rgba(27, 42, 107, 0.16)',
 
   // Semantic aliases
-  success: '#19B765',
+  success: '#35D88D',
   warning: '#FFD24A',
   reward: '#FFA62B',
   audio: '#31BDED',
@@ -49,7 +49,7 @@ export const KIDS_COLOR = {
   playgroundPurple: '#7A45D8',
   playgroundYellow: '#FFD24A',
   playgroundOrange: '#FFA62B',
-  playgroundGreen: '#19B765',
+  playgroundGreen: '#35D88D',
   heading: '#1B2A6B',
   headingFun: '#7A45D8',
 };

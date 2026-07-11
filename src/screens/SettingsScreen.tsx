@@ -1,4 +1,4 @@
-// ─── Premium Settings Screen ─────────────────────────────────────────────────
+// ─── Parent Settings Screen ──────────────────────────────────────────────────
 import React, { useState } from 'react';
 import {
   Alert,
@@ -16,6 +16,7 @@ import { AvatarEmoji, useApp } from '../hooks/useAppState';
 import { KIDS_COLOR, KIDS_SHADOW } from '../theme/kidsTheme';
 import { PrivacyScreen, SubscriptionTermsScreen, TermsScreen } from './LegalScreens';
 import { FONT, RADIUS, SPACE } from '../utils/tokens';
+import { isFreeBetaMode } from '../config/accessControl';
 
 interface Props {
   onBack: () => void;
@@ -106,6 +107,15 @@ export default function SettingsScreen({ onBack }: Props) {
   const bestStreak = state.profiles.reduce((best, profile) => Math.max(best, profile.streak ?? 0), 0);
 
   function handleSubscribe() {
+    if (isFreeBetaMode()) {
+      Alert.alert(
+        '🌟 Free Beta Access',
+        'All available lessons, games, stories, and quizzes are currently unlocked during beta.',
+        [{ text: 'Great!' }],
+      );
+      return;
+    }
+
     Alert.alert(
       '🌟 Go Premium',
       'Unlock all learning levels, bonus folktales, more games, and the full quiz engine.',
@@ -222,14 +232,24 @@ export default function SettingsScreen({ onBack }: Props) {
           </View>
         </View>
 
-        {!state.isPremium ? (
-          <TouchableOpacity style={s.premiumCard} onPress={handleSubscribe} activeOpacity={0.88}>
+        {isFreeBetaMode() ? (
+          <View style={s.premiumActiveCard}>
             <View style={s.premiumIcon}>
-              <Text style={s.premiumIconText}>VIP</Text>
+              <Text style={s.premiumIconText}>BETA</Text>
             </View>
             <View style={s.premiumCopy}>
-              <Text style={s.premiumTitle}>Go Premium</Text>
-              <Text style={s.premiumSub}>Unlock all lessons, stories, games, and richer practice.</Text>
+              <Text style={s.premiumTitle}>Free Beta Access</Text>
+              <Text style={s.premiumSub}>All available lessons, stories, games, and quizzes are unlocked during beta.</Text>
+            </View>
+          </View>
+        ) : !state.isPremium ? (
+          <TouchableOpacity style={s.premiumCard} onPress={handleSubscribe} activeOpacity={0.88}>
+            <View style={s.premiumIcon}>
+              <Text style={s.premiumIconText}>BETA</Text>
+            </View>
+            <View style={s.premiumCopy}>
+              <Text style={s.premiumTitle}>Free Beta Access</Text>
+              <Text style={s.premiumSub}>All available lessons, stories, games, and quizzes are unlocked during beta.</Text>
             </View>
             <Text style={s.premiumArrow}>›</Text>
           </TouchableOpacity>
@@ -239,8 +259,8 @@ export default function SettingsScreen({ onBack }: Props) {
               <Text style={s.premiumIconText}>OK</Text>
             </View>
             <View style={s.premiumCopy}>
-              <Text style={s.premiumTitle}>Premium Active</Text>
-              <Text style={s.premiumSub}>Your family has access to the full learning adventure.</Text>
+              <Text style={s.premiumTitle}>Free Beta Access</Text>
+              <Text style={s.premiumSub}>Your family has access to the full beta learning adventure.</Text>
             </View>
           </View>
         )}
@@ -462,8 +482,8 @@ export default function SettingsScreen({ onBack }: Props) {
           <MiniDivider />
           <SettingRow
             icon="STAR"
-            label="Subscription Terms"
-            sub="Premium billing and renewal details."
+            label="Beta Access Terms"
+            sub="Current free beta and future purchase details."
             right={<Text style={s.chevron}>›</Text>}
             onPress={() => setLegalPage('subscription')}
           />

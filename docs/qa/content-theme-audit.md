@@ -1,0 +1,351 @@
+# Mụta Igbo Content and Kid-Centric Theme Audit
+
+## Goal
+
+Prepare the app for production by reviewing language content, UI tone, and app-wide visual style. Target: warm, playful, kid-centric learning app, not a mature green enterprise-style interface.
+
+## Color Frequency
+
+- `#1B2A6B`: 73
+- `#FFFFFF`: 21
+- `#DDF6FF`: 12
+- `#7A45D8`: 12
+- `#FFF1B8`: 11
+- `#000`: 11
+- `#F64F72`: 10
+- `#436B8A`: 9
+- `#FFF8E7`: 9
+- `#FFA62B`: 8
+- `#FFD24A`: 8
+- `#854CE6`: 7
+- `#31BDED`: 6
+- `#F0FBFF`: 6
+- `#FFE6F0`: 6
+- `#F2E9FF`: 5
+- `#FFFDF6`: 5
+- `#326C92`: 5
+- `#F0E3FF`: 4
+- `#B8ECFF`: 4
+- `#FFB8CA`: 4
+- `#F1FFF6`: 4
+- `#E7FAEF`: 4
+- `#FFE8A3`: 4
+- `#BDEFD2`: 4
+- `#00422B`: 4
+- `#35D88D`: 4
+- `#F0E7FF`: 3
+- `#E8FAFF`: 3
+- `#FFD76A`: 3
+- `#9BE7B5`: 3
+- `#D7BEFF`: 3
+- `#FFD33D`: 3
+- `#FFF7E8`: 3
+- `#FFF2C7`: 3
+- `#008A4A`: 3
+- `#19B765`: 3
+- `#FFE3EF`: 2
+- `#F04483`: 2
+- `#E9FBEF`: 2
+- `#19B36B`: 2
+- `#FFF0B8`: 2
+- `#F5A400`: 2
+- `#ECE2FF`: 2
+- `#087443`: 2
+- `#FFF8DF`: 2
+- `#FFF1F5`: 2
+- `#F7F0FF`: 2
+- `#8EEAFF`: 2
+- `#FAF7F0`: 2
+- `#E8FBFF`: 2
+- `#DDE5F4`: 2
+- `#9A9587`: 2
+- `#9DEBFF`: 2
+- `#E7F0E5`: 2
+- `#DDE7E0`: 2
+- `#7CFFB4`: 2
+- `#FFF3D8`: 2
+- `#EFFAFF`: 2
+- `#FFF1EA`: 1
+- `#FF6B00`: 1
+- `#EAF5FF`: 1
+- `#2B6CB0`: 1
+- `#E8F6EC`: 1
+- `#6B46C1`: 1
+- `#FFF4D6`: 1
+- `#B7791F`: 1
+- `#E6FAFA`: 1
+- `#0B7F83`: 1
+- `#FFF7CF`: 1
+- `#FFF0F5`: 1
+- `#ECFFF4`: 1
+- `#F8F1FF`: 1
+- `#7BDEA0`: 1
+- `#EDE8DC`: 1
+- `#D7B8FF`: 1
+- `#A9EFFB`: 1
+- `#375A72`: 1
+- `#EAF0E8`: 1
+- `#D9FFE9`: 1
+
+## Potential Mature / Monetization / Kid-Safety Text Hits
+
+- `src/app/index.tsx:2` — * Mụta Igbo: Premium Kid Edition
+- `src/app/index.tsx:42` — import PremiumScreen from '../screens/PremiumScreen';
+- `src/app/index.tsx:43` — import { getPlanLabel, getPremiumBadgeLabel, hasPremiumEntitlement, shouldShowUpgradePrompt } from '../config/accessControl';
+- `src/app/index.tsx:107` — sound.setOnPlaybackStatusUpdate?.((status: any) => {
+- `src/app/index.tsx:176` — | 'premium'
+- `src/app/index.tsx:248` — const hasFullAccess = hasPremiumEntitlement(state.isPremium);
+- `src/app/index.tsx:259` — const [gate, setGate] = useState<null | 'settings' | 'premium'>(null);
+- `src/app/index.tsx:314` — onPremium={() => openInner('premium')} />
+- `src/app/index.tsx:317` — <QuizScreen onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} onPremium={() => openInner('premium')} />
+- `src/app/index.tsx:324` — <FolktalesScreen onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} onPremium={() => openInner('premium')} />
+- `src/app/index.tsx:329` — isPremium={hasFullAccess}
+- `src/app/index.tsx:335` — isPremium={hasFullAccess}
+- `src/app/index.tsx:341` — isPremium={hasFullAccess}
+- `src/app/index.tsx:345` — {inner === 'games'    && <GamesHub isPremium={hasFullAccess} onBack={returnToAdventurePicker ? backToAdventurePicker : closeInner} />}
+- `src/app/index.tsx:354` — isPremium={hasFullAccess}
+- `src/app/index.tsx:357` — {inner === 'premium' && <PremiumScreen onBack={closeInner} />}
+- `src/app/index.tsx:391` — if (target === 'premium') openInner('premium');
+- `src/app/index.tsx:557` — <Text style={sh.adventureSheetSub}>Practice the Central Igbo words you’ve unlocked.</Text>
+- `src/app/index.tsx:632` — const today = new Date().toDateString();
+- `src/app/index.tsx:633` — const goalCount = activeProfile?.goalDate === today ? (activeProfile?.goalCount ?? 0) : 0;
+- `src/app/index.tsx:700` — <View style={sh.kidsPremiumBadge}><Text style={sh.kidsPremiumBadgeText}>{getPremiumBadgeLabel(state.isPremium)}</Text></View>
+- `src/app/index.tsx:768` — <Text style={sh.adventureSheetSub}>Practice the Central Igbo words you’ve unlocked.</Text>
+- `src/app/index.tsx:1065` — isPremium,
+- `src/app/index.tsx:1070` — isPremium: boolean;
+- `src/app/index.tsx:1109` — const isLocked = !level.free && !isPremium;
+- `src/app/index.tsx:1115` — onPress={() => { haptics.tapMedium(); isLocked ? openInner('premium') : openInner('levelDetail', level.id); }}
+- `src/app/index.tsx:1133` — {!level.free && isPremium && <View style={sh.premiumTag}><Text style={sh.premiumTagText}>⭐</Text></View>}
+- `src/app/index.tsx:1153` — function LevelDetailScreen({ levelId, onBack, onPremium }: {
+- `src/app/index.tsx:1154` — levelId: string; onBack: () => void; onPremium: () => void;
+- `src/app/index.tsx:1156` — const { state, activeProfile, updateProgress , recordActivity } = useApp();
+- `src/app/index.tsx:1166` — if (current < 0.1) updateProgress(levelId, 0.1);
+- `src/app/index.tsx:1433` — { label: 'Plan', value: getPlanLabel(state.isPremium), icon: '👑', bg: '#F2E9FF', accent: '#7A45D8' },
+- `src/app/index.tsx:1459` — <View style={sh.xpPremiumPill}>
+- `src/app/index.tsx:1460` — <Text style={sh.xpPremiumText}>{getPlanLabel(state.isPremium)}</Text>
+- `src/app/index.tsx:1553` — function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () => void }) {
+- `src/app/index.tsx:1554` — const { state, updateQuizBest, addWordsLearned } = useApp();
+- `src/app/index.tsx:1555` — const hasFullAccess = hasPremiumEntitlement(state.isPremium);
+- `src/app/index.tsx:1593` — updateQuizBest(nextStreak);
+- `src/app/index.tsx:1642` — <View style={[sh.quizPromptPremium, { backgroundColor: promptColor.bg, borderColor: promptColor.accent + '55' }]}>
+- `src/app/index.tsx:1662` — <View style={sh.quizPremiumGrid}>
+- `src/app/index.tsx:1672` — sh.quizPremiumOption,
+- `src/app/index.tsx:1701` — {shouldShowUpgradePrompt(state.isPremium) && (
+- `src/app/index.tsx:1702` — <TouchableOpacity style={sh.quizPremiumNudge} onPress={onPremium} activeOpacity={0.86}>
+- `src/app/index.tsx:1703` — <Text style={sh.quizPremiumNudgeTitle}>Unlock more quiz words</Text>
+- `src/app/index.tsx:1704` — <Text style={sh.quizPremiumNudgeText}>Premium adds more lessons, games, stories, and songs.</Text>
+- `src/app/index.tsx:1818` — function FolktalesScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () => void }) {
+- `src/app/index.tsx:2548` — kidsPremiumBadge: { position: 'absolute', top: -8, right: 10, backgroundColor: KIDS_COLOR.sunshine, borderRadius: RADIUS.pill, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: KIDS_COLOR.mango },
+- `src/app/index.tsx:2549` — kidsPremiumBadgeText: { color: KIDS_COLOR.deepForest, fontSize: FONT.xs, fontWeight: '900' },
+- `src/app/index.tsx:2933` — premiumChip: {
+- `src/app/index.tsx:2937` — premiumChipText: { fontSize: FONT.xs, color: COLOR.clay, fontWeight: '700' },
+- `src/app/index.tsx:3077` — premiumTag: {
+- `src/app/index.tsx:3081` — premiumTagText: { fontSize: 10 },
+- `src/app/index.tsx:3412` — premiumNudge: {
+- `src/app/index.tsx:3418` — premiumNudgeText: { fontSize: FONT.sm, color: COLOR.clay, fontWeight: '700' },
+- `src/app/index.tsx:3850` — quizPromptPremium: {
+- `src/app/index.tsx:3914` — quizPremiumGrid: {
+- `src/app/index.tsx:3920` — quizPremiumOption: {
+- `src/app/index.tsx:3963` — quizPremiumNudge: {
+- `src/app/index.tsx:3971` — quizPremiumNudgeTitle: {
+- `src/app/index.tsx:3977` — quizPremiumNudgeText: {
+- `src/app/index.tsx:5104` — xpPremiumPill: {
+- `src/app/index.tsx:5114` — xpPremiumText: {
+- `src/data/lessons.ts:29` — free: boolean;      // false = premium only
+- `src/data/lessons.ts:61` — { igbo: 'l', english: 'l (as in love)', emoji: '🔡' },
+- `src/data/lessons.ts:147` — { igbo: 'Ahụrụ m gị n\'anya', english: 'I love you', emoji: '❤️', partOfSpeech: 'phrase', verified: true },
+- `src/data/lessons.ts:577` — // ─── QUIZ POOL (from free + premium, filtered at runtime) ────────────────────
+- `src/data/lessons.ts:578` — export const buildQuizPool = (includePremium: boolean): VocabItem[] => {
+- `src/data/lessons.ts:581` — if (!level.free && !includePremium) return;
+- `src/screens/SettingsScreen.tsx:1` — // ─── Premium Settings Screen ─────────────────────────────────────────────────
+- `src/screens/SettingsScreen.tsx:17` — import { PrivacyScreen, SubscriptionTermsScreen, TermsScreen } from './LegalScreens';
+- `src/screens/SettingsScreen.tsx:24` — type LegalPage = null | 'terms' | 'privacy' | 'subscription';
+- `src/screens/SettingsScreen.tsx:86` — setPremium,
+- `src/screens/SettingsScreen.tsx:102` — if (legalPage === 'subscription') return <SubscriptionTermsScreen onBack={() => setLegalPage(null)} />;
+- `src/screens/SettingsScreen.tsx:110` — '🌟 Go Premium',
+- `src/screens/SettingsScreen.tsx:111` — 'Unlock all learning levels, bonus folktales, more games, and the full quiz engine.',
+- `src/screens/SettingsScreen.tsx:115` — text: 'Unlock Premium',
+- `src/screens/SettingsScreen.tsx:117` — setPremium(true);
+- `src/screens/SettingsScreen.tsx:118` — Alert.alert('🎉 Premium unlocked!', 'All content is now available.');
+- `src/screens/SettingsScreen.tsx:225` — {!state.isPremium ? (
+- `src/screens/SettingsScreen.tsx:226` — <TouchableOpacity style={s.premiumCard} onPress={handleSubscribe} activeOpacity={0.88}>
+- `src/screens/SettingsScreen.tsx:227` — <View style={s.premiumIcon}>
+- `src/screens/SettingsScreen.tsx:228` — <Text style={s.premiumIconText}>VIP</Text>
+- `src/screens/SettingsScreen.tsx:230` — <View style={s.premiumCopy}>
+- `src/screens/SettingsScreen.tsx:231` — <Text style={s.premiumTitle}>Go Premium</Text>
+- `src/screens/SettingsScreen.tsx:232` — <Text style={s.premiumSub}>Unlock all lessons, stories, games, and richer practice.</Text>
+- `src/screens/SettingsScreen.tsx:234` — <Text style={s.premiumArrow}>›</Text>
+- `src/screens/SettingsScreen.tsx:237` — <View style={s.premiumActiveCard}>
+- `src/screens/SettingsScreen.tsx:238` — <View style={s.premiumIcon}>
+- `src/screens/SettingsScreen.tsx:239` — <Text style={s.premiumIconText}>OK</Text>
+- `src/screens/SettingsScreen.tsx:241` — <View style={s.premiumCopy}>
+- `src/screens/SettingsScreen.tsx:242` — <Text style={s.premiumTitle}>Premium Active</Text>
+- `src/screens/SettingsScreen.tsx:243` — <Text style={s.premiumSub}>Your family has access to the full learning adventure.</Text>
+- `src/screens/SettingsScreen.tsx:465` — label="Subscription Terms"
+- `src/screens/SettingsScreen.tsx:466` — sub="Premium billing and renewal details."
+- `src/screens/SettingsScreen.tsx:468` — onPress={() => setLegalPage('subscription')}
+- `src/screens/SettingsScreen.tsx:620` — premiumCard: {
+- `src/screens/SettingsScreen.tsx:631` — premiumActiveCard: {
+- `src/screens/SettingsScreen.tsx:642` — premiumIcon: {
+- `src/screens/SettingsScreen.tsx:651` — premiumIconText: {
+- `src/screens/SettingsScreen.tsx:657` — premiumCopy: {
+- `src/screens/SettingsScreen.tsx:660` — premiumTitle: {
+- `src/screens/SettingsScreen.tsx:665` — premiumSub: {
+- `src/screens/SettingsScreen.tsx:672` — premiumArrow: {
+- `src/screens/LegalScreens.tsx:1` — // ─── Legal Screens: Terms, Privacy, Subscription ─────────────────────────────
+- `src/screens/LegalScreens.tsx:19` — <Text style={s.updated}>Last updated: June 2025</Text>
+- `src/screens/LegalScreens.tsx:46` — <P>The App is intended for use by children aged 3 and above, under the direct supervision of a parent or legal guardian. You must be at least 18 years old to create a profile, agree to these terms, and manage subscriptio
+- `src/screens/LegalScreens.tsx:51` — <H2>5. Subscription and In-App Purchases</H2>
+- `src/screens/LegalScreens.tsx:52` — <P>Mụta Igbo offers a free tier and a Premium subscription. Free users have access to Levels 7A and 6A plus a selection of introductory content. Premium unlocks all levels and content. Subscription terms are detailed in 
+- `src/screens/LegalScreens.tsx:59` — <Li>Share your subscription access with individuals outside your immediate household</Li>
+- `src/screens/LegalScreens.tsx:74` — <P>We may update these Terms from time to time. We will notify users of material changes through the App. Continued use of the App after changes constitutes acceptance of the updated Terms.</P>
+- `src/screens/LegalScreens.tsx:93` — <P>This policy applies to all users of Mụta Igbo, including parents, guardians, and the children who use the App under their supervision. The App is directed at children aged 3 and above and is set up exclusively by adul
+- `src/screens/LegalScreens.tsx:104` — <P>We comply with the Children's Online Privacy Protection Act (COPPA) and applicable children's privacy regulations including GDPR-K. We do not knowingly collect personal information from children under 13. The App is s
+- `src/screens/LegalScreens.tsx:107` — <P>The "Say It Back" feature currently operates in demo mode. No audio is recorded, stored, or transmitted. Future versions may include on-device voice processing to support pronunciation feedback. Any such feature will 
+- `src/screens/LegalScreens.tsx:109` — <H2>Subscription and Payments</H2>
+- `src/screens/LegalScreens.tsx:110` — <P>Subscription management and payment processing are handled entirely by Apple App Store or Google Play Store. We do not receive, store, or process your payment details. Your subscription status is communicated to the A
+- `src/screens/LegalScreens.tsx:113` — <P>The current version of Mụta Igbo does not use any analytics or crash reporting services that transmit data externally. We may in a future version introduce privacy-preserving, anonymised aggregate analytics (for examp
+- `src/screens/LegalScreens.tsx:128` — <P>We may update this Privacy Policy periodically. Material changes will be communicated through the App. The date at the bottom of this policy indicates when it was last updated.</P>
+- `src/screens/LegalScreens.tsx:136` — // ─── SUBSCRIPTION TERMS ───────────────────────────────────────────────────────
+- `src/screens/LegalScreens.tsx:137` — export function SubscriptionTermsScreen({ onBack }: { onBack: () => void }) {
+- `src/screens/LegalScreens.tsx:139` — <LegalScreen title="Subscription Terms" onBack={onBack}>
+- `src/screens/LegalScreens.tsx:141` — <P>Mụta Igbo offers a free tier and a Premium subscription. These Subscription Terms should be read alongside our full Terms and Conditions and Privacy Policy.</P>
+- `src/screens/LegalScreens.tsx:149` — <P>Free tier content is available without any payment and will remain available even if you do not subscribe.</P>
+- `src/screens/LegalScreens.tsx:151` — <H2>Premium Subscription</H2>
+- `src/screens/LegalScreens.tsx:152` — <P>Premium unlocks all content in the App, including:</P>
+- `src/screens/LegalScreens.tsx:165` — <P>Subscription pricing is as follows:</P>
+- `src/screens/LegalScreens.tsx:167` — <Li>Yearly plan: $19.99 per year (equivalent to approximately $1.67 per month, saving approximately 44% compared to monthly billing)</Li>
+- `src/screens/LegalScreens.tsx:170` — <H2>Billing and Renewal</H2>
+- `src/screens/LegalScreens.tsx:171` — <P>Subscriptions are billed through your Apple App Store or Google Play Store account. Payment is charged to your account at confirmation of purchase. Subscriptions automatically renew at the end of each billing period (
+- `src/screens/LegalScreens.tsx:174` — <P>We may from time to time offer free trial periods for the Premium subscription. If a free trial is offered, it will be clearly stated at the point of purchase. Any unused portion of a free trial period is forfeited wh
+- `src/screens/LegalScreens.tsx:177` — <P>You may cancel your subscription at any time. Cancellation takes effect at the end of the current billing period. You will continue to have access to Premium content until the end of the period you have paid for. We d
+- `src/screens/LegalScreens.tsx:180` — <P>All subscription purchases are managed by Apple App Store or Google Play Store. Refund requests must be submitted directly to the relevant store. We do not process refunds directly. For Apple App Store purchases, visi
+- `src/screens/LegalScreens.tsx:183` — <P>We reserve the right to change subscription pricing. Any price changes will be communicated to active subscribers in advance and will not affect the current billing period. Continued use of the subscription after a pr
+- `src/screens/LegalScreens.tsx:186` — <P>A single Premium subscription covers all child profiles on one device (up to 4 profiles). The subscription is not intended for sharing across multiple households. Platform-level Family Sharing features (where availabl
+- `src/screens/LegalScreens.tsx:189` — <P>For questions about your subscription, please contact us at: support@mutaigbo.app</P>
+- `src/screens/LegalScreens.tsx:211` — updated: {
+- `src/screens/OnboardingScreen.tsx:49` — { id: 'kaira', name: 'Kaira', subtitle: 'Sound star', description: 'Kaira loves sounds and songs.' },
+- `src/screens/OnboardingScreen.tsx:52` — { id: 'ekene', name: 'Ekene', subtitle: 'Word explorer', description: 'Ekene loves discovering new words.' },
+- `src/screens/OnboardingScreen.tsx:55` — { id: 'onyeka', name: 'Onyeka', subtitle: 'Culture buddy', description: 'Onyeka loves culture and family.' },
+- `src/screens/OnboardingScreen.tsx:56` — { id: 'chizara', name: 'Chizara', subtitle: 'Animal guide', description: 'Chizara loves animals and nature.' },
+- `src/screens/OnboardingScreen.tsx:65` — const now = new Date().toISOString();
+- `src/screens/OnboardingScreen.tsx:68` — id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+- `src/screens/OnboardingScreen.tsx:79` — goalDate: now,
+- `src/screens/OnboardingScreen.tsx:208` — <View style={s.parentCardPremium}>
+- `src/screens/OnboardingScreen.tsx:262` — <View style={s.termsCardPremium}>
+- `src/screens/OnboardingScreen.tsx:458` — termsCardPremium: {
+- `src/screens/OnboardingScreen.tsx:739` — parentCardPremium: {
+- `src/screens/PremiumScreen.tsx:1` — // ─── Premium Paywall Screen ───────────────────────────────────────────────────
+- `src/screens/PremiumScreen.tsx:11` — onUnlocked?: () => void;
+- `src/screens/PremiumScreen.tsx:15` — { icon: '📚', title: 'All lessons', text: 'Unlock every level from sounds to grammar' },
+- `src/screens/PremiumScreen.tsx:21` — export default function PremiumScreen({ onBack, onUnlocked }: Props) {
+- `src/screens/PremiumScreen.tsx:22` — const { setPremium } = useApp();
+- `src/screens/PremiumScreen.tsx:25` — setPremium(true);
+- `src/screens/PremiumScreen.tsx:26` — onUnlocked?.();
+- `src/screens/PremiumScreen.tsx:40` — <View style={s.heroBadge}><Text style={s.heroBadgeText}>MỤTA IGBO PREMIUM</Text></View>
+- `src/screens/PremiumScreen.tsx:46` — <Text style={s.heroTitle}>Unlock the full learning adventure</Text>
+- `src/screens/PremiumScreen.tsx:73` — <Text style={s.legal}>Subscriptions auto-renew unless cancelled 24h before renewal. Managed through your app store account.</Text>
+- `src/screens/PremiumScreen.tsx:196` — premiumBadge: {
+- `src/screens/PremiumScreen.tsx:205` — premiumBadgeText: {
+
+## Potential Green / Mature Color Hotspots
+
+- `src/app/index.tsx:74` — `#1B2A6B`
+- `src/app/index.tsx:540` — `#19B36B`
+- `src/app/index.tsx:774` — `#19B36B`
+- `src/app/index.tsx:827` — `#1B2A6B`
+- `src/app/index.tsx:903` — `#0B7F83`
+- `src/app/index.tsx:1340` — `#1B2A6B`
+- `src/app/index.tsx:1364` — `#1B2A6B`
+- `src/app/index.tsx:1402` — `#1B2A6B`
+- `src/app/index.tsx:1989` — `#1B2A6B`
+- `src/app/index.tsx:1999` — `#1B2A6B`
+- `src/app/index.tsx:2009` — `#1B2A6B`
+- `src/app/index.tsx:2022` — `#1B2A6B`
+- `src/app/index.tsx:2053` — `#1B2A6B`
+- `src/app/index.tsx:2082` — `#1B2A6B`
+- `src/app/index.tsx:2096` — `#1B2A6B`
+- `src/app/index.tsx:2125` — `#1B2A6B`
+- `src/app/index.tsx:2154` — `#1B2A6B`
+- `src/app/index.tsx:2179` — `#1B2A6B`
+- `src/app/index.tsx:2207` — `#1B2A6B`
+- `src/app/index.tsx:2228` — `#1B2A6B`
+- `src/app/index.tsx:2273` — `#1B2A6B`
+- `src/app/index.tsx:2303` — `#1B2A6B`
+- `src/app/index.tsx:2522` — `#1B2A6B`
+- `src/app/index.tsx:2565` — `#1B2A6B`
+- `src/app/index.tsx:2593` — `#1B2A6B`
+- `src/app/index.tsx:2615` — `#1B2A6B`
+- `src/app/index.tsx:2649` — `#1B2A6B`
+- `src/app/index.tsx:2662` — `#1B2A6B`
+- `src/app/index.tsx:2672` — `#1B2A6B`
+- `src/app/index.tsx:2699` — `#1B2A6B`
+- `src/app/index.tsx:2805` — `#1B2A6B`
+- `src/app/index.tsx:2839` — `#1B2A6B`
+- `src/app/index.tsx:2950` — `#064C2C`
+- `src/app/index.tsx:3084` — `#008A4A`
+- `src/app/index.tsx:3091` — `#1B2A6B`
+- `src/app/index.tsx:3312` — `#1B2A6B`
+- `src/app/index.tsx:3352` — `#1B2A6B`
+- `src/app/index.tsx:3508` — `#1B2A6B`
+- `src/app/index.tsx:3608` — `#1B2A6B`
+- `src/app/index.tsx:4026` — `#1B2A6B`
+- `src/app/index.tsx:4152` — `#1B2A6B`
+- `src/app/index.tsx:4178` — `#1B2A6B`
+- `src/app/index.tsx:4204` — `#1B2A6B`
+- `src/app/index.tsx:4269` — `#1B2A6B`
+- `src/app/index.tsx:4315` — `#1B2A6B`
+- `src/app/index.tsx:4362` — `#1B2A6B`
+- `src/app/index.tsx:4408` — `#1B2A6B`
+- `src/app/index.tsx:4469` — `#1B2A6B`
+- `src/app/index.tsx:4475` — `#1B2A6B`
+- `src/app/index.tsx:4519` — `#1B2A6B`
+- `src/app/index.tsx:4544` — `#1B2A6B`
+- `src/app/index.tsx:4551` — `#008A4A`
+- `src/app/index.tsx:4579` — `#1B2A6B`
+- `src/app/index.tsx:4593` — `#1B2A6B`
+- `src/app/index.tsx:4617` — `#1B2A6B`
+- `src/app/index.tsx:4646` — `#1B2A6B`
+- `src/app/index.tsx:4669` — `#1B2A6B`
+- `src/app/index.tsx:4716` — `#008A4A`
+- `src/app/index.tsx:4729` — `#1B2A6B`
+- `src/app/index.tsx:4858` — `#1B2A6B`
+- `src/app/index.tsx:4889` — `#1B2A6B`
+- `src/app/index.tsx:4906` — `#1B2A6B`
+- `src/app/index.tsx:5041` — `#1B2A6B`
+- `src/app/index.tsx:5088` — `#1B2A6B`
+- `src/app/index.tsx:5115` — `#1B2A6B`
+- `src/app/index.tsx:5136` — `#1B2A6B`
+- `src/app/index.tsx:5142` — `#19B765`
+- `src/app/index.tsx:5158` — `#19B765`
+- `src/app/index.tsx:5182` — `#1B2A6B`
+- `src/app/index.tsx:5203` — `#1B2A6B`
+- `src/app/index.tsx:5230` — `#1B2A6B`
+- `src/app/index.tsx:5248` — `#1B2A6B`
+- `src/app/index.tsx:5286` — `#1B2A6B`
+- `src/app/index.tsx:5314` — `#1B2A6B`
+- `src/app/index.tsx:5335` — `#19B765`
+- `src/app/index.tsx:5345` — `#1B2A6B`
+- `src/app/index.tsx:5353` — `#1B2A6B`
+- `src/app/index.tsx:5369` — `#1B2A6B`
+- `src/theme/kidsTheme.ts:27` — `#1B2A6B`
+- `src/theme/kidsTheme.ts:30` — `#1B2A6B`
+- `src/theme/kidsTheme.ts:53` — `#1B2A6B`
+- `src/theme/kidsTheme.ts:66` — `#1B2A6B`
+- `src/theme/kidsTheme.ts:73` — `#1B2A6B`
+
+## Review Decisions
+
+- Keep green only where it supports Igbo/nature identity, but avoid dark mature forest-green dominance.
+- Prefer kid-centric backgrounds: cream, sky blue, mango yellow, soft purple, coral, mint, playful card gradients.
+- Keep legal/privacy screens clear, but soften visible UI chrome where possible.
+- Remove or hide aggressive premium language during free beta.
+- Content must remain Central Igbo, kid-safe, and manually reviewable.
+
+## Next Patch Candidates
+
+1. Replace mature/dark green-heavy surfaces with brighter kid palette.
+2. Normalize screen backgrounds across Home, Lesson Path, Play Zone, Quiz, Settings, Parent Center.
+3. Review lesson vocabulary for kid-safe language and natural Central Igbo.
+4. Add content source notes, including Learn Entry as reference-only, not final authority.
+5. Add Play Store content checklist.

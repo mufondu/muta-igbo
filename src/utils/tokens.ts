@@ -10,8 +10,8 @@ export function rs(size: number): number {
 export const SCREEN = { W: SCREEN_W, H: Dimensions.get('window').height };
 
 export const COLOR = {
-  forestDark:  '#0D3320', forest: '#1A5C3A', forestMid: '#2E7D52',
-  forestLight: '#D4F0E0', forestPale: '#F0FAF4',
+  forestDark:  '#1B2A6B', forest: '#7A45D8', forestMid: '#854CE6',
+  forestLight: '#F0E3FF', forestPale: '#FFF8E7',
   gold: '#D4A12A', goldLight: '#FFF6D6', goldBorder: '#F0C84A',
   clay: '#C05A22', clayLight: '#FDF0E8', clayBright: '#E8732A',
   sky: '#1878C8', skyLight: '#E8F3FC', skyBorder: '#A8C8F0',
