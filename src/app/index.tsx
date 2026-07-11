@@ -223,13 +223,17 @@ function shuffle<T>(arr: T[]): T[] { return [...arr].sort(() => Math.random() - 
 function randomFrom<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
 
 // ─── Shared components ────────────────────────────────────────────────────────
-function InnerHeader({ title, onBack, accent = COLOR.gold }: { title: string; onBack: () => void; accent?: string }) {
+function InnerHeader({ title, onBack }: { title: string; onBack: () => void; accent?: string }) {
   return (
-    <View style={[sh.innerHeader, { backgroundColor: COLOR.forestDark }]}>
-      <TouchableOpacity onPress={onBack} style={sh.backBtn} accessibilityLabel="Go back">
-        <Text style={[sh.backText, { color: accent }]}>⬅</Text>
+    <View style={sh.innerHeader}>
+      <TouchableOpacity onPress={onBack} style={sh.innerBackBtn} accessibilityLabel="Go back" activeOpacity={0.84}>
+        <Text style={sh.innerBackText}>‹</Text>
       </TouchableOpacity>
-      <Text style={sh.innerTitle} numberOfLines={1}>{title}</Text>
+
+      <View style={sh.innerTitleWrap}>
+        <Text style={sh.innerKicker}>MỤTA CHALLENGE</Text>
+        <Text style={sh.innerTitle}>{title}</Text>
+      </View>
     </View>
   );
 }
@@ -3081,26 +3085,48 @@ const sh = StyleSheet.create({
   premiumTagText: { fontSize: 10 },
 
   innerHeader: {
-    backgroundColor: '#008A4A',
-    paddingHorizontal: 24,
-    paddingTop: 34,
-    paddingBottom: 28,
-    borderBottomLeftRadius: 34,
-    borderBottomRightRadius: 34,
-    overflow: 'hidden',
-    shadowColor: '#1B2A6B',
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACE.md,
+    backgroundColor: '#1B2A6B',
+    paddingHorizontal: SPACE.md,
+    paddingVertical: 18,
+    minHeight: 118,
+  },
+  innerBackBtn: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.10)',
+    flexShrink: 0,
+  },
+  innerBackText: {
+    fontSize: 36,
+    lineHeight: 36,
+    color: '#FFD33D',
+    fontWeight: '900',
+  },
+  innerTitleWrap: {
+    flex: 1,
+    minWidth: 0,
+  },
+  innerKicker: {
+    fontSize: FONT.xs,
+    color: '#FFD33D',
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 3,
   },
   backBtn: { padding: 4 },
   backText: { fontSize: 22 },
   innerTitle: {
-    color: '#FFFFFF',
-    fontSize: 30,
-    lineHeight: 35,
+    fontSize: FONT.xxl,
+    color: '#FFF8E7',
     fontWeight: '900',
+    flex: 1,
     letterSpacing: -0.6,
   },
 
