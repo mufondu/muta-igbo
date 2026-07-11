@@ -126,6 +126,8 @@ const SFX = {
   wrong: require('../../assets/audio/sfx/wrong.wav'),
   reward: require('../../assets/audio/sfx/reward.wav'),
   levelComplete: require('../../assets/audio/sfx/level_complete.wav'),
+  voiceCorrectEe: require('../../assets/audio/sfx/voice_correct_ee.m4a'),
+  voiceWrongMba: require('../../assets/audio/sfx/voice_wrong_mba.m4a'),
 } as const;
 
 type SfxKey = keyof typeof SFX;
@@ -133,6 +135,19 @@ type SfxKey = keyof typeof SFX;
 function playSfx(key: SfxKey, enabled = true) {
   if (!enabled) return;
   void playNativeAudio(SFX[key]);
+}
+
+function playSfxSequence(keys: SfxKey[], enabled = true, delayMs = 300) {
+  if (!enabled) return;
+
+  keys.forEach((key, index) => {
+    if (index === 0) {
+      playSfx(key, true);
+      return;
+    }
+
+    setTimeout(() => playSfx(key, true), delayMs * index);
+  });
 }
 
 function playSoundFallback(label: string, enabled = true) {
@@ -1574,7 +1589,7 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
 
     if (sel.igbo === question.igbo) {
       const nextStreak = streak + 1;
-      playSfx('correct', state.soundEnabled);
+      playSfx('voiceCorrectEe', state.soundEnabled);
       setStreak(nextStreak);
       setRound(current => current + 1);
       updateQuizBest(nextStreak);
@@ -1585,7 +1600,7 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
       return;
     }
 
-    playSfx('wrong', state.soundEnabled);
+    playSfx('voiceWrongMba', state.soundEnabled);
     setStreak(0);
     setFeedback({
       text: `Almost. That means ${getQuizOptionLabel(sel)}.`,
