@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import {
   Alert,
+  Modal,
   ScrollView,
   StyleSheet,
   Switch,
@@ -89,6 +90,7 @@ export default function SettingsScreen({ onBack }: Props) {
     addProfile,
     deleteProfile,
     renameProfile,
+    setProfileAvatar,
   } = useApp();
 
   const [legalPage, setLegalPage] = useState<LegalPage>(null);
@@ -97,6 +99,9 @@ export default function SettingsScreen({ onBack }: Props) {
   const [newAvatar, setNewAvatar] = useState<AvatarEmoji>('adaeze');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
+  const [editAvatar, setEditAvatar] = useState<AvatarEmoji>('adaeze');
+  const [resetModalOpen, setResetModalOpen] = useState(false);
+  const [resetText, setResetText] = useState('');
 
   if (legalPage === 'terms') return <TermsScreen onBack={() => setLegalPage(null)} />;
   if (legalPage === 'privacy') return <PrivacyScreen onBack={() => setLegalPage(null)} />;
@@ -133,21 +138,16 @@ export default function SettingsScreen({ onBack }: Props) {
   }
 
   function confirmReset() {
-    Alert.alert(
-      'Reset all progress?',
-      'This deletes all child profiles, streaks, words learned, and progress. This cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Reset',
-          style: 'destructive',
-          onPress: () => {
-            resetAll();
-            Alert.alert('Done', 'All app data has been cleared.');
-          },
-        },
-      ],
-    );
+    setResetText('');
+    setResetModalOpen(true);
+  }
+
+  function performReset() {
+    if (resetText.trim().toLowerCase() !== 'reset') return;
+    setResetModalOpen(false);
+    setResetText('');
+    resetAll();
+    Alert.alert('Done', 'All app data has been cleared.');
   }
 
   function confirmDelete(id: string, name: string) {
@@ -189,6 +189,7 @@ export default function SettingsScreen({ onBack }: Props) {
     }
 
     renameProfile(editingId, name);
+    setProfileAvatar(editingId, editAvatar);
     setEditingId(null);
     setEditName('');
   }
@@ -274,10 +275,10 @@ export default function SettingsScreen({ onBack }: Props) {
                 {index > 0 ? <MiniDivider /> : null}
 
                 {editingId === profile.id ? (
-                  <View style={s.editProfileCard}>
-                    <AvatarIllustration avatar={profile.avatar} size={52} />
+                  <View style={s.addForm}>
+                    <Text style={s.formLabel}>Child name</Text>
                     <TextInput
-                      style={s.editInput}
+                      style={s.nameInput}
                       value={editName}
                       onChangeText={setEditName}
                       autoFocus
@@ -286,9 +287,41 @@ export default function SettingsScreen({ onBack }: Props) {
                       placeholder="Child name"
                       placeholderTextColor={KIDS_COLOR.textSoft}
                     />
-                    <TouchableOpacity onPress={saveRename} style={s.smallSaveBtn} activeOpacity={0.86}>
-                      <Text style={s.smallSaveText}>Save</Text>
-                    </TouchableOpacity>
+
+                    <Text style={s.formLabel}>Learning friend</Text>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={s.avatarRoster}
+                    >
+                      {MUTA_FRIENDS.map(friend => (
+                        <TouchableOpacity
+                          key={friend.id}
+                          style={[
+                            s.avatarRosterCard,
+                            editAvatar === friend.id && s.avatarRosterCardActive,
+                          ]}
+                          onPress={() => setEditAvatar(friend.id as MutaFriendId)}
+                          activeOpacity={0.88}
+                        >
+                          <AvatarIllustration avatar={friend.id} size={66} />
+                          <Text style={s.avatarRosterName} numberOfLines={1}>{friend.name}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+
+                    <View style={s.formActions}>
+                      <TouchableOpacity style={s.saveChildBtn} onPress={saveRename} activeOpacity={0.86}>
+                        <Text style={s.saveChildText}>Save changes</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={s.cancelChildBtn}
+                        onPress={() => { setEditingId(null); setEditName(''); }}
+                        activeOpacity={0.86}
+                      >
+                        <Text style={s.cancelChildText}>Cancel</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 ) : (
                   <View style={s.profileCard}>
@@ -305,6 +338,7 @@ export default function SettingsScreen({ onBack }: Props) {
                         onPress={() => {
                           setEditingId(profile.id);
                           setEditName(profile.name);
+                          setEditAvatar(profile.avatar);
                         }}
                         style={s.iconButton}
                         activeOpacity={0.82}
@@ -506,6 +540,52 @@ export default function SettingsScreen({ onBack }: Props) {
           © 2026 MekaOps. All rights reserved.
         </Text>
       </ScrollView>
+
+      <Modal
+        visible={resetModalOpen}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setResetModalOpen(false)}
+      >
+        <View style={s.resetBackdrop}>
+          <View style={s.resetCard}>
+            <Text style={s.resetEmoji}>⚠️</Text>
+            <Text style={s.resetTitle}>Reset all progress?</Text>
+            <Text style={s.resetBody}>
+              This permanently deletes all child profiles, streaks, words learned, and
+              progress. This cannot be undone.
+            </Text>
+            <Text style={s.resetLabel}>Type <Text style={s.resetLabelStrong}>reset</Text> to confirm</Text>
+            <TextInput
+              style={s.resetInput}
+              value={resetText}
+              onChangeText={setResetText}
+              placeholder="reset"
+              placeholderTextColor={KIDS_COLOR.textSoft}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+
+            <View style={s.resetActions}>
+              <TouchableOpacity
+                style={s.resetCancelBtn}
+                onPress={() => { setResetModalOpen(false); setResetText(''); }}
+                activeOpacity={0.86}
+              >
+                <Text style={s.resetCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.resetConfirmBtn, resetText.trim().toLowerCase() !== 'reset' && s.resetConfirmBtnDisabled]}
+                onPress={performReset}
+                disabled={resetText.trim().toLowerCase() !== 'reset'}
+                activeOpacity={0.86}
+              >
+                <Text style={s.resetConfirmText}>Reset everything</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -514,6 +594,53 @@ const s = StyleSheet.create({
   iconButtonTextDanger: {
     color: KIDS_COLOR.coral,
   },
+  resetBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(27, 42, 107, 0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: SPACE.lg,
+  },
+  resetCard: {
+    width: '100%',
+    maxWidth: 380,
+    backgroundColor: KIDS_COLOR.white,
+    borderRadius: RADIUS.xl,
+    padding: SPACE.xl,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: KIDS_COLOR.softCoral,
+    ...KIDS_SHADOW.softCard,
+  },
+  resetEmoji: { fontSize: 40, marginBottom: SPACE.sm },
+  resetTitle: { fontSize: FONT.xxl, fontWeight: '900', color: KIDS_COLOR.textPrimary, textAlign: 'center' },
+  resetBody: {
+    fontSize: FONT.sm, color: KIDS_COLOR.textSecondary,
+    textAlign: 'center', lineHeight: 20, marginTop: SPACE.sm, marginBottom: SPACE.md,
+  },
+  resetLabel: { fontSize: FONT.sm, color: KIDS_COLOR.textSecondary, marginBottom: 6, alignSelf: 'flex-start' },
+  resetLabelStrong: { fontWeight: '900', color: KIDS_COLOR.coral },
+  resetInput: {
+    width: '100%',
+    borderWidth: 2, borderColor: KIDS_COLOR.borderSoft,
+    borderRadius: RADIUS.md, paddingHorizontal: SPACE.md, paddingVertical: 12,
+    fontSize: FONT.lg, fontWeight: '800', color: KIDS_COLOR.textPrimary,
+    backgroundColor: KIDS_COLOR.palmCream,
+  },
+  resetActions: { flexDirection: 'row', gap: SPACE.sm, marginTop: SPACE.lg, width: '100%' },
+  resetCancelBtn: {
+    flex: 1, minHeight: 48, borderRadius: RADIUS.pill,
+    alignItems: 'center', justifyContent: 'center',
+    backgroundColor: KIDS_COLOR.palmCream, borderWidth: 1.5, borderColor: KIDS_COLOR.borderSoft,
+  },
+  resetCancelText: { fontSize: FONT.md, fontWeight: '800', color: KIDS_COLOR.textSecondary },
+  resetConfirmBtn: {
+    flex: 1, minHeight: 48, borderRadius: RADIUS.pill,
+    alignItems: 'center', justifyContent: 'center',
+    backgroundColor: KIDS_COLOR.coral,
+  },
+  resetConfirmBtnDisabled: { opacity: 0.4 },
+  resetConfirmText: { fontSize: FONT.md, fontWeight: '900', color: KIDS_COLOR.white },
   root: {
     flex: 1,
     backgroundColor: KIDS_COLOR.palmCream,

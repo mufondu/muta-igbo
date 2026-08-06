@@ -61,6 +61,10 @@ const LEVEL_ICONS: Record<string, any> = {
   '3A': require('../../assets/illustrations/custom/levels/animals-nature.png'),
   '2A': require('../../assets/illustrations/custom/levels/verbs-actions.png'),
   '1A': require('../../assets/illustrations/custom/levels/grammar-language.png'),
+  // Everyday Phrasebook: megaphone on the same beige clay-tile frame as the other
+  // level icons (composited from adventures/say-it.png) so it matches art direction
+  // and stays distinct from 6A's waving-boy greetings icon.
+  'PB': require('../../assets/illustrations/custom/levels/phrasebook.png'),
 };
 
 function AppBackButton({ onPress, style }: { onPress: () => void; style?: any }) {
@@ -272,7 +276,15 @@ export default function MutaIgboApp() {
   }, []);
 
   function openInner(view: InnerView, levelId?: string, sectionId?: string) {
+    // The paywall must sit behind the parent gate to comply with the App Store
+    // Kids Category and Google Play Families policies. Everything else is open.
+    if (view === 'premium') { setGate('premium'); return; }
     setNav({ inner: view, levelId: levelId ?? '7A', sectionId: sectionId ?? '' });
+  }
+
+  // Opens the paywall directly, bypassing the gate (only after it is passed).
+  function showPremium() {
+    setNav({ inner: 'premium', levelId: '7A', sectionId: '' });
   }
 
   function openAdventureInner(view: InnerView) {
@@ -361,6 +373,12 @@ export default function MutaIgboApp() {
         {inner === 'premium' && <PremiumScreen onBack={closeInner} />}
         {inner === 'terms'   && <TermsScreen   onBack={closeInner} />}
         {inner === 'privacy' && <PrivacyScreen  onBack={closeInner} />}
+
+        <ParentGate
+          visible={gate === 'premium'}
+          onPass={() => { setGate(null); showPremium(); }}
+          onCancel={() => setGate(null)}
+        />
       </SafeAreaView>
     );
   }
@@ -392,7 +410,7 @@ export default function MutaIgboApp() {
         onPass={() => {
           const target = gate; setGate(null);
           if (target === 'settings') setTab('settings');
-          if (target === 'premium') openInner('premium');
+          if (target === 'premium') showPremium();
         }}
         onCancel={() => setGate(null)}
       />
@@ -1158,18 +1176,25 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
   levelId: string; onBack: () => void; onPremium: () => void;
 }) {
   const { state, activeProfile, updateProgress , recordActivity } = useApp();
-  const level = ALL_LEVELS.find(l => l.id === levelId)!;
-  const lc = LEVEL_COLOR[levelId];
+  const level = ALL_LEVELS.find(l => l.id === levelId) ?? ALL_LEVELS[0];
+  const lc = LEVEL_COLOR[levelId] ?? LEVEL_COLOR[ALL_LEVELS[0].id] ?? LEVEL_COLOR['7A'];
   const [activeSection, setActiveSection] = useState(0);
-  const section = level.sections[activeSection];
+  const section = level.sections[Math.min(activeSection, level.sections.length - 1)] ?? level.sections[0];
   const isAlphabet = levelId === '7A' && section.id === 'alphabet';
 
+  // Record that the child opened this level (daily-goal activity) once on mount.
   useEffect(() => {
-    const currentProfile = state.profiles.find(p => p.id === state.activeProfileId);
-    const current = currentProfile?.levelProgress[levelId] ?? 0;
-    if (current < 0.1) updateProgress(levelId, 0.1);
     recordActivity();
   }, []);
+
+  // Progress reflects how far through the level's sections the child has reached.
+  // updateProgress uses Math.max, so revisiting earlier sections never lowers it,
+  // and viewing the final section brings the level to 100%.
+  useEffect(() => {
+    const total = level.sections.length;
+    const fraction = total > 0 ? (activeSection + 1) / total : 1;
+    updateProgress(levelId, fraction);
+  }, [activeSection, levelId]);
 
   return (
     <View style={{ flex: 1, backgroundColor: COLOR.bg }}>
@@ -1262,7 +1287,16 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
             {section.items.map((item, i) => {
               const numbers = isNumberLessonItem(levelId, item.english);
               const grammar = isGrammarLevel(levelId);
-              const textOnly = false;
+              // Verbs & Actions (2A): actions are hard to depict distinctly and the
+              // same illustration repeated across tenses/verbs looked duplicated, so
+              // this level uses clean text cards (Igbo + English + example).
+              // Verbs & Actions (2A) + Greetings & Phrases (both sections of Level 6A)
+              // render as clean text cards. Greetings/useful-words are phrases whose
+              // emoji don't actually depict the word, so no picture is shown.
+              const textOnly =
+                levelId === '2A' ||
+                section.id === 'greetings' ||
+                section.id === 'useful_phrases';
               const singularPlural = grammar && isSingularPluralSection(section.title);
               const [igboLeft, igboRight] = splitLessonPair(item.igbo);
               const [englishLeft, englishRight] = splitLessonPair(item.english);
@@ -1285,6 +1319,9 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
 
                       <View style={sh.numberCopy}>
                         <Text style={sh.numberIgbo}>{item.igbo}</Text>
+                        {!!item.pronunciation && (
+                          <Text style={{ fontSize: FONT.sm, color: COLOR.textSecond, fontStyle: 'italic', marginTop: 1 }}>🔊 {item.pronunciation}</Text>
+                        )}
                         <Text style={sh.numberEnglish}>{getNumberEnglish(item.english)}</Text>
                         <View style={[sh.numberMiniPill, { backgroundColor: numberColor.bg }]}>
                           <Text style={[sh.numberMiniText, { color: numberColor.accent }]}>
@@ -1359,6 +1396,9 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                     >
                       <View style={{ flex: 1 }}>
                         <Text style={sh.vocabIgbo}>{item.igbo}</Text>
+                        {!!item.pronunciation && (
+                          <Text style={{ fontSize: FONT.sm, color: COLOR.textSecond, fontStyle: 'italic', marginTop: 1 }}>🔊 {item.pronunciation}</Text>
+                        )}
                         <Text style={sh.vocabEn}>{item.english}</Text>
                         {item.example && (
                           <Text style={sh.vocabExample}>e.g. {item.example}</Text>
@@ -1390,6 +1430,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                           igbo={item.igbo}
                           english={item.english}
                           emoji={item.emoji}
+                          partOfSpeech={item.partOfSpeech}
                           backgroundColor="transparent"
                           size={88}
                         />
@@ -1397,6 +1438,9 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
                     )}
                     <View style={sh.vocabTextBlock}>
                       <Text style={sh.vocabIgbo}>{item.igbo}</Text>
+                      {!!item.pronunciation && (
+                        <Text style={{ fontSize: FONT.sm, color: COLOR.textSecond, fontStyle: 'italic', marginTop: 1 }}>🔊 {item.pronunciation}</Text>
+                      )}
                       <Text style={sh.vocabEn}>{item.english}</Text>
                       {item.example && (
                         <Text style={sh.vocabExample}>e.g. {item.example}</Text>
@@ -1555,7 +1599,7 @@ function getQuizOptionLabel(item: { english?: string }): string {
 
 // ─── QUIZ SCREEN ──────────────────────────────────────────────────────────────
 function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () => void }) {
-  const { state, updateQuizBest, addWordsLearned } = useApp();
+  const { state, updateQuizBest, markWordLearned } = useApp();
   const hasFullAccess = hasPremiumEntitlement(state.isPremium);
   const pool = buildQuizPool(hasFullAccess);
   const [question, setQuestion] = useState<VocabItem | null>(null);
@@ -1564,6 +1608,11 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
   const [round, setRound] = useState(1);
   const [feedback, setFeedback] = useState<{ text: string; correct: boolean } | null>(null);
   const wiggle = useWiggle();
+
+  // Cancel the pending "next question" timer if the child leaves the quiz
+  // before it fires, so we never setState on an unmounted screen.
+  const nextTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (nextTimer.current) clearTimeout(nextTimer.current); }, []);
 
   const next = useCallback(() => {
     const correct = randomFrom(pool);
@@ -1595,10 +1644,10 @@ function QuizScreen({ onBack, onPremium }: { onBack: () => void; onPremium: () =
       setStreak(nextStreak);
       setRound(current => current + 1);
       updateQuizBest(nextStreak);
-      addWordsLearned(1);
+      markWordLearned(question.igbo);
       setFeedback({ text: 'Correct. Keep going!', correct: true });
       wiggle.trigger();
-      setTimeout(next, 950);
+      nextTimer.current = setTimeout(next, 950);
       return;
     }
 
@@ -1719,62 +1768,19 @@ function SayItBackScreen({ onBack }: { onBack: () => void }) {
   const { activeProfile } = useApp();
   const pool = ALL_LEVELS.find(l => l.id === '4A')!.sections[0].items;
   const [target, setTarget]       = useState(pool[0]);
-  const [recording, setRec]       = useState(false);
-  const [done, setDone]           = useState(false);
-  const [recordingObj, setRecObj] = useState<any>(null);
-  const [playbackUri, setPlayUri] = useState<string | null>(null);
+  const [myTurn, setMyTurn]       = useState(false);
   const profileName = activeProfile?.name ?? 'you';
 
   function next() {
     setTarget(randomFrom(pool));
-    setRec(false); setDone(false);
-    setPlayUri(null); setRecObj(null);
+    setMyTurn(false);
   }
   useEffect(() => { next(); }, []);
 
-  async function toggleMic() {
-    if (!Audio) {
-      Alert.alert('Audio unavailable', 'Please install expo-av to enable recording.');
-      return;
-    }
-    if (!recording) {
-      try {
-        const perm = await Audio.requestPermissionsAsync();
-        if (!perm.granted) {
-          Alert.alert('Permission needed', 'Please allow microphone access in your device settings.');
-          return;
-        }
-        await Audio.setAudioModeAsync({ allowsRecordingIOS: true, playsInSilentModeIOS: true });
-        const { recording: rec } = await Audio.Recording.createAsync(
-          Audio.RecordingOptionsPresets.HIGH_QUALITY
-        );
-        setRecObj(rec);
-        setRec(true); setDone(false);
-      } catch (e) {
-        Alert.alert('Mic error', 'Could not start recording. Check microphone permissions in Settings.');
-      }
-    } else {
-      try {
-        await recordingObj?.stopAndUnloadAsync();
-        const uri = recordingObj?.getURI() ?? null;
-        setPlayUri(uri);
-        setRec(false); setDone(true);
-      } catch (e) {
-        setRec(false); setDone(false);
-      }
-    }
-  }
-
-  async function playback() {
-    if (!Audio || !playbackUri) return;
-    try {
-      await Audio.setAudioModeAsync({ allowsRecordingIOS: false, playsInSilentModeIOS: true });
-      const { sound } = await Audio.Sound.createAsync({ uri: playbackUri });
-      await sound.playAsync();
-    } catch (e) {
-      Alert.alert('Playback error', 'Could not play the recording.');
-    }
-  }
+  // NOTE: "Say It Back" intentionally does NOT record audio. It is a listen-and-repeat
+  // speaking practice: the child hears the word, says it aloud, and moves on. This keeps
+  // the app compliant with the privacy policy (no audio is recorded, stored, or transmitted)
+  // and requires no microphone permission — important for a young children's app.
 
   return (
     <View style={{ flex: 1, backgroundColor: COLOR.bg }}>
@@ -1786,6 +1792,9 @@ function SayItBackScreen({ onBack }: { onBack: () => void }) {
         <View style={sh.sayCard}>
           <Text style={{ fontSize: 64, marginBottom: 8 }}>{target.emoji}</Text>
           <Text style={sh.sayIgbo}>{target.igbo}</Text>
+          {!!target.pronunciation && (
+            <Text style={{ fontSize: FONT.md, color: COLOR.textSecond, fontStyle: 'italic', marginTop: 2 }}>🔊 {target.pronunciation}</Text>
+          )}
           <Text style={sh.sayEn}>({target.english})</Text>
           {target.example && (
             <Text style={sh.vocabExample}>"{target.example}"</Text>
@@ -1797,17 +1806,17 @@ function SayItBackScreen({ onBack }: { onBack: () => void }) {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          style={[sh.micBtn, recording && sh.micBtnRecording]}
-          onPress={toggleMic}
-          accessibilityLabel={recording ? 'Stop recording' : 'Start recording'}
+          style={[sh.micBtn, myTurn && sh.micBtnRecording]}
+          onPress={() => setMyTurn(true)}
+          accessibilityLabel="Say it out loud"
         >
-          <Text style={{ fontSize: 36 }}>{recording ? '🟥' : '🎙️'}</Text>
-          <Text style={sh.micStatus}>{recording ? `Recording ${profileName}...` : 'Tap to speak'}</Text>
+          <Text style={{ fontSize: 36 }}>{myTurn ? '🌟' : '🗣️'}</Text>
+          <Text style={sh.micStatus}>{myTurn ? `Great job, ${profileName}!` : 'Now say it out loud!'}</Text>
         </TouchableOpacity>
-        {done && (
+        {myTurn && (
           <View style={sh.playbackRow}>
-            <TouchableOpacity style={sh.pbBtn} onPress={playback}>
-              <Text style={sh.pbBtnText}>▶️ Play back</Text>
+            <TouchableOpacity style={sh.pbBtn} onPress={() => playSoundFallback(target.igbo)}>
+              <Text style={sh.pbBtnText}>🔊 Hear it again</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[sh.pbBtn, { backgroundColor: COLOR.clay }]} onPress={next}>
               <Text style={sh.pbBtnText}>Next word ➡️</Text>

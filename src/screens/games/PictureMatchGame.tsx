@@ -21,80 +21,73 @@ type RoundItem = VocabItem & {
   matchId: string;
 };
 
-const VISUAL_SECTION_KEYWORDS = [
-  'family',
-  'body',
-  'animal',
-  'home',
-  'food',
+type PictureMatchEntry = {
+  igbo: string;
+  english: string;
+  category: 'family' | 'body' | 'animal' | 'verb' | 'object';
+};
+
+const PICTURE_MATCH_ALLOWLIST: PictureMatchEntry[] = [
+  // Family
+  { igbo: 'Nna', english: 'Father / Dad', category: 'family' },
+  { igbo: 'Nne', english: 'Mother / Mum', category: 'family' },
+  { igbo: 'Nna ochie', english: 'Grandfather', category: 'family' },
+  { igbo: 'Nne ochie', english: 'Grandmother', category: 'family' },
+  { igbo: 'Nwanne nwoke', english: 'Brother', category: 'family' },
+  { igbo: 'Nwanne nwanyị', english: 'Sister', category: 'family' },
+  { igbo: 'Nwa', english: 'Child', category: 'family' },
+  { igbo: 'Ụmụ', english: 'Children', category: 'family' },
+  { igbo: 'Nwanne nna', english: 'Uncle', category: 'family' },
+  { igbo: 'Nwanne nne', english: 'Aunt', category: 'family' },
+
+  // Body
+  { igbo: 'Isi', english: 'Head', category: 'body' },
+  { igbo: 'Anya', english: 'Eyes', category: 'body' },
+  { igbo: 'Imi', english: 'Nose', category: 'body' },
+  { igbo: 'Ọnụ', english: 'Mouth', category: 'body' },
+  { igbo: 'Ntị', english: 'Ear', category: 'body' },
+  { igbo: 'Aka', english: 'Hand', category: 'body' },
+  { igbo: 'Ụkwụ', english: 'Leg', category: 'body' },
+  { igbo: 'Ire', english: 'Tongue', category: 'body' },
+  { igbo: 'Eze', english: 'Teeth', category: 'body' },
+
+  // Animals
+  { igbo: 'Nkịta', english: 'Dog', category: 'animal' },
+  { igbo: 'Nwamba', english: 'Cat', category: 'animal' },
+  { igbo: 'Ọkụkọ', english: 'Chicken', category: 'animal' },
+  { igbo: 'Ewu', english: 'Goat', category: 'animal' },
+  { igbo: 'Azụ', english: 'Fish', category: 'animal' },
+  { igbo: 'Nnụnụ', english: 'Bird', category: 'animal' },
+  { igbo: 'Agụ', english: 'Leopard', category: 'animal' },
+  { igbo: 'Ọdụm', english: 'Lion', category: 'animal' },
+  { igbo: 'Enyi', english: 'Elephant', category: 'animal' },
+  { igbo: 'Oke bekee', english: 'Rabbit', category: 'animal' },
+  { igbo: 'Oke', english: 'Rat', category: 'animal' },
+  { igbo: 'Eke', english: 'Python', category: 'animal' },
+  { igbo: 'Mbe', english: 'Tortoise', category: 'animal' },
+  { igbo: 'Ụkpana', english: 'Grasshopper', category: 'animal' },
+
+  // Clear action verbs
+  { igbo: 'Rie', english: 'Eat', category: 'verb' },
+  { igbo: 'Ịṅụ', english: 'Drink', category: 'verb' },
+  { igbo: 'Gbaa ọsọ', english: 'Run', category: 'verb' },
+  { igbo: 'Rahụ ụra', english: 'Sleep', category: 'verb' },
 ];
 
-const VISUAL_WORD_KEYWORDS = [
-  'father',
-  'mother',
-  'grandfather',
-  'grandmother',
-  'brother',
-  'sister',
-  'child',
-  'children',
-  'uncle',
-  'aunt',
-  'cousin',
-  'head',
-  'eye',
-  'nose',
-  'mouth',
-  'ear',
-  'hand',
-  'leg',
-  'toe',
-  'teeth',
-  'tongue',
-  'dog',
-  'cat',
-  'chicken',
-  'goat',
-  'fish',
-  'bird',
-  'lion',
-  'leopard',
-  'elephant',
-  'rabbit',
-  'rat',
-  'snake',
-  'python',
-  'tortoise',
-  'grasshopper',
-  'house',
-  'home',
-  'water',
-  'book',
-  'food',
-];
+const PICTURE_MATCH_KEYS = new Set(
+  PICTURE_MATCH_ALLOWLIST.map(item => `${item.igbo.toLowerCase()}|${item.english.toLowerCase()}`),
+);
+
 
 function shuffle<T>(items: T[]): T[] {
   return [...items].sort(() => Math.random() - 0.5);
 }
 
-function isVisualItem(item: VocabItem, sectionTitle: string): boolean {
-  const english = item.english.toLowerCase();
-  const igbo = item.igbo.toLowerCase();
-  const section = sectionTitle.toLowerCase();
-
+function isVisualItem(item: VocabItem, _sectionTitle: string): boolean {
   if (!item.igbo || !item.english) return false;
 
-  // Exclude number rows, phrases, abstract difficulty words, and long sentence prompts.
-  if (/\d/.test(item.english)) return false;
-  if (english.includes('hard') || english.includes('easy')) return false;
-  if (english.includes('go to') || english.includes('school')) return false;
-  if (english.length > 34) return false;
-  if (igbo.split(/\s+/).length > 3 && !english.includes('grand')) return false;
-
-  const sectionLooksVisual = VISUAL_SECTION_KEYWORDS.some(keyword => section.includes(keyword));
-  const wordLooksVisual = VISUAL_WORD_KEYWORDS.some(keyword => english.includes(keyword));
-
-  return sectionLooksVisual || wordLooksVisual;
+  const key = `${item.igbo.trim().toLowerCase()}|${item.english.trim().toLowerCase()}`;
+  return PICTURE_MATCH_KEYS.has(key);
 }
 
 function buildPool(): RoundItem[] {
@@ -147,7 +140,7 @@ export default function PictureMatchGame({ onBack }: Props) {
 
   const selectedItem = items.find(item => item.matchId === selectedId);
   const matchedCount = items.filter(item => matched[item.matchId]).length;
-  const complete = matchedCount === items.length;
+  const complete = items.length > 0 && matchedCount === items.length;
 
   const startNextRound = React.useCallback(() => {
     const nextItems = getRoundItems();
@@ -223,7 +216,7 @@ export default function PictureMatchGame({ onBack }: Props) {
           </View>
 
           <View style={s.progressTrack}>
-            <View style={[s.progressFill, { width: `${(matchedCount / items.length) * 100}%` as any }]} />
+            <View style={[s.progressFill, { width: `${items.length ? (matchedCount / items.length) * 100 : 0}%` as any }]} />
           </View>
         </View>
 

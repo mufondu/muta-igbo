@@ -12,7 +12,8 @@ export interface Profile {
   lastActive: string;
   levelProgress: Record<string, number>;
   quizBest: number;
-  wordsLearned: number;
+  wordsLearned: number;        // unique-word count (kept in sync with learnedWords.length going forward)
+  learnedWords: string[];      // set of distinct Igbo words the child has answered correctly
   goalDate: string;        // date string of last goal activity
   goalCount: number;       // activities completed on goalDate
 }
@@ -51,6 +52,7 @@ export function makeProfile(name: string, avatar: AvatarEmoji): Profile {
     levelProgress: {},
     quizBest: 0,
     wordsLearned: 0,
+    learnedWords: [],
     goalDate: '',
     goalCount: 0,
   };
@@ -66,7 +68,18 @@ async function loadState(): Promise<AppState> {
     return {
       ...DEFAULT_STATE,
       ...parsed,
-      profiles: (parsed.profiles ?? []).map(p => ({ ...p, avatar: normalizeFriendId(p.avatar) })),
+      profiles: (parsed.profiles ?? []).map(p => ({
+        ...p,
+        avatar: normalizeFriendId(p.avatar),
+        streak: p.streak ?? 0,
+        lastActive: p.lastActive ?? '',
+        levelProgress: p.levelProgress ?? {},
+        quizBest: p.quizBest ?? 0,
+        wordsLearned: p.wordsLearned ?? 0,
+        learnedWords: p.learnedWords ?? [],
+        goalDate: p.goalDate ?? '',
+        goalCount: p.goalCount ?? 0,
+      })),
     };
   } catch { return DEFAULT_STATE; }
 }
@@ -82,12 +95,13 @@ interface AppContextValue {
   addProfile: (name: string, avatar: AvatarEmoji) => Profile;
   deleteProfile: (id: string) => void;
   renameProfile: (id: string, name: string) => void;
+  setProfileAvatar: (id: string, avatar: AvatarEmoji) => void;
   completeOnboarding: (profiles: Profile[]) => void;
   agreeToTerms: () => void;
   updateProgress: (levelId: string, progress: number) => void;
   updateQuizBest: (score: number) => void;
   incrementStreak: () => void;
-  addWordsLearned: (count: number) => void;
+  markWordLearned: (igbo: string) => void;
   recordActivity: () => void;
   setPremium: (val: boolean) => void;
   toggleSound: () => void;
@@ -145,6 +159,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }));
   }, [update]);
 
+  const setProfileAvatar = useCallback((id: string, avatar: AvatarEmoji) => {
+    update(s => ({
+      ...s,
+      profiles: s.profiles.map(p => p.id === id ? { ...p, avatar: normalizeFriendId(avatar) } : p),
+    }));
+  }, [update]);
+
   const completeOnboarding = useCallback((profiles: Profile[]) => {
     update(s => ({
       ...s,
@@ -179,24 +200,32 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [update]);
 
   const incrementStreak = useCallback(() => {
-    const today = new Date().toDateString();
+    const now = new Date();
+    const today = now.toDateString();
+    // Step back one CALENDAR day (not a fixed 24h) so daylight-saving transition
+    // days (23h/25h) don't miscompute "yesterday" and wrongly break a streak.
+    const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1).toDateString();
     update(s => ({
       ...s,
       profiles: s.profiles.map(p => {
         if (p.id !== s.activeProfileId) return p;
         if (p.lastActive === today) return p;
-        const yesterday = new Date(Date.now() - 86400000).toDateString();
         return { ...p, streak: p.lastActive === yesterday ? p.streak + 1 : 1, lastActive: today };
       }),
     }));
   }, [update]);
 
-  const addWordsLearned = useCallback((count: number) => {
+  const markWordLearned = useCallback((igbo: string) => {
+    const word = (igbo ?? '').trim();
+    if (!word) return;
     update(s => ({
       ...s,
-      profiles: s.profiles.map(p =>
-        p.id === s.activeProfileId ? { ...p, wordsLearned: p.wordsLearned + count } : p
-      ),
+      profiles: s.profiles.map(p => {
+        if (p.id !== s.activeProfileId) return p;
+        const learned = p.learnedWords ?? [];
+        if (learned.includes(word)) return p;            // already counted — no inflation
+        return { ...p, learnedWords: [...learned, word], wordsLearned: p.wordsLearned + 1 };
+      }),
     }));
   }, [update]);
 
@@ -221,9 +250,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={{
-      state, activeProfile, setActiveProfile, addProfile, deleteProfile, renameProfile,
+      state, activeProfile, setActiveProfile, addProfile, deleteProfile, renameProfile, setProfileAvatar,
       completeOnboarding, agreeToTerms, updateProgress, updateQuizBest,
-      incrementStreak, addWordsLearned, recordActivity, setPremium, toggleSound, toggleHaptic, resetAll,
+      incrementStreak, markWordLearned, recordActivity, setPremium, toggleSound, toggleHaptic, resetAll,
     }}>
       {children}
     </AppContext.Provider>

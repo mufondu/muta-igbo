@@ -117,6 +117,12 @@ function buildQuestion(difficulty: Difficulty, isPremium: boolean): SpellQuestio
 }
 
 export default function SpellGame({ onBack, isPremium = true }: Props) {
+  // Track pending round-advance timers so they are cancelled if the child
+  // leaves the game before they fire (prevents setState on an unmounted screen).
+  const timers = React.useRef<ReturnType<typeof setTimeout>[]>([]);
+  React.useEffect(() => () => { timers.current.forEach(clearTimeout); timers.current = []; }, []);
+  const later = (fn: () => void, ms: number) => { timers.current.push(setTimeout(fn, ms)); };
+
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const [started, setStarted] = useState(false);
   const [question, setQuestion] = useState<SpellQuestion | null>(null);
@@ -199,7 +205,7 @@ export default function SpellGame({ onBack, isPremium = true }: Props) {
       });
     }
 
-    setTimeout(() => {
+    later(() => {
       if (round >= MAX_ROUNDS) {
         setGameOver(true);
         setLocked(false);
@@ -265,6 +271,7 @@ export default function SpellGame({ onBack, isPremium = true }: Props) {
           score={score}
           streak={bestStreak}
           difficulty={difficulty}
+          maxScore={MAX_ROUNDS * pointsForDifficulty(difficulty)}
           onReplay={() => start(difficulty)}
           onHome={onBack}
         />

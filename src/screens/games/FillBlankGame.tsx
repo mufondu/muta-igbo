@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { buildQuizPool } from '../../data/lessons';
+import LessonIllustration from '../../components/illustrations/LessonIllustration';
 import { COLOR, FONT, RADIUS, SPACE } from '../../utils/tokens';
 import {
   Difficulty,
@@ -89,6 +90,7 @@ function isCleanObjectWord(item: BlankItem): boolean {
 function buildQuestion(difficulty: Difficulty, isPremium: boolean): BlankQuestion {
   const pool = buildQuizPool(isPremium)
     .filter(item => item.igbo && item.english)
+    .filter(item => !item.abstract)
     .filter(item => isCleanObjectWord(item));
 
   const fallback: BlankItem[] = [
@@ -113,6 +115,12 @@ function buildQuestion(difficulty: Difficulty, isPremium: boolean): BlankQuestio
 }
 
 export default function FillBlankGame({ onBack, isPremium }: Props) {
+  // Track pending round-advance timers so they are cancelled if the child
+  // leaves the game before they fire (prevents setState on an unmounted screen).
+  const timers = React.useRef<ReturnType<typeof setTimeout>[]>([]);
+  React.useEffect(() => () => { timers.current.forEach(clearTimeout); timers.current = []; }, []);
+  const later = (fn: () => void, ms: number) => { timers.current.push(setTimeout(fn, ms)); };
+
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const [started, setStarted] = useState(false);
   const [question, setQuestion] = useState<BlankQuestion | null>(null);
@@ -173,7 +181,7 @@ export default function FillBlankGame({ onBack, isPremium }: Props) {
       });
     }
 
-    setTimeout(() => {
+    later(() => {
       if (round >= MAX_ROUNDS) {
         setGameOver(true);
         setLocked(false);
@@ -239,6 +247,7 @@ export default function FillBlankGame({ onBack, isPremium }: Props) {
           score={score}
           streak={bestStreak}
           difficulty={difficulty}
+          maxScore={MAX_ROUNDS * pointsForDifficulty(difficulty)}
           onReplay={() => start(difficulty)}
           onHome={onBack}
         />
@@ -271,7 +280,18 @@ export default function FillBlankGame({ onBack, isPremium }: Props) {
         </View>
 
         <View style={s.promptCard}>
-          <Text style={s.promptLabel}>Complete the sentence</Text>
+          <Text style={s.promptLabel}>Which Igbo word fits?</Text>
+
+          <View style={s.promptPicture}>
+            <LessonIllustration
+              igbo={question.answer.igbo}
+              english={question.answer.english}
+              emoji={question.answer.emoji}
+              partOfSpeech={(question.answer as any).partOfSpeech}
+              size={108}
+            />
+          </View>
+
           <Text style={s.sentence}>{question.sentence}</Text>
 
           <TouchableOpacity onPress={() => setShowHint(value => !value)} style={s.hintBtn}>
@@ -290,7 +310,6 @@ export default function FillBlankGame({ onBack, isPremium }: Props) {
               activeOpacity={0.82}
             >
               <Text style={s.optionIgbo}>{option.igbo}</Text>
-              <Text style={s.optionEnglish}>{option.english}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -489,7 +508,18 @@ const s = StyleSheet.create({
     fontSize: FONT.xl,
     color: COLOR.textPrimary,
     fontWeight: '900',
-    marginBottom: 2,
+    textAlign: 'center',
+  },
+  promptPicture: {
+    width: 116,
+    height: 116,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: COLOR.border,
+    marginBottom: SPACE.md,
   },
   optionEnglish: {
     fontSize: FONT.sm,

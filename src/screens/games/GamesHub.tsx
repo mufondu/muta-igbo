@@ -156,8 +156,8 @@ export default function GamesHub({ onBack, isPremium }: Props) {
   if (activeGame === 'listen') return <ListenTapGame onBack={() => setActiveGame(null)} isPremium={isPremium} />;
   if (activeGame === 'match') return <WordMatchGame onBack={() => setActiveGame(null)} isPremium={isPremium} />;
   if (activeGame === 'blank') return <FillBlankGame onBack={() => setActiveGame(null)} isPremium={isPremium} />;
-  if (activeGame === 'spell') return <SpellGame onBack={() => setActiveGame(null)} />;
-  if (activeGame === 'search') return <WordSearchGame onBack={() => setActiveGame(null)} />;
+  if (activeGame === 'spell') return <SpellGame onBack={() => setActiveGame(null)} isPremium={isPremium} />;
+  if (activeGame === 'search') return <WordSearchGame onBack={() => setActiveGame(null)} isPremium={isPremium} />;
 
   return (
     <View style={s.root}>

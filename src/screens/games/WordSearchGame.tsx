@@ -63,9 +63,10 @@ function gridSize(difficulty: Difficulty): number {
 }
 
 function maxWordLength(difficulty: Difficulty): number {
-  if (difficulty === 'easy') return 5;
-  if (difficulty === 'medium') return 7;
-  return 9;
+  // Must never exceed gridSize(): a word is placed on a single straight line
+  // (across, down, or diagonal), so any word longer than the grid cannot be
+  // fully placed and the round becomes unwinnable. Keep these in lock-step.
+  return gridSize(difficulty);
 }
 
 function isCleanSearchItem(item: SearchItem, difficulty: Difficulty): boolean {
@@ -156,6 +157,12 @@ function buildGrid(item: SearchItem, difficulty: Difficulty): Cell[][] {
 }
 
 export default function WordSearchGame({ onBack, isPremium = true }: Props) {
+  // Track pending round-advance timers so they are cancelled if the child
+  // leaves the game before they fire (prevents setState on an unmounted screen).
+  const timers = React.useRef<ReturnType<typeof setTimeout>[]>([]);
+  React.useEffect(() => () => { timers.current.forEach(clearTimeout); timers.current = []; }, []);
+  const later = (fn: () => void, ms: number) => { timers.current.push(setTimeout(fn, ms)); };
+
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const [started, setStarted] = useState(false);
   const [target, setTarget] = useState<SearchItem | null>(null);
@@ -169,6 +176,7 @@ export default function WordSearchGame({ onBack, isPremium = true }: Props) {
   const [feedback, setFeedback] = useState<{ text: string; correct: boolean } | null>(null);
   const [gameOver, setGameOver] = useState(false);
   const [locked, setLocked] = useState(false);
+  const [roundHadMistake, setRoundHadMistake] = useState(false);
 
   const MAX_ROUNDS = 6;
 
@@ -184,6 +192,7 @@ export default function WordSearchGame({ onBack, isPremium = true }: Props) {
     setSelectedLetters([]);
     setFeedback(null);
     setLocked(false);
+    setRoundHadMistake(false);
   }, [isPremium]);
 
   function start(selectedDifficulty: Difficulty) {
@@ -206,7 +215,11 @@ export default function WordSearchGame({ onBack, isPremium = true }: Props) {
 
     const expected = targetLetters[selectedLetters.length];
 
-    if (cell.letter !== expected) {
+    // The cell must both belong to the hidden word (cell.target) AND be the next
+    // letter. Without the target check, a random filler letter that happens to
+    // match would be accepted, letting the child "win" without finding the word.
+    if (!cell.target || cell.letter !== expected) {
+      setRoundHadMistake(true);   // affects this round's star credit
       setFeedback({
         correct: false,
         text: `Look for "${expected}" next.`,
@@ -234,7 +247,12 @@ export default function WordSearchGame({ onBack, isPremium = true }: Props) {
     const newStreak = streak + 1;
     const nextRound = round + 1;
 
-    setScore(current => current + pointsForDifficulty(difficulty));
+    // Clean round = full points; a round with any wrong tap earns half credit,
+    // so the final star rating reflects how accurately the child played.
+    const gained = roundHadMistake
+      ? Math.round(pointsForDifficulty(difficulty) / 2)
+      : pointsForDifficulty(difficulty);
+    setScore(current => current + gained);
     setStreak(newStreak);
     setBestStreak(current => Math.max(current, newStreak));
     setFeedback({
@@ -242,7 +260,7 @@ export default function WordSearchGame({ onBack, isPremium = true }: Props) {
       text: newStreak >= 4 ? `Excellent. ${newStreak} words found!` : 'You found the word.',
     });
 
-    setTimeout(() => {
+    later(() => {
       if (round >= MAX_ROUNDS) {
         setGameOver(true);
         setLocked(false);
@@ -316,6 +334,7 @@ export default function WordSearchGame({ onBack, isPremium = true }: Props) {
           score={score}
           streak={bestStreak}
           difficulty={difficulty}
+          maxScore={MAX_ROUNDS * pointsForDifficulty(difficulty)}
           onReplay={() => start(difficulty)}
           onHome={onBack}
         />

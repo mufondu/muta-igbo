@@ -142,11 +142,13 @@ export function FeedbackFlash({ text, correct }: { text: string; correct: boolea
 }
 
 // ─── Game over screen ─────────────────────────────────────────────────────────
-export function GameOver({ score, streak, difficulty, onReplay, onHome, guideId = 'ebuka' }: {
-  score: number; streak: number; difficulty: Difficulty;
+export function GameOver({ score, streak, difficulty, maxScore, onReplay, onHome, guideId = 'ebuka' }: {
+  score: number; streak: number; difficulty: Difficulty; maxScore?: number;
   onReplay: () => void; onHome: () => void; guideId?: string;
 }) {
-  const stars   = starsFromScore(score, Math.max(score + 3, 10));
+  // Stars reflect accuracy: divide by the true best-possible score for the
+  // session so a flawless game earns 3 stars on every difficulty (easy included).
+  const stars   = starsFromScore(score, maxScore && maxScore > 0 ? maxScore : Math.max(score + 3, 10));
   const badges  = checkBadges(score, streak, difficulty);
   const scale   = useRef(new Animated.Value(0)).current;
   const guide   = getMutaFriend(guideId);

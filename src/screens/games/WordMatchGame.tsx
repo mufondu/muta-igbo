@@ -43,7 +43,18 @@ function pointsForDifficulty(difficulty: Difficulty): number {
 }
 
 function buildRound(difficulty: Difficulty, isPremium: boolean): MatchRound {
-  const pool = buildQuizPool(isPremium).filter(item => item.igbo && item.english);
+  // Matching identifies a pair by its Igbo string, and React keys off it too, so
+  // the pool must not contain two items with the same Igbo (e.g. the alphabet
+  // letter 'a' and the vowel 'a'). Dedup by Igbo to avoid tile collapse and
+  // duplicate-key collisions within a round.
+  const seenIgbo = new Set<string>();
+  const pool = buildQuizPool(isPremium)
+    .filter(item => item.igbo && item.english)
+    .filter(item => {
+      if (seenIgbo.has(item.igbo)) return false;
+      seenIgbo.add(item.igbo);
+      return true;
+    });
 
   const fallback: MatchItem[] = [
     { igbo: 'Nwa', english: 'Child', emoji: '🧒' },
@@ -63,6 +74,12 @@ function buildRound(difficulty: Difficulty, isPremium: boolean): MatchRound {
 }
 
 export default function WordMatchGame({ onBack, isPremium }: Props) {
+  // Track pending round-advance timers so they are cancelled if the child
+  // leaves the game before they fire (prevents setState on an unmounted screen).
+  const timers = React.useRef<ReturnType<typeof setTimeout>[]>([]);
+  React.useEffect(() => () => { timers.current.forEach(clearTimeout); timers.current = []; }, []);
+  const later = (fn: () => void, ms: number) => { timers.current.push(setTimeout(fn, ms)); };
+
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const [started, setStarted] = useState(false);
   const [round, setRound] = useState(1);
@@ -126,7 +143,7 @@ export default function WordMatchGame({ onBack, isPremium }: Props) {
       });
 
       if (updatedMatched.length === totalPairs) {
-        setTimeout(() => {
+        later(() => {
           if (round >= MAX_ROUNDS) {
             setGameOver(true);
             return;
@@ -140,6 +157,9 @@ export default function WordMatchGame({ onBack, isPremium }: Props) {
       return;
     }
 
+    // Wrong match costs one pair's worth of points (floored at 0) so the final
+    // star rating reflects accuracy instead of always maxing out.
+    setScore(current => Math.max(0, current - pointsForDifficulty(difficulty)));
     setStreak(0);
     setSelectedIgbo(null);
     setFeedback({
@@ -202,6 +222,7 @@ export default function WordMatchGame({ onBack, isPremium }: Props) {
           score={score}
           streak={bestStreak}
           difficulty={difficulty}
+          maxScore={MAX_ROUNDS * totalPairs * pointsForDifficulty(difficulty)}
           onReplay={() => start(difficulty)}
           onHome={onBack}
         />

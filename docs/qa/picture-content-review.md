@@ -1,0 +1,510 @@
+# Mụta Igbo Picture and Content Review
+
+## Review Rules
+
+- Picture Match should only use concrete, visually obvious words.
+- Keep abstract words in Word Match, Quiz, or lesson cards instead of Picture Match.
+- Prefer kid-friendly illustrations over realistic/adult-looking images.
+- Remove any image that could confuse the child or teach the wrong meaning.
+- Central Igbo wording must be manually reviewed before production.
+
+## Best Categories for Picture Match
+
+- animals
+- body parts
+- family members
+- food
+- colors
+- numbers
+- objects
+- places
+- verbs with obvious action
+
+## Asset Inventory
+
+- `assets/illustrations/custom/adventures/story-hut.png`
+- `assets/illustrations/custom/adventures/say-it.png`
+- `assets/illustrations/custom/adventures/game-land.png`
+- `assets/illustrations/custom/adventures/culture-quest.png`
+- `assets/illustrations/custom/adventures/word-magic.png`
+- `assets/illustrations/custom/body/tongue.png`
+- `assets/illustrations/custom/body/mouth.png`
+- `assets/illustrations/custom/body/teeth.png`
+- `assets/illustrations/custom/body/eyebrow.png`
+- `assets/illustrations/custom/body/nose.png`
+- `assets/illustrations/custom/body/hand.png`
+- `assets/illustrations/custom/body/toes.png`
+- `assets/illustrations/custom/body/leg.png`
+- `assets/illustrations/custom/body/ear.png`
+- `assets/illustrations/custom/body/head.png`
+- `assets/illustrations/custom/body/eye.png`
+- `assets/illustrations/custom/family/grandmother.png`
+- `assets/illustrations/custom/family/aunt.png`
+- `assets/illustrations/custom/family/uncle.png`
+- `assets/illustrations/custom/family/sister.png`
+- `assets/illustrations/custom/family/brother.png`
+- `assets/illustrations/custom/family/children.png`
+- `assets/illustrations/custom/family/mother.png`
+- `assets/illustrations/custom/family/grandfather.png`
+- `assets/illustrations/custom/family/father.png`
+- `assets/illustrations/custom/family/child.png`
+- `assets/illustrations/custom/family/cousin.png`
+- `assets/illustrations/custom/mascot/muta-guide.png`
+- `assets/illustrations/custom/animals/dog.png`
+- `assets/illustrations/custom/animals/rabbit.png`
+- `assets/illustrations/custom/animals/leopard.png`
+- `assets/illustrations/custom/animals/python.png`
+- `assets/illustrations/custom/animals/elephant.png`
+- `assets/illustrations/custom/animals/lion.png`
+- `assets/illustrations/custom/animals/rat.png`
+- `assets/illustrations/custom/animals/chicken.png`
+- `assets/illustrations/custom/animals/tortoise.png`
+- `assets/illustrations/custom/animals/bird.png`
+- `assets/illustrations/custom/animals/cat.png`
+- `assets/illustrations/custom/animals/grasshopper.png`
+- `assets/illustrations/custom/animals/goat.png`
+- `assets/illustrations/custom/animals/fish.png`
+- `assets/illustrations/custom/verbs/sleep.png`
+- `assets/illustrations/custom/verbs/give.png`
+- `assets/illustrations/custom/verbs/greet.png`
+- `assets/illustrations/custom/verbs/drink.png`
+- `assets/illustrations/custom/verbs/point.png`
+- `assets/illustrations/custom/verbs/run.png`
+- `assets/illustrations/custom/verbs/read.png`
+- `assets/illustrations/custom/verbs/walk.png`
+- `assets/illustrations/custom/verbs/eat.png`
+- `assets/illustrations/custom/verbs/think.png`
+- `assets/illustrations/custom/verbs/write.png`
+- `assets/illustrations/custom/verbs/clap.png`
+- `assets/illustrations/custom/tenses/future.png`
+- `assets/illustrations/custom/tenses/present.png`
+- `assets/illustrations/custom/tenses/past.png`
+- `assets/illustrations/custom/levels/animals-nature.png`
+- `assets/illustrations/custom/levels/verbs-actions.png`
+- `assets/illustrations/custom/levels/greetings-phrases.png`
+- `assets/illustrations/custom/levels/body-family.png`
+- `assets/illustrations/custom/levels/numbers-counting.png`
+- `assets/illustrations/custom/levels/alphabet-sounds.png`
+- `assets/illustrations/custom/levels/grammar-language.png`
+- `assets/illustrations/custom/levels/lesson-path.png`
+- `assets/illustrations/custom/avatars/somto.png`
+- `assets/illustrations/custom/avatars/emeka.png`
+- `assets/illustrations/custom/avatars/adaeze.png`
+- `assets/illustrations/custom/avatars/natachi.png`
+- `assets/illustrations/custom/avatars/onyeka.png`
+- `assets/illustrations/custom/avatars/chizara.png`
+- `assets/illustrations/custom/avatars/jc.png`
+- `assets/illustrations/custom/avatars/kaira.png`
+- `assets/illustrations/custom/avatars/chidozie.png`
+- `assets/illustrations/custom/avatars/ebube.png`
+- `assets/illustrations/custom/avatars/kamsi.png`
+- `assets/illustrations/custom/avatars/ekene.png`
+- `assets/illustrations/custom/avatars/ifeanyi.png`
+- `assets/images/igbo-boy.png`
+- `assets/images/igbo-girl.png`
+- `assets/characters/ebuka_avatar_clean.png`
+- `assets/characters/chioma.png`
+- `assets/characters/ebuka.png`
+- `assets/characters/ada.png`
+- `assets/characters/ada_avatar_clean.png`
+- `assets/characters/amara_avatar_clean.png`
+- `assets/characters/ifeoma_avatar_clean.png`
+- `assets/characters/chioma_avatar_clean.png`
+- `assets/characters/chinedu_avatar_clean.png`
+- `assets/characters/ifeoma.png`
+- `assets/characters/obinna.png`
+- `assets/characters/kelechi.png`
+- `assets/characters/obinna_avatar_clean.png`
+- `assets/characters/chinedu.png`
+- `assets/characters/amara.png`
+- `assets/characters/kelechi_avatar_clean.png`
+- `assets/icons/settings/add.png`
+- `assets/icons/settings/check.png`
+- `assets/icons/settings/goal.png`
+- `assets/icons/settings/progress.png`
+- `assets/icons/settings/terms.png`
+- `assets/icons/settings/key.png`
+- `assets/icons/settings/safe.png`
+- `assets/icons/settings/reset.png`
+- `assets/icons/settings/sound.png`
+- `assets/icons/settings/earth.png`
+- `assets/icons/settings/privacy.png`
+- `assets/icons/settings/version.png`
+- `assets/icons/settings/phone.png`
+- `assets/icons/settings/delete.png`
+- `assets/icons/settings/edit.png`
+- `assets/icons/settings/premium.png`
+
+## Manifest / Require Entries
+
+- `src/components/illustrations/customManifest.ts` — `family:grandmother` → `../../../assets/illustrations/custom/family/grandmother.png`
+- `src/components/illustrations/customManifest.ts` — `family:grandfather` → `../../../assets/illustrations/custom/family/grandfather.png`
+- `src/components/illustrations/customManifest.ts` — `family:mother` → `../../../assets/illustrations/custom/family/mother.png`
+- `src/components/illustrations/customManifest.ts` — `family:father` → `../../../assets/illustrations/custom/family/father.png`
+- `src/components/illustrations/customManifest.ts` — `family:brother` → `../../../assets/illustrations/custom/family/brother.png`
+- `src/components/illustrations/customManifest.ts` — `family:sister` → `../../../assets/illustrations/custom/family/sister.png`
+- `src/components/illustrations/customManifest.ts` — `family:child` → `../../../assets/illustrations/custom/family/child.png`
+- `src/components/illustrations/customManifest.ts` — `family:children` → `../../../assets/illustrations/custom/family/children.png`
+- `src/components/illustrations/customManifest.ts` — `family:uncle` → `../../../assets/illustrations/custom/family/uncle.png`
+- `src/components/illustrations/customManifest.ts` — `family:aunt` → `../../../assets/illustrations/custom/family/aunt.png`
+- `src/components/illustrations/customManifest.ts` — `family:cousin` → `../../../assets/illustrations/custom/family/cousin.png`
+- `src/components/illustrations/customManifest.ts` — `body:head` → `../../../assets/illustrations/custom/body/head.png`
+- `src/components/illustrations/customManifest.ts` — `body:eye` → `../../../assets/illustrations/custom/body/eye.png`
+- `src/components/illustrations/customManifest.ts` — `body:eyebrow` → `../../../assets/illustrations/custom/body/eyebrow.png`
+- `src/components/illustrations/customManifest.ts` — `body:mouth` → `../../../assets/illustrations/custom/body/mouth.png`
+- `src/components/illustrations/customManifest.ts` — `body:hand` → `../../../assets/illustrations/custom/body/hand.png`
+- `src/components/illustrations/customManifest.ts` — `body:leg` → `../../../assets/illustrations/custom/body/leg.png`
+- `src/components/illustrations/customManifest.ts` — `body:ear` → `../../../assets/illustrations/custom/body/ear.png`
+- `src/components/illustrations/customManifest.ts` — `body:nose` → `../../../assets/illustrations/custom/body/nose.png`
+- `src/components/illustrations/customManifest.ts` — `body:toes` → `../../../assets/illustrations/custom/body/toes.png`
+- `src/components/illustrations/customManifest.ts` — `body:tongue` → `../../../assets/illustrations/custom/body/tongue.png`
+- `src/components/illustrations/customManifest.ts` — `body:teeth` → `../../../assets/illustrations/custom/body/teeth.png`
+- `src/components/illustrations/customManifest.ts` — `animals:dog` → `../../../assets/illustrations/custom/animals/dog.png`
+- `src/components/illustrations/customManifest.ts` — `animals:cat` → `../../../assets/illustrations/custom/animals/cat.png`
+- `src/components/illustrations/customManifest.ts` — `animals:chicken` → `../../../assets/illustrations/custom/animals/chicken.png`
+- `src/components/illustrations/customManifest.ts` — `animals:goat` → `../../../assets/illustrations/custom/animals/goat.png`
+- `src/components/illustrations/customManifest.ts` — `animals:fish` → `../../../assets/illustrations/custom/animals/fish.png`
+- `src/components/illustrations/customManifest.ts` — `animals:bird` → `../../../assets/illustrations/custom/animals/bird.png`
+- `src/components/illustrations/customManifest.ts` — `animals:leopard` → `../../../assets/illustrations/custom/animals/leopard.png`
+- `src/components/illustrations/customManifest.ts` — `animals:lion` → `../../../assets/illustrations/custom/animals/lion.png`
+- `src/components/illustrations/customManifest.ts` — `animals:elephant` → `../../../assets/illustrations/custom/animals/elephant.png`
+- `src/components/illustrations/customManifest.ts` — `animals:rabbit` → `../../../assets/illustrations/custom/animals/rabbit.png`
+- `src/components/illustrations/customManifest.ts` — `animals:rat` → `../../../assets/illustrations/custom/animals/rat.png`
+- `src/components/illustrations/customManifest.ts` — `animals:python` → `../../../assets/illustrations/custom/animals/python.png`
+- `src/components/illustrations/customManifest.ts` — `animals:tortoise` → `../../../assets/illustrations/custom/animals/tortoise.png`
+- `src/components/illustrations/customManifest.ts` — `animals:grasshopper` → `../../../assets/illustrations/custom/animals/grasshopper.png`
+- `src/components/illustrations/customManifest.ts` — `verbs:greet` → `../../../assets/illustrations/custom/verbs/greet.png`
+- `src/components/illustrations/customManifest.ts` — `verbs:eat` → `../../../assets/illustrations/custom/verbs/eat.png`
+- `src/components/illustrations/customManifest.ts` — `verbs:drink` → `../../../assets/illustrations/custom/verbs/drink.png`
+- `src/components/illustrations/customManifest.ts` — `verbs:read` → `../../../assets/illustrations/custom/verbs/read.png`
+- `src/components/illustrations/customManifest.ts` — `verbs:write` → `../../../assets/illustrations/custom/verbs/write.png`
+- `src/components/illustrations/customManifest.ts` — `verbs:run` → `../../../assets/illustrations/custom/verbs/run.png`
+- `src/components/illustrations/customManifest.ts` — `verbs:walk` → `../../../assets/illustrations/custom/verbs/walk.png`
+- `src/components/illustrations/customManifest.ts` — `verbs:sleep` → `../../../assets/illustrations/custom/verbs/sleep.png`
+- `src/components/illustrations/customManifest.ts` — `verbs:point` → `../../../assets/illustrations/custom/verbs/point.png`
+- `src/components/illustrations/customManifest.ts` — `verbs:give` → `../../../assets/illustrations/custom/verbs/give.png`
+- `src/components/illustrations/customManifest.ts` — `verbs:clap` → `../../../assets/illustrations/custom/verbs/clap.png`
+- `src/components/illustrations/customManifest.ts` — `verbs:think` → `../../../assets/illustrations/custom/verbs/think.png`
+- `src/components/illustrations/customManifest.ts` — `tenses:present` → `../../../assets/illustrations/custom/tenses/present.png`
+- `src/components/illustrations/customManifest.ts` — `tenses:past` → `../../../assets/illustrations/custom/tenses/past.png`
+- `src/components/illustrations/customManifest.ts` — `tenses:future` → `../../../assets/illustrations/custom/tenses/future.png`
+- `src/components/illustrations/customManifest.ts` — `levels:alphabet-sounds` → `../../../assets/illustrations/custom/levels/alphabet-sounds.png`
+- `src/components/illustrations/customManifest.ts` — `levels:greetings-phrases` → `../../../assets/illustrations/custom/levels/greetings-phrases.png`
+- `src/components/illustrations/customManifest.ts` — `levels:numbers-counting` → `../../../assets/illustrations/custom/levels/numbers-counting.png`
+- `src/components/illustrations/customManifest.ts` — `levels:body-family` → `../../../assets/illustrations/custom/levels/body-family.png`
+- `src/components/illustrations/customManifest.ts` — `levels:animals-nature` → `../../../assets/illustrations/custom/levels/animals-nature.png`
+- `src/components/illustrations/customManifest.ts` — `levels:verbs-actions` → `../../../assets/illustrations/custom/levels/verbs-actions.png`
+- `src/app/index.tsx` — `7A` → `../../assets/illustrations/custom/levels/alphabet-sounds.png`
+- `src/app/index.tsx` — `6A` → `../../assets/illustrations/custom/levels/greetings-phrases.png`
+- `src/app/index.tsx` — `5A` → `../../assets/illustrations/custom/levels/numbers-counting.png`
+- `src/app/index.tsx` — `4A` → `../../assets/illustrations/custom/levels/body-family.png`
+- `src/app/index.tsx` — `3A` → `../../assets/illustrations/custom/levels/animals-nature.png`
+- `src/app/index.tsx` — `2A` → `../../assets/illustrations/custom/levels/verbs-actions.png`
+- `src/app/index.tsx` — `1A` → `../../assets/illustrations/custom/levels/grammar-language.png`
+
+## Lesson Items Needing Picture Review
+
+- `src/data/lessons.ts` — **a** / a (open vowel) / 🅰️ — review image fit
+- `src/data/lessons.ts` — **b** / b (as in ball) / 🅱️ — review image fit
+- `src/data/lessons.ts` — **ch** / ch (as in church) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **d** / d (as in door) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **e** / e (as in bed) / 🔡 — possibly abstract/not ideal for picture matching; weak/no concrete emoji
+- `src/data/lessons.ts` — **f** / f (as in fish) / 🔡 — possibly abstract/not ideal for picture matching; weak/no concrete emoji
+- `src/data/lessons.ts` — **g** / g (as in go) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **gb** / gb (unique Igbo sound) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **gh** / gh (soft g) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **gw** / gw (g + w blend) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **h** / h (as in hat) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **i** / i (as in see) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **ị** / ị (short i, dot below) / 🔡 — possibly abstract/not ideal for picture matching; weak/no concrete emoji
+- `src/data/lessons.ts` — **j** / j (as in jump) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **k** / k (as in kite) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **kp** / kp (unique Igbo sound) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **kw** / kw (k + w blend) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **l** / l (as in love) / 🔡 — possibly abstract/not ideal for picture matching; weak/no concrete emoji
+- `src/data/lessons.ts` — **m** / m (as in moon) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **n** / n (as in night) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **nw** / nw (n + w blend) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **ny** / ny (as in canyon) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **o** / o (as in ore) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **ọ** / ọ (open o, dot below) / 🔡 — possibly abstract/not ideal for picture matching; weak/no concrete emoji
+- `src/data/lessons.ts` — **p** / p (as in pan) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **r** / r (as in run) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **s** / s (as in sun) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **sh** / sh (as in shoe) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **t** / t (as in top) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **u** / u (as in food) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **ụ** / ụ (short u, dot below) / 🔡 — possibly abstract/not ideal for picture matching; weak/no concrete emoji
+- `src/data/lessons.ts` — **v** / v (as in van) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **w** / w (as in water) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **y** / y (as in yes) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **z** / z (as in zebra) / 🔡 — weak/no concrete emoji
+- `src/data/lessons.ts` — **a** / A — open wide (father) / 👄 — review image fit
+- `src/data/lessons.ts` — **e** / E — mid front (bed) / 👄 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **i** / I — high front (see) / 👄 — review image fit
+- `src/data/lessons.ts` — **ị** / Ị — short high (bit) / 👄 — review image fit
+- `src/data/lessons.ts` — **o** / O — mid back (ore) / 👄 — review image fit
+- `src/data/lessons.ts` — **ọ** / Ọ — open back (awe) / 👄 — review image fit
+- `src/data/lessons.ts` — **u** / U — high back (food) / 👄 — review image fit
+- `src/data/lessons.ts` — **ụ** / Ụ — short high back (book) / 👄 — review image fit
+- `src/data/lessons.ts` — **gb** / GB — simultaneous g and b / 🔊 — review image fit
+- `src/data/lessons.ts` — **gw** / GW — rounded g / 🔊 — review image fit
+- `src/data/lessons.ts` — **kp** / KP — simultaneous k and p / 🔊 — review image fit
+- `src/data/lessons.ts` — **kw** / KW — rounded k / 🔊 — review image fit
+- `src/data/lessons.ts` — **nw** / NW — nasal w / 🔊 — review image fit
+- `src/data/lessons.ts` — **ny** / NY — palatal nasal / 🔊 — review image fit
+- `src/data/lessons.ts` — **ch** / CH — as in church / 🔊 — review image fit
+- `src/data/lessons.ts` — **sh** / SH — as in shoe / 🔊 — review image fit
+- `src/data/lessons.ts` — **gh** / GH — voiced velar fricative / 🔊 — review image fit
+- `src/data/lessons.ts` — **Nnọọ / Ndeewo** / Hello / Welcome / 👋🏾 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ụtụtụ ọma** / Good morning / 🌅 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ehihie ọma** / Good afternoon / ☀️ — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Anyasị ọma** / Good evening / 🌆 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ka chi bọọ** / Good night / 🌙 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Daalụ / I meela** / Thank you / 🙏🏾 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Daalụ nke ukwuu** / Thank you very much / 🙏🏾 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ọ dị mma** / It is fine / OK / 👍🏾 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ka ọ dị** / Goodbye / Let it be well / 👋🏾 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Biko** / Please / 🥺 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ndo** / Sorry / Excuse me / 😢 — review image fit
+- `src/data/lessons.ts` — **Ee** / Yes / ✅ — review image fit
+- `src/data/lessons.ts` — **Mba** / No / ❌ — review image fit
+- `src/data/lessons.ts` — **Gịnị** / What? / ❓ — weak/no concrete emoji
+- `src/data/lessons.ts` — **Onye** / Who? / 🧑 — review image fit
+- `src/data/lessons.ts` — **Ebe** / Where? / 📍 — review image fit
+- `src/data/lessons.ts` — **Kedu** / How are you? / 🤔 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Adị m mma** / I am fine / 😊 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Aha m bụ** / My name is / 📛 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Kedu aha gị?** / What is your name? / ❓ — possibly abstract/not ideal for picture matching; weak/no concrete emoji
+- `src/data/lessons.ts` — **Otu** / 1 — One / 1️⃣ — review image fit
+- `src/data/lessons.ts` — **Abụọ** / 2 — Two / 2️⃣ — review image fit
+- `src/data/lessons.ts` — **Atọ** / 3 — Three / 3️⃣ — review image fit
+- `src/data/lessons.ts` — **Anọ** / 4 — Four / 4️⃣ — review image fit
+- `src/data/lessons.ts` — **Ise** / 5 — Five / 5️⃣ — review image fit
+- `src/data/lessons.ts` — **Isii** / 6 — Six / 6️⃣ — review image fit
+- `src/data/lessons.ts` — **Asaa** / 7 — Seven / 7️⃣ — review image fit
+- `src/data/lessons.ts` — **Asatọ** / 8 — Eight / 8️⃣ — review image fit
+- `src/data/lessons.ts` — **Itoolu** / 9 — Nine / 9️⃣ — review image fit
+- `src/data/lessons.ts` — **Iri** / 10 — Ten / 🔟 — review image fit
+- `src/data/lessons.ts` — **Iri na otu** / 11 — Eleven / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri na abụọ** / 12 — Twelve / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri na atọ** / 13 — Thirteen / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri na anọ** / 14 — Fourteen / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri na ise** / 15 — Fifteen / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri na isii** / 16 — Sixteen / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri na asaa** / 17 — Seventeen / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri na asatọ** / 18 — Eighteen / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri na itoolu** / 19 — Nineteen / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri abụọ** / 20 — Twenty / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri abụọ na otu** / 21 — Twenty-one / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri abụọ na abụọ** / 22 — Twenty-two / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri abụọ na atọ** / 23 — Twenty-three / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri abụọ na anọ** / 24 — Twenty-four / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri abụọ na ise** / 25 — Twenty-five / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri abụọ na isii** / 26 — Twenty-six / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri abụọ na asaa** / 27 — Twenty-seven / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri abụọ na asatọ** / 28 — Twenty-eight / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri abụọ na itoolu** / 29 — Twenty-nine / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri atọ** / 30 — Thirty / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri atọ na otu** / 31 — Thirty-one / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri atọ na abụọ** / 32 — Thirty-two / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri atọ na atọ** / 33 — Thirty-three / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri atọ na anọ** / 34 — Thirty-four / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri atọ na ise** / 35 — Thirty-five / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri atọ na isii** / 36 — Thirty-six / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri atọ na asaa** / 37 — Thirty-seven / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri atọ na asatọ** / 38 — Thirty-eight / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri atọ na itoolu** / 39 — Thirty-nine / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri anọ** / 40 — Forty / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri anọ na otu** / 41 — Forty-one / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri anọ na abụọ** / 42 — Forty-two / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri anọ na atọ** / 43 — Forty-three / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri anọ na anọ** / 44 — Forty-four / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri anọ na ise** / 45 — Forty-five / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri anọ na isii** / 46 — Forty-six / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri anọ na asaa** / 47 — Forty-seven / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri anọ na asatọ** / 48 — Forty-eight / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri anọ na itoolu** / 49 — Forty-nine / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri ise** / 50 — Fifty / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri ise na otu** / 51 — Fifty-one / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri ise na abụọ** / 52 — Fifty-two / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri ise na atọ** / 53 — Fifty-three / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri ise na anọ** / 54 — Fifty-four / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri ise na ise** / 55 — Fifty-five / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri ise na isii** / 56 — Fifty-six / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri ise na asaa** / 57 — Fifty-seven / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri ise na asatọ** / 58 — Fifty-eight / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri ise na itoolu** / 59 — Fifty-nine / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri isii** / 60 — Sixty / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri isii na otu** / 61 — Sixty-one / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri isii na abụọ** / 62 — Sixty-two / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri isii na atọ** / 63 — Sixty-three / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri isii na anọ** / 64 — Sixty-four / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri isii na ise** / 65 — Sixty-five / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri isii na isii** / 66 — Sixty-six / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri isii na asaa** / 67 — Sixty-seven / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri isii na asatọ** / 68 — Sixty-eight / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri isii na itoolu** / 69 — Sixty-nine / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asaa** / 70 — Seventy / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asaa na otu** / 71 — Seventy-one / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asaa na abụọ** / 72 — Seventy-two / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asaa na atọ** / 73 — Seventy-three / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asaa na anọ** / 74 — Seventy-four / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asaa na ise** / 75 — Seventy-five / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asaa na isii** / 76 — Seventy-six / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asaa na asaa** / 77 — Seventy-seven / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asaa na asatọ** / 78 — Seventy-eight / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asaa na itoolu** / 79 — Seventy-nine / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asatọ** / 80 — Eighty / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asatọ na otu** / 81 — Eighty-one / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asatọ na abụọ** / 82 — Eighty-two / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asatọ na atọ** / 83 — Eighty-three / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asatọ na anọ** / 84 — Eighty-four / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asatọ na ise** / 85 — Eighty-five / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asatọ na isii** / 86 — Eighty-six / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asatọ na asaa** / 87 — Eighty-seven / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asatọ na asatọ** / 88 — Eighty-eight / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri asatọ na itoolu** / 89 — Eighty-nine / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri itoolu** / 90 — Ninety / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri itoolu na otu** / 91 — Ninety-one / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri itoolu na abụọ** / 92 — Ninety-two / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri itoolu na atọ** / 93 — Ninety-three / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri itoolu na anọ** / 94 — Ninety-four / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri itoolu na ise** / 95 — Ninety-five / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri itoolu na isii** / 96 — Ninety-six / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri itoolu na asaa** / 97 — Ninety-seven / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri itoolu na asatọ** / 98 — Ninety-eight / 🔢 — review image fit
+- `src/data/lessons.ts` — **Iri itoolu na itoolu** / 99 — Ninety-nine / 🔢 — review image fit
+- `src/data/lessons.ts` — **Otu narị** / 100 — One hundred / 🔢 — review image fit
+- `src/data/lessons.ts` — **Isi** / Head / 🙂 — review image fit
+- `src/data/lessons.ts` — **Anya** / Eyes / 👀 — review image fit
+- `src/data/lessons.ts` — **Nku anya** / Eyebrows / 👁️ — review image fit
+- `src/data/lessons.ts` — **Imi** / Nose / 👃🏾 — review image fit
+- `src/data/lessons.ts` — **Ọnụ** / Mouth / 👄 — review image fit
+- `src/data/lessons.ts` — **Ntị** / Ear / 👂🏾 — review image fit
+- `src/data/lessons.ts` — **Aka** / Hand / ✋🏾 — review image fit
+- `src/data/lessons.ts` — **Ụkwụ** / Leg / 🦵🏾 — review image fit
+- `src/data/lessons.ts` — **Mkpịsị ụkwụ** / Toes / 🦶🏾 — review image fit
+- `src/data/lessons.ts` — **Ire** / Tongue / 👅 — review image fit
+- `src/data/lessons.ts` — **Eze** / Teeth / 🦷 — review image fit
+- `src/data/lessons.ts` — **Nna** / Father / Dad / 👨🏾 — review image fit
+- `src/data/lessons.ts` — **Nne** / Mother / Mum / 👩🏾 — review image fit
+- `src/data/lessons.ts` — **Nna ochie** / Grandfather / 👴🏾 — review image fit
+- `src/data/lessons.ts` — **Nne ochie** / Grandmother / 👵🏾 — review image fit
+- `src/data/lessons.ts` — **Nwanne nwoke** / Brother / 👦🏾 — review image fit
+- `src/data/lessons.ts` — **Nwanne nwanyị** / Sister / 👧🏾 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Nwa** / Child / 🧒🏾 — review image fit
+- `src/data/lessons.ts` — **Ụmụ** / Children / 🧒🏾 — review image fit
+- `src/data/lessons.ts` — **Nwanne nna** / Uncle / 👨🏾 — review image fit
+- `src/data/lessons.ts` — **Nwanne nne** / Aunt / 👩🏾 — review image fit
+- `src/data/lessons.ts` — **Ibe** / Cousin / 🧒🏾 — review image fit
+- `src/data/lessons.ts` — **Nkịta** / Dog / Dog — review image fit
+- `src/data/lessons.ts` — **Nwamba** / Cat / Cat — review image fit
+- `src/data/lessons.ts` — **Ọkụkọ** / Chicken / Chicken — review image fit
+- `src/data/lessons.ts` — **Ewu** / Goat / Goat — review image fit
+- `src/data/lessons.ts` — **Azụ** / Fish / Fish — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Nnụnụ** / Bird / Bird — review image fit
+- `src/data/lessons.ts` — **Agu** / Leopard / Tiger / Leopard — review image fit
+- `src/data/lessons.ts` — **Ọdụm** / Lion / Lion — review image fit
+- `src/data/lessons.ts` — **Enyi** / Elephant / Elephant — review image fit
+- `src/data/lessons.ts` — **Oke bekee** / Rabbit / Rabbit — review image fit
+- `src/data/lessons.ts` — **Oke** / Rat / Rat — review image fit
+- `src/data/lessons.ts` — **Eke** / Python / Python — review image fit
+- `src/data/lessons.ts` — **Mbe** / Tortoise / Tortoise — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ụkpana** / Grasshopper / Grasshopper — review image fit
+- `src/data/lessons.ts` — **Ọcha** / White / Clean / ⬜ — review image fit
+- `src/data/lessons.ts` — **Ojii** / Black / Dark / ⬛ — review image fit
+- `src/data/lessons.ts` — **Ọbara ọbara** / Red (blood red) / 🔴 — review image fit
+- `src/data/lessons.ts` — **Odo odo** / Yellow / 🟡 — review image fit
+- `src/data/lessons.ts` — **Ncha ncha** / Green / 🟢 — review image fit
+- `src/data/lessons.ts` — **Anụnụ anụnụ** / Blue / 🔵 — review image fit
+- `src/data/lessons.ts` — **Ọsọ ọsọ** / Orange / 🟠 — review image fit
+- `src/data/lessons.ts` — **Ede ede** / Purple / 🟣 — review image fit
+- `src/data/lessons.ts` — **Aja aja** / Brown / 🟤 — review image fit
+- `src/data/lessons.ts` — **Rie** / Eat / 🍽️ — review image fit
+- `src/data/lessons.ts` — **Ịṅụ** / Drink / 🥤 — review image fit
+- `src/data/lessons.ts` — **Bịa** / Come / 👋🏾 — review image fit
+- `src/data/lessons.ts` — **Gaa** / Go / 🚶🏾 — review image fit
+- `src/data/lessons.ts` — **Nọ** / Stay / Be / 🧘🏾 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Kwuo** / Say / Speak / 🗣️ — review image fit
+- `src/data/lessons.ts` — **Gee ntị** / Listen / 👂 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Lee** / Look / 👁️ — review image fit
+- `src/data/lessons.ts` — **Mee** / Do / Make / ✋🏾 — review image fit
+- `src/data/lessons.ts` — **Chee echiche** / Think / 🤔 — review image fit
+- `src/data/lessons.ts` — **Gbaa ọsọ** / Run / 🏃🏾 — review image fit
+- `src/data/lessons.ts` — **Rahụ ụra** / Sleep / 😴 — review image fit
+- `src/data/lessons.ts` — **Bido** / Start / Begin / 🚀 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Kwụsị** / Stop / 🛑 — review image fit
+- `src/data/lessons.ts` — **Bilie** / Stand up / 🧍🏾 — review image fit
+- `src/data/lessons.ts` — **Ana m eri nri** / I am eating (present) / 🍽️ — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **M riri** / I ate (past) / ✅ — review image fit
+- `src/data/lessons.ts` — **M ga-eri** / I will eat (future) / ⏳ — review image fit
+- `src/data/lessons.ts` — **Ana m aga** / I am going (present) / 🚶🏾 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **M gara** / I went (past) / ✅ — review image fit
+- `src/data/lessons.ts` — **M ga-aga** / I will go (future) / ⏳ — review image fit
+- `src/data/lessons.ts` — **Ana m ekwu** / I am speaking (present) / 🗣️ — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **M kwuru** / I spoke (past) / ✅ — review image fit
+- `src/data/lessons.ts` — **M ga-ekwu** / I will speak (future) / ⏳ — review image fit
+- `src/data/lessons.ts` — **Aha (Noun)** / Noun — names a person, place or thing / 🧸 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ngwaa (Verb)** / Verb — shows action or state / ⚽ — review image fit
+- `src/data/lessons.ts` — **Nkọwa aha (Adjective)** / Adjective — describes a noun / 🌈 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Nkọwa ngwaa (Adverb)** / Adverb — describes a verb / 🚀 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ihe nchọpụta (Pronoun)** / Pronoun — replaces a noun / 🙋🏾 — review image fit
+- `src/data/lessons.ts` — **Ihe njikọ (Conjunction)** / Conjunction — joins words / �� — review image fit
+- `src/data/lessons.ts` — **Ihe ntinye (Preposition)** / Preposition — shows position / 🏠 — review image fit
+- `src/data/lessons.ts` — **Nwa — Ụmụaka** / Child — Children / 👶🏾 — review image fit
+- `src/data/lessons.ts` — **Ọkụkọ — Ụmụ ọkụkọ** / Chicken — Chickens / 🐓 — review image fit
+- `src/data/lessons.ts` — **Ewu — Ụmụ ewu** / Goat — Goats / 🐐 — review image fit
+- `src/data/lessons.ts` — **Nkịta — Ụmụ nkịta** / Dog — Dogs / 🐕 — review image fit
+- `src/data/lessons.ts` — **Ụlọ — Ụlọ ọtụtụ** / House — Houses / 🏠 — review image fit
+- `src/data/lessons.ts` — **Onye nkuzi — Ndị nkuzi** / Teacher — Teachers / 👩🏾‍🏫 — review image fit
+- `src/data/lessons.ts` — **Nwa nwoke — Ụmụ nwoke** / Boy — Boys / 👦🏾 — review image fit
+- `src/data/lessons.ts` — **Nwa nwanyị — Ụmụ nwanyị** / Girl — Girls / 👧🏾 — review image fit
+- `src/data/lessons.ts` — **Ọma / Njọ** / Good / Bad / 🙂 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ukwu / Obere** / Big / Small / 🧸 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ọcha / Ruru unyi** / Clean / Dirty / 🧼 — review image fit
+- `src/data/lessons.ts` — **Ọhụrụ / Ochie** / New / Old / 🎁 — review image fit
+- `src/data/lessons.ts` — **Ìhè / Ọchịchịrị** / Light / Dark / 🌞 — review image fit
+- `src/data/lessons.ts` — **Ogologo / Mkpụmkpụ** / Long / Short / 📏 — review image fit
+- `src/data/lessons.ts` — **Elu / Ala** / High / Low / 🎈 — review image fit
+- `src/data/lessons.ts` — **Ngwa / Nwayọ** / Fast / Slow / 🚗 — review image fit
+- `src/data/lessons.ts` — **Ike / Mfe** / Hard / Easy / 🧱 — review image fit
+- `src/data/lessons.ts` — **Mbụ / Ikpeazụ** / First / Last / 🏁 — review image fit
+- `src/data/lessons.ts` — **Ọ bụ nwa ọma** / She/He is a good child / 👧🏾 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Kaira na Zara bụ ụmụ nwanyị** / Kaira and Zara are girls / 👧🏾👧🏾 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Mmiri dị mma** / Water is good / 💧 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **A na m eri nri ugbu a** / I am eating food now / 🍽️ — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ọ bụ onye ọ bụla** / It is everyone / 👥 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ihe dị iche iche** / Different things / 🌈 — review image fit
+- `src/data/lessons.ts` — **. (Ntọala)** / Full stop — ends a sentence / ⏺️ — review image fit
+- `src/data/lessons.ts` — **, (Ntọala obere)** / Comma — short pause / , — review image fit
+- `src/data/lessons.ts` — **? (Akara ajụjụ)** / Question mark / ❓ — weak/no concrete emoji
+- `src/data/lessons.ts` — **! (Akara ịtọ ụtọ)** / Exclamation mark / ❗ — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **: (Akara nkọwa)** / Colon — introduces a list / 📋 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Ụlọ** / House / Home / 🏠 — review image fit
+- `src/data/lessons.ts` — **Ụlọ akwụkwọ** / School / 🏫 — review image fit
+- `src/data/lessons.ts` — **Ahịa** / Market / 🛒 — review image fit
+- `src/data/lessons.ts` — **Mmiri** / Water / 💧 — review image fit
+- `src/data/lessons.ts` — **Nri** / Food / 🍲 — review image fit
+- `src/data/lessons.ts` — **Akwụkwọ** / Book / Paper / Leaf / 📖 — review image fit
+- `src/data/lessons.ts` — **Ọrụ** / Work / Task / 💼 — review image fit
+- `src/data/lessons.ts` — **Egwu** / Game / Dance / Music / 🎵 — possibly abstract/not ideal for picture matching
+- `src/data/lessons.ts` — **Anyanwụ** / Sun / ☀️ — review image fit
+- `src/data/lessons.ts` — **Ọnwa** / Moon / Month / 🌙 — review image fit
+- `src/data/lessons.ts` — **Igwe ojii** / Cloud / Sky / ☁️ — review image fit
+- `src/data/lessons.ts` — **Oge** / Time / ⏰ — review image fit
+- `src/data/lessons.ts` — **Ụbọchị** / Day / 📅 — review image fit
+- `src/data/lessons.ts` — **Abalị** / Night / 🌙 — review image fit
+- `src/data/lessons.ts` — **Oge ọhụrụ** / New Year / 🎆 — review image fit
+
+## Production Decision Columns
+
+Use this checklist manually while reviewing screenshots/assets:
+
+| Igbo | English | Current picture/emoji | Decision | Notes |
+|---|---|---|---|---|
+| example | example | example | Keep / Replace / Remove from Picture Match | reason |
+
+## Recommended Product Rule
+
+Create a dedicated allowlist for Picture Match instead of automatically using the full quiz/lesson pool. This prevents abstract words and weak visuals from entering picture-based games.

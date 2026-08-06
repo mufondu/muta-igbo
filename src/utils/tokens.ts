@@ -50,6 +50,7 @@ export const LEVEL_COLOR: Record<string, { bg: string; pip: string; text: string
   '3A': { bg: '#F0EAFC', pip: '#7030C8', text: '#3A1068' },
   '2A': { bg: '#FDEEF0', pip: '#E8445A', text: '#780820' },
   '1A': { bg: '#E0F8FA', pip: '#0898A0', text: '#044850' },
+  'PB': { bg: '#FCE9F3', pip: '#D14E9A', text: '#7A1050' },
 };
 
 export const CHILD_AVATARS = [

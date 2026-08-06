@@ -45,7 +45,12 @@ function optionCount(difficulty: Difficulty): number {
 
 function buildQuestion(difficulty: Difficulty, isPremium: boolean): TapQuestion {
   const pool = buildQuizPool(isPremium).filter(
-    item => item.emoji && item.emoji !== '🔡' && item.emoji !== '🔊' && item.emoji !== '🔢'
+    item =>
+      !item.abstract &&
+      item.emoji &&
+      item.emoji !== '🔡' &&
+      item.emoji !== '🔊' &&
+      item.emoji !== '🔢'
   );
 
   const safePool = pool.length > 0 ? pool : [
@@ -67,6 +72,12 @@ function buildQuestion(difficulty: Difficulty, isPremium: boolean): TapQuestion 
 }
 
 export default function ListenTapGame({ onBack, isPremium }: Props) {
+  // Track pending round-advance timers so they are cancelled if the child
+  // leaves the game before they fire (prevents setState on an unmounted screen).
+  const timers = React.useRef<ReturnType<typeof setTimeout>[]>([]);
+  React.useEffect(() => () => { timers.current.forEach(clearTimeout); timers.current = []; }, []);
+  const later = (fn: () => void, ms: number) => { timers.current.push(setTimeout(fn, ms)); };
+
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const [question, setQuestion] = useState<TapQuestion | null>(null);
   const [score, setScore] = useState(0);
@@ -127,7 +138,7 @@ export default function ListenTapGame({ onBack, isPremium }: Props) {
       });
     }
 
-    setTimeout(() => {
+    later(() => {
       if (round >= MAX_ROUNDS) {
         setGameOver(true);
         setLocked(false);
@@ -201,6 +212,7 @@ export default function ListenTapGame({ onBack, isPremium }: Props) {
           score={score}
           streak={bestStreak}
           difficulty={difficulty}
+          maxScore={MAX_ROUNDS * pointsForDifficulty(difficulty)}
           onReplay={() => start(difficulty)}
           onHome={onBack}
         />

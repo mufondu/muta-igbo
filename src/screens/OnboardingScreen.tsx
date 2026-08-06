@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AvatarIllustration from '../components/illustrations/AvatarIllustration';
-import { Profile } from '../hooks/useAppState';
+import { makeProfile, Profile } from '../hooks/useAppState';
 import { KIDS_COLOR, KIDS_SHADOW } from '../theme/kidsTheme';
 import { COLOR, FONT, RADIUS, SPACE } from '../utils/tokens';
 
@@ -59,29 +59,6 @@ const MUTA_FRIENDS: MutaFriend[] = [
 
 function getMutaFriend(id: MutaFriendId): MutaFriend {
   return MUTA_FRIENDS.find(friend => friend.id === id) || MUTA_FRIENDS[0];
-}
-
-function makeProfile(name: string, avatar: MutaFriendId): Profile {
-  const now = new Date().toISOString();
-
-  const profile = {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    name,
-    avatar,
-    streak: 0,
-    lastActive: now,
-    levelProgress: {},
-    quizBest: 0,
-    stars: 0,
-    badges: [],
-    completedLessons: [],
-    wordsLearned: 0,
-    goalDate: now,
-    goalCount: 10,
-    createdAt: now,
-  };
-
-  return profile as unknown as Profile;
 }
 
 function StepDots({ current, total }: { current: number; total: number }) {
