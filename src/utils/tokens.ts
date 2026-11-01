@@ -1,10 +1,16 @@
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 export const IS_TABLET = SCREEN_W >= 600;
 const BASE_W = 390;
 export function rs(size: number): number {
-  const scale = Math.min(SCREEN_W / BASE_W, IS_TABLET ? 1.45 : 1.15);
+  // Web: browser windows are wide but type should stay near phone size, or a
+  // 1900px screen renders everything ~45% oversized.
+  // Web: ~1.0 on narrow windows, up to 1.25 on laptop/desktop-width windows so
+  // descriptions stay readable. Read once at load; reload after a big resize.
+  const webCap = SCREEN_W >= 1280 ? 1.25 : SCREEN_W >= 1024 ? 1.18 : 1.1;
+  const cap = Platform.OS === 'web' ? webCap : IS_TABLET ? 1.45 : 1.15;
+  const scale = Math.min(SCREEN_W / BASE_W, cap);
   return Math.round(size * scale);
 }
 export const SCREEN = { W: SCREEN_W, H: Dimensions.get('window').height };

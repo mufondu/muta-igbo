@@ -40,14 +40,17 @@ import WordMatchGame from '../screens/games/WordMatchGame';
 import { PrivacyScreen, TermsScreen } from '../screens/LegalScreens';
 import OnboardingScreen, { ProfileImage } from '../screens/OnboardingScreen';
 import PremiumScreen from '../screens/PremiumScreen';
-import { getPlanLabel, getPremiumBadgeLabel, hasPremiumEntitlement, shouldShowUpgradePrompt } from '../config/accessControl';
+import { getPlanLabel, getPremiumBadgeLabel, hasPremiumEntitlement, isFreeBetaMode, shouldShowUpgradePrompt } from '../config/accessControl';
 import SettingsScreen from '../screens/SettingsScreen';
 import { COLOR, FONT, IS_TABLET, LEVEL_COLOR, RADIUS, SPACE } from '../utils/tokens';
 import * as haptics from '../utils/haptics';
+import { getWordAudio } from '../utils/wordAudio';
 import { DailyGoalRing } from '../components/DailyGoalRing';
 import { KIDS_COLOR, KIDS_SHADOW } from '../theme/kidsTheme';
 import ParentGate from '../components/ParentGate';
 import { GuideBanner } from '../components/LevelGuide';
+import DesktopSidebar, { SidebarItem } from '../components/DesktopSidebar';
+import { useIsDesktop, useLayout } from '../utils/responsive';
 
 const MUTA_LOGO = require('../../assets/muta-logo.png');
 const MUTA_HEADER_LOGO = require('../../assets/muta-logo-header.png');
@@ -153,7 +156,13 @@ function playSfxSequence(keys: SfxKey[], enabled = true, delayMs = 300) {
 }
 
 function playSoundFallback(label: string, enabled = true) {
-  // Temporary pronunciation placeholder until native speaker recordings are added.
+  // Play the recorded native-speaker pronunciation when available; otherwise
+  // fall back to the placeholder tap sound until recordings are added.
+  const recording = getWordAudio(label);
+  if (recording) {
+    void playNativeAudio(recording);
+    return;
+  }
   playSfx('tap', enabled);
   if (__DEV__) console.log('[sound placeholder]', label);
 }
@@ -189,6 +198,29 @@ interface NavState {
 }
 
 const NAV_RESET: NavState = { inner: null, levelId: '7A', sectionId: '' };
+
+// What shows up in "Continue Learning" for each view (menus like the picker are skipped).
+const ACTIVITY_META: Partial<Record<InnerView, { title: string; icon: string }>> = {
+  quiz: { title: 'Quiz Mode', icon: '🎯' },
+  sayItBack: { title: 'Say It', icon: '🎤' },
+  listenTap: { title: 'Listen & Tap', icon: '👂' },
+  wordMatch: { title: 'Word Match', icon: '🔀' },
+  pictureMatch: { title: 'Picture Match', icon: '🖼️' },
+  folktales: { title: 'Story Hut', icon: '📖' },
+};
+
+function describeRecent(view: InnerView, levelId?: string) {
+  if (view === 'levelDetail') {
+    const level = ALL_LEVELS.find(l => l.id === (levelId ?? '7A'));
+    if (!level) return null;
+    return { key: `level:${level.id}`, view, levelId: level.id, title: level.title, icon: level.emoji };
+  }
+  const meta = ACTIVITY_META[view];
+  return meta ? { key: `view:${view}`, view, title: meta.title, icon: meta.icon } : null;
+}
+
+const PLAY_VIEWS: InnerView[] = ['adventurePicker', 'games', 'quiz', 'sayItBack', 'listenTap', 'wordMatch', 'pictureMatch', 'folktales'];
+const LESSON_VIEWS: InnerView[] = ['lessonPath', 'levelDetail'];
 
 // ─── Animations ──────────────────────────────────────────────────────────────
 function BounceIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -252,9 +284,10 @@ function LockBadge() {
 
 // ─── ROOT COMPONENT ───────────────────────────────────────────────────────────
 export default function MutaIgboApp() {
-  const { state, completeOnboarding, incrementStreak, setActiveProfile } = useApp();
+  const { state, completeOnboarding, incrementStreak, setActiveProfile, pushRecent } = useApp();
   const hasFullAccess = hasPremiumEntitlement(state.isPremium);
   const { width: screenWidth } = useWindowDimensions();
+  const isDesktop = useIsDesktop();
   const appContentWidth = Math.min(screenWidth - 32, screenWidth >= 768 ? 680 : screenWidth);
 
 
@@ -279,6 +312,8 @@ export default function MutaIgboApp() {
     // The paywall must sit behind the parent gate to comply with the App Store
     // Kids Category and Google Play Families policies. Everything else is open.
     if (view === 'premium') { setGate('premium'); return; }
+    const recent = describeRecent(view, levelId);
+    if (recent) pushRecent(recent);
     setNav({ inner: view, levelId: levelId ?? '7A', sectionId: sectionId ?? '' });
   }
 
@@ -311,11 +346,56 @@ export default function MutaIgboApp() {
     setNav(NAV_RESET);
   }
 
+  // Sidebar navigation (desktop). Works from the main shell and from inner screens.
+  function goTab(next: MainTab) {
+    haptics.tapLight();
+    setGate(null);
+    setReturnToLessonPath(false);
+    setReturnToAdventurePicker(false);
+    setNav(NAV_RESET);
+    setTab(next);
+  }
+  function goInner(view: InnerView) {
+    haptics.tapLight();
+    setGate(null);
+    setReturnToLessonPath(false);
+    setReturnToAdventurePicker(false);
+    openInner(view);
+  }
+  const atShell = nav.inner === null;
+  const sidebarItems: SidebarItem[] = [
+    { key: 'home', icon: 'home', label: 'Home', active: atShell && tab === 'home' && !gate, onPress: () => goTab('home') },
+    { key: 'play', icon: 'game-controller', label: 'Play Zone', active: !gate && nav.inner !== null && PLAY_VIEWS.includes(nav.inner), onPress: () => goInner('adventurePicker') },
+    { key: 'lessons', icon: 'library', label: 'Lessons', active: !gate && nav.inner !== null && LESSON_VIEWS.includes(nav.inner), onPress: () => goInner('lessonPath') },
+    { key: 'progress', icon: 'star', label: 'Progress', active: atShell && tab === 'progress' && !gate, onPress: () => goTab('progress') },
+    {
+      key: 'parent', icon: 'settings', label: 'Parent Center', group: 'parent', active: gate === 'settings' || (atShell && tab === 'settings'),
+      onPress: () => {
+        haptics.tapLight();
+        setReturnToLessonPath(false);
+        setReturnToAdventurePicker(false);
+        setNav(NAV_RESET);
+        setGate('settings');
+      },
+    },
+  ];
+  const sidebar = isDesktop ? (
+    <DesktopSidebar
+      items={sidebarItems}
+      playerName={headerProfile?.name}
+      canSwitchPlayer={state.profiles.length > 1}
+      onSwitchPlayer={() => { setNav(NAV_RESET); setTab('home'); setProfileSheetOpen(true); }}
+    />
+  ) : null;
+
   // ── Onboarding flow ──
   if (!state.onboarded) {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <OnboardingScreen onComplete={(profiles) => completeOnboarding(profiles)} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#FFF8E7' }}>
+        {/* Centered column so Welcome/setup do not stretch edge to edge on wide windows */}
+        <View style={{ flex: 1, width: '100%', maxWidth: 720, alignSelf: 'center' }}>
+          <OnboardingScreen onComplete={(profiles) => completeOnboarding(profiles)} />
+        </View>
       </SafeAreaView>
     );
   }
@@ -325,6 +405,10 @@ export default function MutaIgboApp() {
     const { inner, levelId, sectionId } = nav;
     return (
       <SafeAreaView style={sh.root}>
+       <View style={{ flex: 1, flexDirection: 'row' }}>
+        {sidebar}
+        <View style={{ flex: 1, alignItems: 'center' }}>
+        <View style={{ flex: 1, width: '100%', maxWidth: isDesktop ? 1000 : undefined }}>
         {inner === 'levelDetail' && (
           <LevelDetailScreen levelId={levelId} onBack={closeInner}
             onPremium={() => openInner('premium')} />
@@ -373,6 +457,9 @@ export default function MutaIgboApp() {
         {inner === 'premium' && <PremiumScreen onBack={closeInner} />}
         {inner === 'terms'   && <TermsScreen   onBack={closeInner} />}
         {inner === 'privacy' && <PrivacyScreen  onBack={closeInner} />}
+        </View>
+        </View>
+       </View>
 
         <ParentGate
           visible={gate === 'premium'}
@@ -386,6 +473,9 @@ export default function MutaIgboApp() {
   // ── Main shell ──
   return (
     <SafeAreaView style={sh.root}>
+     <View style={{ flex: 1, flexDirection: 'row' }}>
+      {sidebar}
+      <View style={{ flex: 1 }}>
       {/* App header */}
       <View style={[sh.brandHeader, { width: appContentWidth }]}>
         {gate !== 'settings' ? (
@@ -404,6 +494,8 @@ export default function MutaIgboApp() {
       {tab === 'home'     && <HomeScreen openInner={openInner} onOpenProfileSheet={() => setProfileSheetOpen(true)} />}
       {tab === 'progress' && <ProgressScreen />}
       {tab === 'settings' && <SettingsScreen onBack={() => setTab('home')} />}
+      </View>
+     </View>
 
       <ParentGate
         visible={gate !== null}
@@ -467,7 +559,8 @@ export default function MutaIgboApp() {
         </TouchableOpacity>
       </Modal>
 
-      {/* Bottom nav */}
+      {/* Bottom nav (phone/tablet layout only; desktop uses the sidebar) */}
+      {!isDesktop && (
       <View pointerEvents="box-none" style={sh.bottomNavFrame}>
         <View style={sh.bottomNav}>
           <TouchableOpacity
@@ -512,6 +605,7 @@ export default function MutaIgboApp() {
           </TouchableOpacity>
         </View>
       </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -556,6 +650,9 @@ function AdventurePickerScreen({
   onBack: () => void;
   openAdventure: (view: InnerView) => void;
 }) {
+  // Two columns once the content column is wide enough (desktop web).
+  const pickerLayout = useLayout();
+  const pickerTwoCol = pickerLayout.isDesktop && pickerLayout.width >= 1100;
   const cards = [
     { modeIcon: 'mic', title: 'Say It', igboTitle: 'Kwuo ya', sub: 'Practice speaking', bg: '#FFE3EF', accent: '#F04483', action: () => openAdventure('sayItBack') },
     { modeIcon: 'ear', title: 'Listen & Tap', igboTitle: 'Gee ntị ma pịa', sub: 'Hear it. Pick it.', bg: '#DDF6FF', accent: '#31BDED', action: () => openAdventure('listenTap') },
@@ -580,12 +677,15 @@ function AdventurePickerScreen({
         </View>
       </View>
 
-      <View style={sh.adventureSheetGrid}>
+      <View style={[sh.adventureSheetGrid, pickerTwoCol && { flexDirection: 'row', flexWrap: 'wrap', gap: 18 }]}>
         {cards.map((card, index) => (
           <TouchableOpacity
             key={card.title}
+            accessibilityRole="button"
+            accessibilityLabel={`${card.title}. ${card.sub}`}
             style={[
               sh.adventureSheetCard,
+              pickerTwoCol && { width: '48.6%', minHeight: 132 },
               {
                 backgroundColor: card.bg,
                 borderColor: card.accent + '44',
@@ -636,15 +736,29 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
 
 
   const { width: screenWidth } = useWindowDimensions();
-  const isTabletHome = screenWidth >= 768;
-  const homeHorizontalGutter = isTabletHome ? 56 : 16;
-  const homeContentWidth = Math.min(
-    screenWidth - homeHorizontalGutter * 2,
-    isTabletHome ? 680 : screenWidth - 32
-  );
+  const layoutHome = useLayout();
+  const isDesktopHome = layoutHome.isDesktop;
+  // Fluid: follows the window as it is resized (phone, tablet, laptop, ultra-wide).
+  const homeContentWidth = layoutHome.contentWidth;
   const isCompactHome = homeContentWidth < 390;
-  const portalIconSize = isCompactHome ? 86 : 112;
-  const portalImageSize = isCompactHome ? 80 : 106;
+  // Side-by-side cards only when there is room; otherwise they stack.
+  const homeTwoColumn = layoutHome.twoColumn;
+  const portalIconSize = isCompactHome ? 86 : homeTwoColumn ? 96 : 112;
+  const portalImageSize = isCompactHome ? 80 : homeTwoColumn ? 90 : 106;
+  const desktopCardFlex = homeTwoColumn ? { flex: 1, minHeight: 260 } : null;
+
+  // "Continue Learning": recent items, or sensible starting points for a new learner.
+  const firstLevel = ALL_LEVELS[0];
+  const continueItems: { key: string; view: string; levelId?: string; title: string; icon: string }[] =
+    (state.recent ?? []).length > 0
+      ? (state.recent ?? []).slice(0, 4)
+      : [
+          ...(firstLevel ? [{ key: 'level:first', view: 'levelDetail', levelId: firstLevel.id, title: firstLevel.title, icon: firstLevel.emoji }] : []),
+          { key: 'view:quiz', view: 'quiz', title: 'Quiz Mode', icon: '🎯' },
+          { key: 'view:pictureMatch', view: 'pictureMatch', title: 'Picture Match', icon: '🖼️' },
+          { key: 'view:folktales', view: 'folktales', title: 'Story Hut', icon: '📖' },
+        ];
+  const continueCardWidth = Math.floor((homeContentWidth - 16 * 3) / 4);
   const playerName = activeProfile?.name?.trim() || 'Nwa Igbo';
   const greetingText = `Nnọọ, ${playerName}!`;
   const greetingIsLong = greetingText.length > 22;
@@ -665,6 +779,7 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
           width: homeContentWidth,
           alignSelf: 'center',
         },
+        isDesktopHome && { paddingTop: 32, paddingBottom: 48 },
       ]}
       showsVerticalScrollIndicator={false}
     >
@@ -725,7 +840,7 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
         <View style={sh.kidsStatsRow}>
           <View style={sh.kidsStatChip}><Text style={sh.kidsStatEmoji}>🔥</Text><Text style={sh.kidsStatText}>{activeProfile?.streak ?? 0} day streak</Text></View>
           <View style={sh.kidsStatChip}><Text style={sh.kidsStatEmoji}>⭐</Text><Text style={sh.kidsStatText}>{activeProfile?.wordsLearned ?? 0} words</Text></View>
-          <DailyGoalRing completed={goalCount} />
+          <DailyGoalRing completed={goalCount} goal={state.dailyGoal ?? 3} />
         </View>
       </View>
 
@@ -739,8 +854,9 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
         <Text style={sh.kidsQuestArrow}>›</Text>
       </TouchableOpacity>
 
+      <View style={homeTwoColumn ? { flexDirection: 'row', gap: 20, alignItems: 'stretch' } : undefined}>
       <TouchableOpacity
-        style={[sh.adventurePortalCard, isCompactHome && sh.portalCardCompact]}
+        style={[sh.adventurePortalCard, isCompactHome && sh.portalCardCompact, desktopCardFlex]}
         activeOpacity={0.88}
         onPress={() => openInner('adventurePicker')}
         accessibilityLabel="Choose your adventure"
@@ -835,7 +951,7 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
       </Modal>
 
       <TouchableOpacity
-        style={[sh.lessonPortalCard, isCompactHome && sh.portalCardCompact]}
+        style={[sh.lessonPortalCard, isCompactHome && sh.portalCardCompact, desktopCardFlex]}
         activeOpacity={0.88}
         onPress={() => openInner('lessonPath')}
         accessibilityLabel="Open Lesson Path"
@@ -865,6 +981,29 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
           <Text style={sh.lessonPortalArrow}>›</Text>
         </View>
       </TouchableOpacity>
+      </View>
+
+      {isDesktopHome ? (
+        <View style={sh.continueWrap}>
+          <Text style={sh.continueKicker}>{(state.recent ?? []).length > 0 ? 'CONTINUE LEARNING' : 'START HERE'}</Text>
+          <View style={sh.continueGrid}>
+            {continueItems.map(item => (
+              <TouchableOpacity
+                key={item.key}
+                style={[sh.continueCard, { width: continueCardWidth }]}
+                activeOpacity={0.88}
+                accessibilityRole="button"
+                accessibilityLabel={`Open ${item.title}`}
+                onPress={() => openInner(item.view as InnerView, item.levelId)}
+              >
+                <Text style={sh.continueIcon}>{item.icon}</Text>
+                <Text style={sh.continueTitle} numberOfLines={2}>{item.title}</Text>
+                <Text style={sh.continueSub}>{item.view === 'levelDetail' ? 'Lesson' : 'Activity'}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      ) : null}
 
       <View style={{ height: 30 }} />
     </ScrollView>
@@ -1152,7 +1291,7 @@ return (
                 <View style={sh.levelTopRow}>
                   <Text style={[sh.levelBadge, { color: lc.text }]}>{level.level}</Text>
                   {isLocked && <LockBadge />}
-                  {!level.free && isPremium && <View style={sh.premiumTag}><Text style={sh.premiumTagText}>⭐</Text></View>}
+                  {!level.free && isPremium && !isFreeBetaMode() && <View style={sh.premiumTag}><Text style={sh.premiumTagText}>⭐</Text></View>}
                 </View>
 
                 <Text style={[sh.lessonPathLevelName, isCompactLessonPath && sh.lessonPathLevelNameCompact]}>{level.title}</Text>
@@ -1219,7 +1358,7 @@ function LevelDetailScreen({ levelId, onBack, onPremium }: {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={sh.sectionTabs}
-          style={{ flexGrow: 0 }}
+          style={{ flexGrow: 0, flexShrink: 0 }}
         >
           {level.sections.map((sec, i) => (
             <TouchableOpacity
@@ -1466,7 +1605,8 @@ function ProgressScreen() {
   const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   const HEIGHTS = [55, 70, 30, 85, 90, 20, 0];
   const { width: xpScreenWidth } = useWindowDimensions();
-  const xpContentWidth = Math.min(xpScreenWidth - 32, xpScreenWidth >= 768 ? 720 : xpScreenWidth);
+  const xpLayout = useLayout();
+  const xpContentWidth = Math.min(xpLayout.contentWidth, 900);
   const isCompactXp = xpContentWidth < 390;
 
   const progressValues = ALL_LEVELS.map(level => activeProfile?.levelProgress[level.id] ?? 0);
@@ -1912,7 +2052,7 @@ const ld = StyleSheet.create({
   headerText: { flex: 1, paddingBottom: 4 },
   headerTitle: {
     fontSize: FONT.xxl, fontWeight: '900',
-    color: COLOR.textWhite, lineHeight: 30,
+    color: COLOR.textWhite, lineHeight: Math.round(FONT.xxl * 1.25),
   },
   headerIgbo: {
     fontSize: FONT.md, color: COLOR.gold,
@@ -2419,6 +2559,24 @@ const sh = StyleSheet.create({
   parentCenterText: {
     display: 'none',
   },
+  continueWrap: { marginTop: 28 },
+  continueKicker: { fontSize: FONT.sm, fontWeight: '900', letterSpacing: 1.4, color: '#F5A400', marginBottom: 12 },
+  continueGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 16 },
+  continueCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 26,
+    padding: 20,
+    minHeight: 150,
+    borderWidth: 2,
+    borderColor: 'rgba(49, 189, 237, 0.28)',
+    shadowColor: '#1B2A6B',
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+  },
+  continueIcon: { fontSize: 34, marginBottom: 10 },
+  continueTitle: { fontSize: FONT.lg, fontWeight: '900', color: '#1B2A6B' },
+  continueSub: { fontSize: FONT.sm, fontWeight: '700', color: '#5B6B8C', marginTop: 4 },
   kidsHomeRoot: {
     flex: 1,
     backgroundColor: '#FFF8E7',
@@ -3188,23 +3346,25 @@ const sh = StyleSheet.create({
   },
   lessonEyebrow: {
     fontSize: FONT.xs,
-    color: COLOR.gold,
+    color: '#FFF4D6',               // cream: gold on the orange/yellow hero was hard to read
     fontWeight: '900',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
-    marginBottom: 4,
+    lineHeight: Math.round(FONT.xs * 1.4),
+    marginBottom: 6,
   },
   lessonHeroTitle: {
     fontSize: FONT.xxl,
     color: COLOR.textWhite,
     fontWeight: '900',
-    lineHeight: 30,
+    lineHeight: Math.round(FONT.xxl * 1.25),
   },
   lessonHeroSub: {
     fontSize: FONT.md,
-    color: COLOR.gold,
+    color: '#FFF4D6',
     fontWeight: '900',
-    marginTop: 4,
+    lineHeight: Math.round(FONT.md * 1.35),
+    marginTop: 6,
   },
   lessonAvatarWrap: {
     width: 96,
@@ -3518,11 +3678,13 @@ const sh = StyleSheet.create({
     fontSize: FONT.lg,
     fontWeight: '900',
     color: COLOR.textPrimary,
-    marginBottom: 2,
+    lineHeight: Math.round(FONT.lg * 1.3),
+    marginBottom: 4,
   },
   sectionSubHeading: {
     fontSize: FONT.sm,
     color: COLOR.textSecond,
+    lineHeight: Math.round(FONT.sm * 1.4),
     marginBottom: SPACE.md,
     fontStyle: 'italic',
     fontWeight: '700',
@@ -3987,8 +4149,8 @@ const sh = StyleSheet.create({
     color: COLOR.textPrimary,
     fontWeight: '900',
     textAlign: 'center',
-    lineHeight: 21,
-    minHeight: 42,
+    lineHeight: Math.round(FONT.md * 1.25),
+    minHeight: Math.round(FONT.md * 1.25) * 2,
   },
   quizOptionTap: {
     fontSize: FONT.xs,

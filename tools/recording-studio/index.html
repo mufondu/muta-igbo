@@ -596,13 +596,9 @@ function setManifest(data) {
   render();
 }
 
-async function startSession() {
+async function ensureStream() {
+  if (stream) return true;
   try {
-    if (!manifest) {
-      const data = await loadManifestFromFetch();
-      setManifest(data);
-    }
-
     stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         echoCancellation: false,
@@ -610,17 +606,35 @@ async function startSession() {
         autoGainControl: false,
       }
     });
-
-    setStatus("Microphone ready.", "ok");
+    setStatus("Microphone ready. Hold the button and speak.", "ok");
+    return true;
   } catch (error) {
-    alert("Could not start session. Use a local server and allow microphone access. You can also load the manifest manually.");
+    alert("Could not access the microphone. Allow mic access for localhost, then hold the button again.");
     console.error(error);
+    return false;
   }
 }
 
-function beginRecording() {
+async function startSession() {
+  if (!manifest) {
+    try {
+      const data = await loadManifestFromFetch();
+      setManifest(data);
+    } catch (error) {
+      alert("Could not load the default manifest. Use \"Load manifest manually\" instead.");
+      console.error(error);
+      return;
+    }
+  }
+  await ensureStream();
+}
+
+async function beginRecording() {
   if (!stream) {
-    alert("Start the recording session first.");
+    const ok = await ensureStream();
+    // First press only grants mic permission; hold again to record.
+    if (!ok) return;
+    setStatus("Microphone ready. Hold the button again to record.", "ok");
     return;
   }
 

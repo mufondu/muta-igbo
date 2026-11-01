@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { MutaFriendId, normalizeFriendId } from '../data/mutaFriends';
+import { track } from '../lib/analytics';
 
 export type AvatarEmoji = MutaFriendId;
 
@@ -18,7 +19,19 @@ export interface Profile {
   goalCount: number;       // activities completed on goalDate
 }
 
+/** A lesson or activity the learner opened recently (shown in "Continue Learning"). */
+export interface RecentItem {
+  key: string;        // dedupe key, e.g. 'level:7A' or 'view:quiz'
+  view: string;       // the inner view to reopen
+  levelId?: string;
+  title: string;
+  icon: string;
+  ts: number;
+}
+
 export interface AppState {
+  /** Most recent first, max 6. Shared by all profiles on the account (simple on purpose). */
+  recent: RecentItem[];
   onboarded: boolean;
   parentAgreed: boolean;
   activeProfileId: string;
@@ -26,9 +39,16 @@ export interface AppState {
   isPremium: boolean;
   soundEnabled: boolean;
   hapticEnabled: boolean;
+  /** ms since epoch of the last local change. Used to pick the newer copy when syncing. */
+  updatedAt: number;
+  /** Activities per day the family is aiming for (2, 3, 5 or 10). */
+  dailyGoal: number;
 }
 
-const DEFAULT_STATE: AppState = {
+export const DEFAULT_STATE: AppState = {
+  updatedAt: 0,
+  dailyGoal: 3,
+  recent: [],
   onboarded: false,
   parentAgreed: false,
   activeProfileId: '',
@@ -88,6 +108,11 @@ async function saveState(state: AppState): Promise<void> {
   try { await AsyncStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch {}
 }
 
+/** Wipes everything stored on this device (used after account deletion). */
+export async function clearLocalData(): Promise<void> {
+  try { await AsyncStorage.multiRemove([STORE_KEY, '@mutaigbo_owner_v1']); } catch {}
+}
+
 interface AppContextValue {
   state: AppState;
   activeProfile: Profile | null;
@@ -107,6 +132,10 @@ interface AppContextValue {
   toggleSound: () => void;
   toggleHaptic: () => void;
   resetAll: () => void;
+  /** Replace the whole state (used by cloud sync). Does not bump updatedAt. */
+  replaceState: (next: AppState) => void;
+  pushRecent: (item: Omit<RecentItem, 'ts'>) => void;
+  setDailyGoal: (goal: number) => void;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -121,10 +150,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const update = useCallback((updater: (s: AppState) => AppState) => {
     setState(prev => {
-      const next = updater(prev);
+      const next = { ...updater(prev), updatedAt: Date.now() };
       saveState(next);
       return next;
     });
+  }, []);
+
+  const replaceState = useCallback((next: AppState) => {
+    const normalized: AppState = {
+      ...DEFAULT_STATE,
+      ...next,
+      profiles: (next.profiles ?? []).map(p => ({
+        ...makeProfile(p.name ?? '', p.avatar),
+        ...p,
+        avatar: normalizeFriendId(p.avatar),
+      })),
+    };
+    saveState(normalized);
+    setState(normalized);
   }, []);
 
   const activeProfile: Profile | null =
@@ -180,6 +223,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [update]);
 
   const updateProgress = useCallback((levelId: string, progress: number) => {
+    track('level_progress', { level: levelId, percent: Math.round(progress * 100) });
     update(s => ({
       ...s,
       profiles: s.profiles.map(p =>
@@ -191,6 +235,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [update]);
 
   const updateQuizBest = useCallback((score: number) => {
+    track('quiz_best', { score });
     update(s => ({
       ...s,
       profiles: s.profiles.map(p =>
@@ -230,6 +275,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [update]);
 
   const recordActivity = useCallback(() => {
+    track('activity_done');
     const today = new Date().toDateString();
     update(s => ({
       ...s,
@@ -239,6 +285,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         return { ...p, goalDate: today, goalCount: count };
       }),
     }));
+  }, [update]);
+
+  const pushRecent = useCallback((item: Omit<RecentItem, 'ts'>) => {
+    update(s => ({
+      ...s,
+      recent: [{ ...item, ts: Date.now() }, ...(s.recent ?? []).filter(r => r.key !== item.key)].slice(0, 6),
+    }));
+  }, [update]);
+
+  const setDailyGoal = useCallback((goal: number) => {
+    const clamped = Math.max(1, Math.min(10, Math.round(goal)));
+    update(s => ({ ...s, dailyGoal: clamped }));
   }, [update]);
 
   const setPremium = useCallback((val: boolean) => update(s => ({ ...s, isPremium: val })), [update]);
@@ -253,6 +311,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       state, activeProfile, setActiveProfile, addProfile, deleteProfile, renameProfile, setProfileAvatar,
       completeOnboarding, agreeToTerms, updateProgress, updateQuizBest,
       incrementStreak, markWordLearned, recordActivity, setPremium, toggleSound, toggleHaptic, resetAll,
+      replaceState, pushRecent, setDailyGoal,
     }}>
       {children}
     </AppContext.Provider>

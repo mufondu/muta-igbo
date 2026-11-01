@@ -157,7 +157,7 @@ const s = StyleSheet.create({
   legal: {
     color: KIDS_COLOR.textSoft,
     fontSize: FONT.xs,
-    lineHeight: 18,
+    lineHeight: Math.round(FONT.xs * 1.5),
     textAlign: 'center',
     fontWeight: '700',
     marginTop: SPACE.md,

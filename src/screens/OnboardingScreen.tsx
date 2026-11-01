@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AvatarIllustration from '../components/illustrations/AvatarIllustration';
 import { makeProfile, Profile } from '../hooks/useAppState';
 import { KIDS_COLOR, KIDS_SHADOW } from '../theme/kidsTheme';
+import { Alert } from '../utils/alert';
 import { COLOR, FONT, RADIUS, SPACE } from '../utils/tokens';
 
 
@@ -1021,7 +1021,7 @@ overflow: 'visible',
     fontWeight: '900',
     color: KIDS_COLOR.textPrimary,
     textAlign: 'center',
-    lineHeight: 44,
+    lineHeight: Math.round(FONT.hero * 1.15),
     marginBottom: SPACE.sm,
   },
   heroSub: {

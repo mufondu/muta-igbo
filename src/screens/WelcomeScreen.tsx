@@ -152,8 +152,8 @@ const s = StyleSheet.create({
   kidDivider:   { paddingHorizontal: SPACE.md },
   heartEmoji:   { fontSize: 28 },
 
-  tagline:    { fontSize: FONT.xxl, fontWeight: '800', color: COLOR.gold, textAlign: 'center', marginBottom: SPACE.sm },
-  taglineSub: { fontSize: FONT.md,  color: '#A8C8B0', textAlign: 'center', lineHeight: 22, marginBottom: SPACE.xl },
+  tagline:    { fontSize: FONT.xxl, fontWeight: '800', color: COLOR.gold, textAlign: 'center', lineHeight: Math.round(FONT.xxl * 1.25), marginBottom: SPACE.sm },
+  taglineSub: { fontSize: FONT.md,  color: '#A8C8B0', textAlign: 'center', lineHeight: Math.round(FONT.md * 1.4), marginBottom: SPACE.xl },
 
   ctaBtn: {
     backgroundColor: COLOR.gold, paddingVertical: 16, paddingHorizontal: 40,

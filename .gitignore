@@ -47,3 +47,9 @@ example
 scripts/tmp/
 docs_placeholder.txt
 scripts/output/
+
+# Voice recording working files (raw captures + intermediate m4a).
+# Final approved audio lives in assets/audio/ which IS committed.
+recordings/raw-webm/
+recordings/processed-m4a/
+recordings/session-logs/

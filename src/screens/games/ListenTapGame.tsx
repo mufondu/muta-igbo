@@ -1,7 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { buildQuizPool } from '../../data/lessons';
+import { ALL_LEVELS } from '../../data/lessons';
+import { isGamePicture } from '../../data/pictureRegistry';
+import LessonIllustration from '../../components/illustrations/LessonIllustration';
 import { COLOR, FONT, IS_TABLET, RADIUS, SPACE } from '../../utils/tokens';
+import { useIsDesktop } from '../../utils/responsive';
 import {
   Difficulty,
   DifficultyPicker,
@@ -44,20 +47,22 @@ function optionCount(difficulty: Difficulty): number {
 }
 
 function buildQuestion(difficulty: Difficulty, isPremium: boolean): TapQuestion {
-  const pool = buildQuizPool(isPremium).filter(
-    item =>
-      !item.abstract &&
-      item.emoji &&
-      item.emoji !== '🔡' &&
-      item.emoji !== '🔊' &&
-      item.emoji !== '🔢'
-  );
+  // Only words with an approved, game-ready picture in the reviewed registry.
+  const seen = new Set<string>();
+  // (Game access itself is gated elsewhere, same as Picture Match, so tier is not re-checked here.)
+  const pool = ALL_LEVELS.flatMap(level => level.sections.flatMap(section => section.items)).filter(item => {
+    if (!isGamePicture(item.igbo, item.english)) return false;
+    const key = item.igbo + '|' + item.english;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 
   const safePool = pool.length > 0 ? pool : [
     { igbo: 'Nwa', english: 'Child', emoji: '🧒' },
-    { igbo: 'Ụlọ', english: 'House', emoji: '🏠' },
-    { igbo: 'Mmiri', english: 'Water', emoji: '💧' },
-    { igbo: 'Akwụkwọ', english: 'Book', emoji: '📘' },
+    { igbo: 'Nkịta', english: 'Dog', emoji: '🐶' },
+    { igbo: 'Nwamba', english: 'Cat', emoji: '🐱' },
+    { igbo: 'Isi', english: 'Head', emoji: '🙂' },
   ];
 
   const correct = safePool[Math.floor(Math.random() * safePool.length)];
@@ -72,6 +77,7 @@ function buildQuestion(difficulty: Difficulty, isPremium: boolean): TapQuestion 
 }
 
 export default function ListenTapGame({ onBack, isPremium }: Props) {
+  const isDesktop = useIsDesktop();
   // Track pending round-advance timers so they are cancelled if the child
   // leaves the game before they fire (prevents setState on an unmounted screen).
   const timers = React.useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -150,7 +156,10 @@ export default function ListenTapGame({ onBack, isPremium }: Props) {
     }, 700);
   }
 
-  const optSize = IS_TABLET
+  // Desktop browsers get bigger picture targets (easier to hit with a mouse, less empty space).
+  const optSize = isDesktop
+    ? 168
+    : IS_TABLET
     ? 124
     : difficulty === 'easy'
       ? 132
@@ -265,7 +274,7 @@ export default function ListenTapGame({ onBack, isPremium }: Props) {
               onPress={() => tap(option)}
               activeOpacity={0.76}
             >
-              <Text style={{ fontSize: optSize * 0.44 }}>{option.emoji}</Text>
+              <LessonIllustration igbo={option.igbo} english={option.english} emoji={option.emoji} size={optSize * 0.56} />
               <Text style={s.pictureText}>{option.english}</Text>
             </TouchableOpacity>
           ))}

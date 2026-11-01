@@ -1,9 +1,12 @@
 // ─── Parent Settings Screen ──────────────────────────────────────────────────
+import { Ionicons } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 import React, { useState } from 'react';
 import {
-  Alert,
   Modal,
+  Platform,
   ScrollView,
+  Share,
   StyleSheet,
   Switch,
   Text,
@@ -13,11 +16,20 @@ import {
 } from 'react-native';
 import AvatarIllustration from '../components/illustrations/AvatarIllustration';
 import { MUTA_FRIENDS, getMutaFriend, MutaFriendId } from '../data/mutaFriends';
-import { AvatarEmoji, useApp } from '../hooks/useAppState';
+import { ALL_LEVELS } from '../data/lessons';
+import { AvatarEmoji, clearLocalData, useApp } from '../hooks/useAppState';
+import { useAuth } from '../hooks/useAuth';
+import { supabase } from '../lib/supabase';
 import { KIDS_COLOR, KIDS_SHADOW } from '../theme/kidsTheme';
 import { PrivacyScreen, SubscriptionTermsScreen, TermsScreen } from './LegalScreens';
+import { Alert } from '../utils/alert';
 import { FONT, RADIUS, SPACE } from '../utils/tokens';
 import { isFreeBetaMode } from '../config/accessControl';
+import { useIsDesktop } from '../utils/responsive';
+
+/** Settings reads best as a centered column, not 1400px-wide rows. */
+const DESKTOP_COLUMN = { width: '100%' as const, maxWidth: 920, alignSelf: 'center' as const };
+const APP_VERSION = Constants.expoConfig?.version ?? '2.0.1';
 
 interface Props {
   onBack: () => void;
@@ -85,6 +97,7 @@ export default function SettingsScreen({ onBack }: Props) {
     activeProfile,
     toggleSound,
     toggleHaptic,
+    setDailyGoal,
     setPremium,
     resetAll,
     addProfile,
@@ -92,6 +105,8 @@ export default function SettingsScreen({ onBack }: Props) {
     renameProfile,
     setProfileAvatar,
   } = useApp();
+  const auth = useAuth();
+  const isDesktop = useIsDesktop();
 
   const [legalPage, setLegalPage] = useState<LegalPage>(null);
   const [addingChild, setAddingChild] = useState(false);
@@ -131,6 +146,72 @@ export default function SettingsScreen({ onBack }: Props) {
           onPress: () => {
             setPremium(true);
             Alert.alert('🎉 Premium unlocked!', 'All content is now available.');
+          },
+        },
+      ],
+    );
+  }
+
+  // ── Account: export + delete ──
+  async function exportMyData() {
+    let usageEvents: unknown[] = [];
+    try {
+      if (supabase) {
+        const { data } = await supabase
+          .from('usage_events')
+          .select('event, props, created_at')
+          .order('created_at', { ascending: false })
+          .limit(5000);
+        usageEvents = data ?? [];
+      }
+    } catch { /* export what we have */ }
+
+    const json = JSON.stringify(
+      { exportedAt: new Date().toISOString(), account: auth.user?.email ?? null, appState: state, usageEvents },
+      null,
+      2,
+    );
+
+    if (Platform.OS === 'web') {
+      const g = globalThis as unknown as { document?: Document; URL?: typeof URL };
+      if (g.document && g.URL) {
+        const url = g.URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+        const a = g.document.createElement('a');
+        a.href = url;
+        a.download = 'muta-igbo-my-data.json';
+        g.document.body.appendChild(a);
+        a.click();
+        a.remove();
+        g.URL.revokeObjectURL(url);
+      }
+    } else {
+      await Share.share({ message: json, title: 'Mụta Igbo data' });
+    }
+  }
+
+  async function performDeleteAccount() {
+    const res = await auth.deleteAccount();
+    if (res.error) {
+      Alert.alert('Could not delete account', res.error);
+      return;
+    }
+    await clearLocalData();
+  }
+
+  function confirmDeleteAccount() {
+    Alert.alert(
+      'Delete your account?',
+      'This permanently deletes your parent account, every child profile and all progress, on all devices. It cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Continue',
+          style: 'destructive',
+          onPress: () => {
+            Alert.alert('Are you absolutely sure?', 'Everything will be erased now.', [
+              { text: 'Keep my account', style: 'cancel' },
+              { text: 'Delete forever', style: 'destructive', onPress: () => { performDeleteAccount(); } },
+            ]);
           },
         },
       ],
@@ -196,17 +277,20 @@ export default function SettingsScreen({ onBack }: Props) {
 
   return (
     <View style={s.root}>
-      <View style={s.topBar}>
-        <TouchableOpacity onPress={onBack} style={s.backBtn} accessibilityLabel="Go back" activeOpacity={0.84}>
-          <Text style={s.backText}>‹</Text>
-        </TouchableOpacity>
+      <View style={[s.topBar, isDesktop && DESKTOP_COLUMN]}>
+        {/* On desktop the sidebar already navigates; the arrow would be redundant. */}
+        {!isDesktop ? (
+          <TouchableOpacity onPress={onBack} style={s.backBtn} accessibilityLabel="Go back" activeOpacity={0.84}>
+            <Text style={s.backText}>‹</Text>
+          </TouchableOpacity>
+        ) : null}
         <View style={s.topTitleWrap}>
           <Text style={s.topKicker}>PARENT CENTER</Text>
           <Text style={s.topTitle}>Settings</Text>
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={[s.scroll, isDesktop && DESKTOP_COLUMN]} showsVerticalScrollIndicator={false}>
         <View style={s.heroCard}>
           <View style={s.heroAvatarWrap}>
             <AvatarIllustration avatar={activeProfile?.avatar ?? 'adaeze'} size={104} />
@@ -214,7 +298,7 @@ export default function SettingsScreen({ onBack }: Props) {
           <View style={s.heroCopy}>
             <Text style={s.heroKicker}>ACTIVE PLAYER</Text>
             <Text style={s.heroTitle}>{activeProfile?.name ?? 'Nwa Igbo'}</Text>
-            <Text style={s.heroSub}>Playing as {activeFriend.name}</Text>
+            <Text style={s.heroSub}>Learning friend: {activeFriend.name}</Text>
           </View>
         </View>
 
@@ -236,7 +320,7 @@ export default function SettingsScreen({ onBack }: Props) {
         {isFreeBetaMode() ? (
           <View style={s.premiumActiveCard}>
             <View style={s.premiumIcon}>
-              <Text style={s.premiumIconText}>BETA</Text>
+              <Ionicons name="sparkles" size={26} color="#F5A400" />
             </View>
             <View style={s.premiumCopy}>
               <Text style={s.premiumTitle}>Free Beta Access</Text>
@@ -246,7 +330,7 @@ export default function SettingsScreen({ onBack }: Props) {
         ) : !state.isPremium ? (
           <TouchableOpacity style={s.premiumCard} onPress={handleSubscribe} activeOpacity={0.88}>
             <View style={s.premiumIcon}>
-              <Text style={s.premiumIconText}>BETA</Text>
+              <Ionicons name="sparkles" size={26} color="#F5A400" />
             </View>
             <View style={s.premiumCopy}>
               <Text style={s.premiumTitle}>Free Beta Access</Text>
@@ -257,7 +341,7 @@ export default function SettingsScreen({ onBack }: Props) {
         ) : (
           <View style={s.premiumActiveCard}>
             <View style={s.premiumIcon}>
-              <Text style={s.premiumIconText}>OK</Text>
+              <Ionicons name="checkmark-circle" size={28} color="#19B36B" />
             </View>
             <View style={s.premiumCopy}>
               <Text style={s.premiumTitle}>Free Beta Access</Text>
@@ -330,7 +414,7 @@ export default function SettingsScreen({ onBack }: Props) {
                       <Text style={s.profileName}>{profile.name}</Text>
                       <Text style={s.profileFriend}>{friend.name} · {friend.subtitle}</Text>
                       <Text style={s.profileStats}>
-                        🔥 {profile.streak} streak · ⭐ {profile.wordsLearned} words · 🏆 {profile.quizBest}
+                        🔥 {profile.streak} day streak · ⭐ {profile.wordsLearned} words · 🏆 quiz best {profile.quizBest}
                       </Text>
                     </View>
                     <View style={s.profileActions}>
@@ -342,15 +426,19 @@ export default function SettingsScreen({ onBack }: Props) {
                         }}
                         style={s.iconButton}
                         activeOpacity={0.82}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Edit ${profile.name}`}
                       >
-                        <Text style={s.iconButtonText}>EDIT</Text>
+                        <Ionicons name="create-outline" size={20} color="#1B2A6B" />
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={() => confirmDelete(profile.id, profile.name)}
                         style={s.iconButton}
                         activeOpacity={0.82}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Remove ${profile.name}`}
                       >
-                        <Text style={[s.iconButtonText, s.iconButtonTextDanger]}>DEL</Text>
+                        <Ionicons name="trash-outline" size={20} color={KIDS_COLOR.coral} />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -366,7 +454,7 @@ export default function SettingsScreen({ onBack }: Props) {
               {!addingChild ? (
                 <TouchableOpacity style={s.addChildCard} onPress={() => setAddingChild(true)} activeOpacity={0.86}>
                   <View style={s.addChildIcon}>
-                    <Text style={s.addChildIconText}>ADD</Text>
+                    <Ionicons name="add" size={28} color="#1B2A6B" />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={s.addChildTitle}>Add child profile</Text>
@@ -446,42 +534,89 @@ export default function SettingsScreen({ onBack }: Props) {
             }
           />
           <MiniDivider />
-          <SettingRow
-            icon="HAP"
-            label="Gentle vibration"
-            sub="Use haptic feedback for taps, wins, and choices."
-            right={
-              <Switch
-                value={state.hapticEnabled}
-                onValueChange={toggleHaptic}
-                trackColor={{ true: KIDS_COLOR.palmGreen, false: '#DDE7E0' }}
-                thumbColor={KIDS_COLOR.white}
+          {Platform.OS !== 'web' ? (
+            <>
+              <SettingRow
+                icon="HAP"
+                label="Gentle vibration"
+                sub="Use haptic feedback for taps, wins, and choices."
+                right={
+                  <Switch
+                    value={state.hapticEnabled}
+                    onValueChange={toggleHaptic}
+                    trackColor={{ true: KIDS_COLOR.palmGreen, false: '#DDE7E0' }}
+                    thumbColor={KIDS_COLOR.white}
+                  />
+                }
               />
-            }
-          />
-          <MiniDivider />
+              <MiniDivider />
+            </>
+          ) : null}
           <SettingRow
             icon="GOAL"
             label="Daily learning goal"
-            sub="Current goal: 3 activities per day. Editable goal coming soon."
-            right={<Text style={s.comingSoonPill}>Soon</Text>}
-          />
-          <MiniDivider />
-          <SettingRow
-            icon="SAFE"
-            label="Kid-safe mode"
-            sub="Parent-managed settings and gentle reset protections."
-            right={<Text style={s.safePill}>On</Text>}
+            sub={`Activities per day (lessons, games or quizzes). Currently ${state.dailyGoal ?? 3}.`}
+            right={
+              <View style={s.goalChips}>
+                {[2, 3, 5, 10].map(n => {
+                  const on = (state.dailyGoal ?? 3) === n;
+                  return (
+                    <TouchableOpacity
+                      key={n}
+                      onPress={() => setDailyGoal(n)}
+                      style={[s.goalChip, on && s.goalChipOn]}
+                      activeOpacity={0.86}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Set daily goal to ${n} activities`}
+                      accessibilityState={{ selected: on }}
+                    >
+                      <Text style={[s.goalChipText, on && s.goalChipTextOn]}>{n}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            }
           />
         </SettingsSection>
 
+        <SettingsSection title="Child progress" subtitle="How each child is doing, level by level.">
+          {state.profiles.length === 0 ? (
+            <SettingRow label="No profiles yet" sub="Add a child profile to see progress here." />
+          ) : state.profiles.map((profile, index) => {
+            const friend = getMutaFriend(profile.avatar);
+            return (
+              <View key={profile.id}>
+                {index > 0 ? <MiniDivider /> : null}
+                <View style={s.progressBlock}>
+                  <View style={s.progressHead}>
+                    <AvatarIllustration avatar={profile.avatar} size={44} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={s.profileName}>{profile.name}</Text>
+                      <Text style={s.progressMeta}>
+                        {profile.streak} day streak · {profile.wordsLearned} words · quiz best {profile.quizBest}
+                        {profile.lastActive ? ` · last active ${profile.lastActive}` : ''}
+                      </Text>
+                    </View>
+                  </View>
+                  {ALL_LEVELS.map(level => {
+                    const pct = Math.round(Math.min(1, Math.max(0, profile.levelProgress?.[level.id] ?? 0)) * 100);
+                    return (
+                      <View key={level.id} style={s.progressRow}>
+                        <Text style={[s.progressLevel, !isDesktop && { width: 112 }]} numberOfLines={1}>{level.title}</Text>
+                        <View style={s.progressTrack}>
+                          <View style={[s.progressFill, { width: `${pct}%` }]} />
+                        </View>
+                        <Text style={s.progressPct}>{pct}%</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              </View>
+            );
+          })}
+        </SettingsSection>
+
         <SettingsSection title="Parent tools" subtitle="Modern controls for a children’s app.">
-          <SettingRow
-            icon="PROG"
-            label="Progress snapshot"
-            sub={`${totalWords} words learned across ${state.profiles.length} child profile${state.profiles.length === 1 ? '' : 's'}.`}
-          />
-          <MiniDivider />
           <SettingRow
             icon="IGBO"
             label="Language focus"
@@ -491,13 +626,60 @@ export default function SettingsScreen({ onBack }: Props) {
           <SettingRow
             icon="PRIV"
             label="Privacy-first setup"
-            sub="Profiles stay parent-managed on this device."
+            sub={auth.enabled
+              ? 'Profiles and progress are saved to your parent account so they follow you across devices.'
+              : 'Profiles stay parent-managed on this device.'}
           />
         </SettingsSection>
 
+        {auth.enabled && auth.user ? (
+          <SettingsSection title="Account">
+            <SettingRow
+              icon="KEY"
+              label="Signed in"
+              sub={auth.user.email ?? 'Parent account'}
+            />
+            <MiniDivider />
+            <SettingRow
+              icon="DOC"
+              label="Download my data"
+              sub="A JSON copy of your child profiles, progress and activity."
+              right={<Text style={s.chevron}>›</Text>}
+              onPress={exportMyData}
+            />
+            <MiniDivider />
+            <SettingRow
+              icon="DOC"
+              label="Sign out"
+              sub="Progress is saved to your account."
+              right={<Text style={s.chevron}>›</Text>}
+              onPress={() => {
+                Alert.alert('Sign out?', 'Your children\'s progress stays safe in your account.', [
+                  { text: 'Cancel', style: 'cancel' },
+                  { text: 'Sign out', style: 'destructive', onPress: () => { auth.signOut(); } },
+                ]);
+              }}
+            />
+            <MiniDivider />
+            <SettingRow
+              icon="DEL"
+              danger
+              label="Delete account"
+              sub="Permanently removes your account, all child profiles and progress."
+              right={<Text style={[s.chevron, s.dangerText]}>›</Text>}
+              onPress={confirmDeleteAccount}
+            />
+          </SettingsSection>
+        ) : null}
+
         <SettingsSection title="About & legal">
-          <SettingRow icon="APP" label="App version" sub="Mụta Igbo v2.0.0" />
-          <MiniDivider />
+          {/* App version only matters for installed apps, not a website. */}
+          {Platform.OS !== 'web' ? (
+            <>
+              <SettingRow icon="APP" label="App version" sub={`Mụta Igbo v${APP_VERSION}`} />
+              <MiniDivider />
+            </>
+          ) : null}
           <SettingRow
             icon="DOC"
             label="Terms & Conditions"
@@ -513,14 +695,19 @@ export default function SettingsScreen({ onBack }: Props) {
             right={<Text style={s.chevron}>›</Text>}
             onPress={() => setLegalPage('privacy')}
           />
-          <MiniDivider />
-          <SettingRow
-            icon="STAR"
-            label="Beta Access Terms"
-            sub="Current free beta and future purchase details."
-            right={<Text style={s.chevron}>›</Text>}
-            onPress={() => setLegalPage('subscription')}
-          />
+          {/* Purchase/beta terms are app-store wording; hidden on the free web version. */}
+          {Platform.OS !== 'web' ? (
+            <>
+              <MiniDivider />
+              <SettingRow
+                icon="STAR"
+                label="Beta Access Terms"
+                sub="Current free beta and future purchase details."
+                right={<Text style={s.chevron}>›</Text>}
+                onPress={() => setLegalPage('subscription')}
+              />
+            </>
+          ) : null}
         </SettingsSection>
 
         <SettingsSection title="Data controls">
@@ -535,9 +722,7 @@ export default function SettingsScreen({ onBack }: Props) {
         </SettingsSection>
 
         <Text style={s.footer}>
-          Made with ❤️ for Zara, Kaira, Ije, and every child growing up with Igbo.{'\n'}
-          A MekaOps Edu product{'\n'}
-          © 2026 MekaOps. All rights reserved.
+          Made with ❤️ for Zara, Kaira, Ije, and every child growing up with Igbo.
         </Text>
       </ScrollView>
 
@@ -616,7 +801,7 @@ const s = StyleSheet.create({
   resetTitle: { fontSize: FONT.xxl, fontWeight: '900', color: KIDS_COLOR.textPrimary, textAlign: 'center' },
   resetBody: {
     fontSize: FONT.sm, color: KIDS_COLOR.textSecondary,
-    textAlign: 'center', lineHeight: 20, marginTop: SPACE.sm, marginBottom: SPACE.md,
+    textAlign: 'center', lineHeight: Math.round(FONT.sm * 1.4), marginTop: SPACE.sm, marginBottom: SPACE.md,
   },
   resetLabel: { fontSize: FONT.sm, color: KIDS_COLOR.textSecondary, marginBottom: 6, alignSelf: 'flex-start' },
   resetLabelStrong: { fontWeight: '900', color: KIDS_COLOR.coral },
@@ -822,13 +1007,14 @@ const s = StyleSheet.create({
     fontWeight: '900',
   },
   section: {
-    marginBottom: SPACE.lg,
+    marginBottom: SPACE.xl,
   },
   sectionKicker: {
     color: KIDS_COLOR.mango,
     fontSize: FONT.xs,
     fontWeight: '900',
     letterSpacing: 1.6,
+    lineHeight: Math.round(FONT.xs * 1.5),
     textTransform: 'uppercase',
     paddingHorizontal: 4,
   },
@@ -836,8 +1022,9 @@ const s = StyleSheet.create({
     color: KIDS_COLOR.textSecondary,
     fontSize: FONT.sm,
     fontWeight: '800',
-    marginTop: 3,
-    marginBottom: 10,
+    lineHeight: Math.round(FONT.sm * 1.4),
+    marginTop: 4,
+    marginBottom: 14,
     paddingHorizontal: 4,
   },
   sectionCard: {
@@ -890,6 +1077,22 @@ const s = StyleSheet.create({
     fontSize: 28,
     fontWeight: '900',
   },
+  goalChips: { flexDirection: 'row', gap: 8 },
+  goalChip: {
+    minWidth: 42, height: 42, borderRadius: 14, alignItems: 'center', justifyContent: 'center',
+    backgroundColor: KIDS_COLOR.mintMist, borderWidth: 1.5, borderColor: 'transparent',
+  },
+  goalChipOn: { backgroundColor: KIDS_COLOR.sunshine, borderColor: '#E0A800' },
+  goalChipText: { fontSize: FONT.md, fontWeight: '900', color: KIDS_COLOR.textSecondary },
+  goalChipTextOn: { color: KIDS_COLOR.deepForest },
+  progressBlock: { paddingVertical: 18, paddingHorizontal: SPACE.lg, gap: 10 },
+  progressHead: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 4 },
+  progressMeta: { fontSize: FONT.sm, fontWeight: '700', color: KIDS_COLOR.textSecondary, lineHeight: Math.round(FONT.sm * 1.4), marginTop: 2 },
+  progressRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  progressLevel: { width: 190, fontSize: FONT.sm, fontWeight: '800', color: KIDS_COLOR.textPrimary },
+  progressTrack: { flex: 1, height: 10, borderRadius: 6, backgroundColor: '#EEF1F8', overflow: 'hidden' },
+  progressFill: { height: '100%', borderRadius: 6, backgroundColor: KIDS_COLOR.palmGreen },
+  progressPct: { width: 44, textAlign: 'right', fontSize: FONT.sm, fontWeight: '900', color: KIDS_COLOR.textSecondary },
   comingSoonPill: {
     color: KIDS_COLOR.deepForest,
     backgroundColor: KIDS_COLOR.sunshine,

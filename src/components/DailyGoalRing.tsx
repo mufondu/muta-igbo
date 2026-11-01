@@ -12,16 +12,17 @@ const GOLD_BRIGHT = '#FFD54A';
 const GOLD_HILITE = '#FFF3C4';
 
 interface Props {
-  completed: number;   // activities done today (0..3+)
+  completed: number;   // activities done today
+  goal?: number;       // activities per day (defaults to DAILY_GOAL)
   size?: number;
 }
 
 // Segmented ring built from 3 arc segments using rotated half-circles is heavy;
 // instead we use a simple, kid-clear segmented pill bar plus a big star that
 // fills when the goal is reached. Reads instantly for pre-readers.
-export function DailyGoalRing({ completed }: Props) {
-  const done = Math.min(completed, DAILY_GOAL);
-  const goalMet = done >= DAILY_GOAL;
+export function DailyGoalRing({ completed, goal = DAILY_GOAL }: Props) {
+  const done = Math.min(completed, goal);
+  const goalMet = done >= goal;
 
   const starScale = useRef(new Animated.Value(goalMet ? 1 : 0.85)).current;
   const starSpin = useRef(new Animated.Value(0)).current;    // gentle wobble
@@ -88,7 +89,7 @@ export function DailyGoalRing({ completed }: Props) {
           style={[s.segRow, goalMet && s.segRowDone]}
           onLayout={e => setBarWidth(e.nativeEvent.layout.width)}
         >
-          {Array.from({ length: DAILY_GOAL }).map((_, i) => (
+          {Array.from({ length: goal }).map((_, i) => (
             <View key={i} style={[s.seg, i < done ? (goalMet ? s.segGold : s.segDone) : s.segTodo]}>
               {goalMet && <View style={s.segGloss} />}
             </View>
@@ -105,7 +106,7 @@ export function DailyGoalRing({ completed }: Props) {
         <Text style={s.sub}>
           {goalMet
             ? 'Ị mere nke ọma! Come back tomorrow!'
-            : `${done} of ${DAILY_GOAL} activities · lessons, games or quizzes`}
+            : `${done} of ${goal} activities · lessons, games or quizzes`}
         </Text>
       </View>
     </View>
