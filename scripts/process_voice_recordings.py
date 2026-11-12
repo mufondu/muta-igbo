@@ -71,8 +71,9 @@ def process(infile, outfile):
 
         # --- Stage B: measure integrated loudness (loudnorm pass 1) ---
         r = run(["ffmpeg", "-hide_banner", "-y", "-i", clean, "-af",
-                 f"loudnorm=I={TARGET_I}:TP={TARGET_TP}:LRA={TARGET_LRA}:print_format=json",
+                 f"apad=whole_dur=1,loudnorm=I={TARGET_I}:TP={TARGET_TP}:LRA={TARGET_LRA}:print_format=json",
                  "-f", "null", "-"])
+        # apad: loudnorm needs >= 400 ms to measure; very short words (e.g. 'Kwuo') returned -inf
         stderr = r.stderr
         start = stderr.rfind("{")
         end = stderr.rfind("}")
