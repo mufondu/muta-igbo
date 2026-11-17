@@ -88,11 +88,31 @@ function AppBackButton({ onPress, style }: { onPress: () => void; style?: any })
 let Audio: any = null;
 try { Audio = require('expo-av').Audio; } catch (_) {}
 
-async function playNativeAudio(file: any) {
+// Two channels so sounds never pile up into an echo:
+//  - "voice" (word pronunciations): only ONE plays at a time. A new one stops the old one.
+//  - "sfx" (chimes and effects): short sounds that may layer, except the plain button tick,
+//    which is skipped while a word is being spoken.
+let currentVoice: any = null;
+let voiceToken = 0;
+
+async function stopVoice() {
+  const v = currentVoice;
+  currentVoice = null;
+  if (!v) return;
+  try { await v.stopAsync?.(); } catch (_) {}
+  try { await v.unloadAsync?.(); } catch (_) {}
+}
+
+async function playNativeAudio(file: any, channel: 'voice' | 'sfx' = 'sfx') {
   if (!Audio || !file) {
     if (__DEV__) console.log('[audio] unavailable or missing file');
     return;
   }
+
+  // Each voice request gets a ticket. If a newer one arrives while this one is still loading,
+  // this one is discarded instead of playing on top of it.
+  const ticket = channel === 'voice' ? ++voiceToken : 0;
+  if (channel === 'voice') await stopVoice();
 
   try {
     await Audio.setAudioModeAsync?.({
@@ -112,8 +132,17 @@ async function playNativeAudio(file: any) {
       }
     );
 
+    if (channel === 'voice') {
+      if (ticket !== voiceToken) {
+        try { await sound.unloadAsync?.(); } catch (_) {}
+        return;
+      }
+      currentVoice = sound;
+    }
+
     sound.setOnPlaybackStatusUpdate?.((status: any) => {
       if (status?.didJustFinish) {
+        if (currentVoice === sound) currentVoice = null;
         sound.unloadAsync?.().catch(() => {});
       }
     });
@@ -121,7 +150,7 @@ async function playNativeAudio(file: any) {
     await sound.setVolumeAsync?.(1.0);
     await sound.playAsync();
 
-    if (__DEV__) console.log('[audio] played sfx');
+    if (__DEV__) console.log('[audio] played', channel);
   } catch (e) {
     console.log('[audio]', e);
   }
@@ -140,6 +169,8 @@ type SfxKey = keyof typeof SFX;
 
 function playSfx(key: SfxKey, enabled = true) {
   if (!enabled) return;
+  // Don't let a button tick talk over a word that is being spoken.
+  if (key === 'tap' && currentVoice) return;
   void playNativeAudio(SFX[key]);
 }
 
@@ -161,10 +192,11 @@ function playSoundFallback(label: string, enabled = true) {
   // fall back to the placeholder tap sound until recordings are added.
   const recording = getWordAudio(label);
   if (recording) {
-    void playNativeAudio(recording);
+    void playNativeAudio(recording, 'voice');
     return;
   }
-  playSfx('tap', enabled);
+  // No recording yet: the placeholder tick stands in for the voice, so it replaces any word still playing.
+  if (enabled) void playNativeAudio(SFX.tap, 'voice');
   if (__DEV__) console.log('[sound placeholder]', label);
 }
 
