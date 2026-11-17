@@ -342,7 +342,7 @@ const LEVEL_3A: Level = {
   title: 'Animals & Colours',
   igboTitle: 'Anụmanụ na Agba',
   emoji: '🦁',
-  description: 'Name animals, colours, fruits and foods in Igbo',
+  description: 'Name animals and describe colours in Igbo',
   sections: [
     {
       id: 'animals', title: 'Animals', igboTitle: 'Anụmanụ',
@@ -377,6 +377,17 @@ const LEVEL_3A: Level = {
         { igbo: 'Aja aja', english: 'Brown', emoji: '🟤', partOfSpeech: 'color' },
       ],
     },
+  ],
+};
+
+// ─── LEVEL FF: Fruits & Food ─────────────────────────────────────────────────
+const LEVEL_FF: Level = {
+  id: 'FF', level: 'Level 6', free: false,
+  title: 'Fruits & Food',
+  igboTitle: 'Mkpụrụ osisi na Nri',
+  emoji: '🍎',
+  description: 'Name fruits, foods and drinks in Igbo',
+  sections: [
     {
       id: 'fruits', title: 'Fruits', igboTitle: 'Mkpụrụ osisi',
       items: [
@@ -412,7 +423,7 @@ const LEVEL_3A: Level = {
 
 // ─── LEVEL 2A: Verbs & Actions ────────────────────────────────────────────────
 const LEVEL_2A: Level = {
-  id: '2A', level: 'Level 6', free: false,
+  id: '2A', level: 'Level 7', free: false,
   title: 'Verbs & Actions',
   igboTitle: 'Ngwaa na Omume',
   emoji: '🏃🏾',
@@ -457,7 +468,7 @@ const LEVEL_2A: Level = {
 
 // ─── LEVEL 1A: Grammar & Parts of Speech ─────────────────────────────────────
 const LEVEL_1A: Level = {
-  id: '1A', level: 'Level 7', free: false,
+  id: '1A', level: 'Level 8', free: false,
   title: 'Grammar & Language',
   igboTitle: 'Ụzọ Asụsụ',
   emoji: '📖',
@@ -657,6 +668,7 @@ export const ALL_LEVELS: Level[] = [
   LEVEL_5A,
   LEVEL_4A,
   LEVEL_3A,
+  LEVEL_FF,
   LEVEL_2A,
   LEVEL_1A,
   LEVEL_PB,

@@ -1320,7 +1320,7 @@ return (
                 {LEVEL_ICONS[level.id] ? (
                   <Image source={LEVEL_ICONS[level.id]} style={[sh.lessonPathLevelImage, isCompactLessonPath && sh.lessonPathLevelImageCompact]} resizeMode="contain" />
                 ) : (
-                  <Text style={[sh.featureIcon, { color: lc.pip }]}>{level.level}</Text>
+                  <Text style={{ fontSize: isCompactLessonPath ? 44 : 60 }}>{level.emoji}</Text>
                 )}
               </View>
 
@@ -1729,7 +1729,7 @@ function ProgressScreen() {
               {LEVEL_ICONS[level.id] ? (
                 <Image source={LEVEL_ICONS[level.id]} style={[sh.xpLevelImage, isCompactXp && sh.xpLevelImageCompact]} resizeMode="contain" />
               ) : (
-                <Text style={[sh.featureIcon, { color: lc.pip }]}>{level.level}</Text>
+                <Text style={{ fontSize: isCompactXp ? 36 : 48 }}>{level.emoji}</Text>
               )}
             </View>
 

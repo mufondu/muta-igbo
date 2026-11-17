@@ -54,6 +54,7 @@ export const LEVEL_COLOR: Record<string, { bg: string; pip: string; text: string
   '5A': { bg: '#FDF0E8', pip: '#E8732A', text: '#7A3010' },
   '4A': { bg: '#E8F8EE', pip: '#1A8048', text: '#0A4020' },
   '3A': { bg: '#F0EAFC', pip: '#7030C8', text: '#3A1068' },
+  'FF': { bg: '#FFF1E0', pip: '#F0862A', text: '#7A3A08' },
   '2A': { bg: '#FDEEF0', pip: '#E8445A', text: '#780820' },
   '1A': { bg: '#E0F8FA', pip: '#0898A0', text: '#044850' },
   'PB': { bg: '#FCE9F3', pip: '#D14E9A', text: '#7A1050' },
