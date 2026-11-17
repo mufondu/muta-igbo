@@ -46,6 +46,7 @@ import { COLOR, FONT, IS_TABLET, LEVEL_COLOR, RADIUS, SPACE } from '../utils/tok
 import * as haptics from '../utils/haptics';
 import { getWordAudio } from '../utils/wordAudio';
 import { DailyGoalRing } from '../components/DailyGoalRing';
+import InstallAppCard from '../components/InstallAppCard';
 import { KIDS_COLOR, KIDS_SHADOW } from '../theme/kidsTheme';
 import ParentGate from '../components/ParentGate';
 import { GuideBanner } from '../components/LevelGuide';
@@ -834,7 +835,9 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
               </TouchableOpacity>
             ) : null}
           </View>
-          <View style={sh.kidsPremiumBadge}><Text style={sh.kidsPremiumBadgeText}>{getPremiumBadgeLabel(state.isPremium)}</Text></View>
+          {!isFreeBetaMode() ? (
+            <View style={sh.kidsPremiumBadge}><Text style={sh.kidsPremiumBadgeText}>{getPremiumBadgeLabel(state.isPremium)}</Text></View>
+          ) : null}
         </View>
 
         <View style={sh.kidsStatsRow}>
@@ -843,6 +846,8 @@ function HomeScreen({ openInner, onOpenProfileSheet }: { openInner: (v: InnerVie
           <DailyGoalRing completed={goalCount} goal={state.dailyGoal ?? 3} />
         </View>
       </View>
+
+      <InstallAppCard />
 
       <TouchableOpacity style={sh.kidsQuestCard} onPress={() => openInner('quiz')} activeOpacity={0.88}>
         <View style={sh.kidsQuestIcon}><Text style={sh.kidsQuestIconText}>🎯</Text></View>
@@ -1618,7 +1623,9 @@ function ProgressScreen() {
     { label: 'Day streak', value: String(activeProfile?.streak ?? 0), icon: '🔥', bg: '#FFF1B8', accent: '#FFA62B' },
     { label: 'Words', value: String(activeProfile?.wordsLearned ?? 0), icon: '⭐', bg: '#DDF6FF', accent: '#31BDED' },
     { label: 'Quiz best', value: String(activeProfile?.quizBest ?? 0), icon: '🎯', bg: '#FFE6F0', accent: '#F64F72' },
-    { label: 'Plan', value: getPlanLabel(state.isPremium), icon: '👑', bg: '#F2E9FF', accent: '#7A45D8' },
+    ...(isFreeBetaMode()
+      ? []
+      : [{ label: 'Plan', value: getPlanLabel(state.isPremium), icon: '👑', bg: '#F2E9FF', accent: '#7A45D8' }]),
   ];
 
   return (
@@ -1644,9 +1651,11 @@ function ProgressScreen() {
             <Text style={[sh.xpHeroSub, isCompactXp && sh.xpHeroSubCompact]}>Your Igbo superpowers are growing.</Text>
           </View>
 
-          <View style={sh.xpPremiumPill}>
-            <Text style={sh.xpPremiumText}>{getPlanLabel(state.isPremium)}</Text>
-          </View>
+          {!isFreeBetaMode() ? (
+            <View style={sh.xpPremiumPill}>
+              <Text style={sh.xpPremiumText}>{getPlanLabel(state.isPremium)}</Text>
+            </View>
+          ) : null}
         </View>
 
         <View style={sh.xpHeroProgressCard}>

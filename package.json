@@ -7,7 +7,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build:web": "npx expo export --platform web",
+    "build:web": "npx expo export --platform web && node scripts/pwa-postbuild.js",
     "typecheck": "tsc --noEmit",
     "doctor": "npx expo-doctor",
     "build:android:preview": "npx eas-cli build --platform android --profile preview",

@@ -15,6 +15,7 @@ import {
   View,
 } from 'react-native';
 import AvatarIllustration from '../components/illustrations/AvatarIllustration';
+import InstallAppCard from '../components/InstallAppCard';
 import { MUTA_FRIENDS, getMutaFriend, MutaFriendId } from '../data/mutaFriends';
 import { ALL_LEVELS } from '../data/lessons';
 import { AvatarEmoji, clearLocalData, useApp } from '../hooks/useAppState';
@@ -631,6 +632,12 @@ export default function SettingsScreen({ onBack }: Props) {
               : 'Profiles stay parent-managed on this device.'}
           />
         </SettingsSection>
+
+        {Platform.OS === 'web' ? (
+          <SettingsSection title="Install" subtitle="Use Mụta Igbo like an app, straight from the web.">
+            <InstallAppCard variant="row" />
+          </SettingsSection>
+        ) : null}
 
         {auth.enabled && auth.user ? (
           <SettingsSection title="Account">

@@ -52,7 +52,7 @@ function getColorSwatch(igbo: string, english: string, partOfSpeech?: string): C
   // back to a whole-word check on the English label.
   const words = en.replace(/[^a-z\s]/g, ' ').split(/\s+/);
   for (const { match, swatch } of COLOR_SWATCHES) {
-    if (partOfSpeech === 'color' ? en.includes(match) : words.includes(match)) {
+    if (partOfSpeech === 'color' ? en.includes(match) : partOfSpeech !== 'noun' && words.includes(match)) {
       return swatch;
     }
   }
