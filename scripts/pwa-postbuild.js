@@ -62,7 +62,23 @@ window.addEventListener('appinstalled', function () {
   const reg = `
 <script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+  // Tell the app when a NEW version has taken over, so it can offer a refresh.
+  // We never reload by ourselves, so a child in the middle of a lesson is not interrupted.
+  var hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    if (hadController) {
+      window.__mutaUpdateReady = true;
+      window.dispatchEvent(new Event('muta-update-ready'));
+    }
+    hadController = true;
+  });
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').then(function (reg) {
+      // Look for a new version when the app comes back to the foreground, and every 30 minutes.
+      document.addEventListener('visibilitychange', function () { if (!document.hidden) reg.update().catch(function () {}); });
+      setInterval(function () { reg.update().catch(function () {}); }, 30 * 60 * 1000);
+    }).catch(function () {});
+  });
 }
 </script>
 `;

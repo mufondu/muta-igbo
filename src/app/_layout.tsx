@@ -3,6 +3,7 @@ import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CloudSync from '../components/CloudSync';
+import UpdateNotice from '../components/UpdateNotice';
 import { AuthProvider, useAuth } from '../hooks/useAuth';
 import { AppProvider } from '../hooks/useAppState';
 import AuthScreen from '../screens/AuthScreen';
@@ -32,6 +33,7 @@ export default function RootLayout() {
         <AuthGate>
           <AppProvider>
             <CloudSync />
+            <UpdateNotice />
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="index" />
             </Stack>
