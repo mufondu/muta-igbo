@@ -1,4 +1,4 @@
-// ─── Legal Screens: Terms, Privacy, Beta Access ──────────────────────────────
+// ─── Legal Screens: Terms, Privacy, Free Access ──────────────────────────────
 // Author: Michael Ufondu
 
 import React from 'react';
@@ -47,7 +47,7 @@ export function TermsScreen({ onBack }: { onBack: () => void }) {
       <P>Mụta Igbo is an educational language-learning service that helps children learn Igbo. It focuses on Central Igbo and offers kid-friendly lessons, games, stories, quizzes, and practice activities, available on the web and, where offered, as a mobile app.</P>
 
       <H2>3. Free Access</H2>
-      <P>Mụta Igbo is currently free to use while we continue to build and improve it. All available learning content is unlocked. Features, content, and availability may change. If we introduce paid plans in the future, we will tell you clearly before any charge is made, and you will not be charged without your agreement.</P>
+      <P>Mụta Igbo is free to use. We do not charge families, show ads, or sell anything, and all learning content is unlocked. Features, content, and availability may change as we improve the Service.</P>
 
       <H2>4. Parent Accounts and Consent</H2>
       <P>Mụta Igbo is intended for children aged 3 and above, used under the supervision of a parent or legal guardian. Only a parent or legal guardian may create an account. Children do not create accounts or sign in on their own. By creating an account you confirm that you have the authority to agree to these Terms and to our Privacy Policy on behalf of the children whose profiles you add.</P>
@@ -56,35 +56,32 @@ export function TermsScreen({ onBack }: { onBack: () => void }) {
       <P>You can sign in with Google or with an email address and password. You are responsible for keeping your sign-in details secure and for activity under your account. Child profiles are created and managed by you inside your account. Profile names, avatar choices, and learning progress (such as streaks, words learned, quiz scores, and lesson progress) are saved to your account so they can follow you across devices. We recommend using a first name or nickname for each child rather than a full name.</P>
       <P>You can download a copy of your data, sign out, or permanently delete your account at any time from the Parent Center.</P>
 
-      <H2>6. Future Paid Plans</H2>
-      <P>We may offer paid plans, subscriptions, or purchases in the future. If we do, pricing, renewal terms, cancellation rules, and refund information will be shown clearly before any purchase. Payments would be handled by a third-party payment provider (and, in mobile apps, by the Apple App Store or Google Play). We would not receive or store your full payment card details.</P>
-
-      <H2>7. Permitted Use</H2>
+      <H2>6. Permitted Use</H2>
       <P>You may use the Service for personal, non-commercial family learning. You may not:</P>
       <Li>Copy, resell, redistribute, or commercially exploit Service content without permission</Li>
       <Li>Attempt to reverse engineer, scrape, or extract protected content, audio, or illustrations</Li>
       <Li>Interfere with, overload, or attempt to gain unauthorized access to the Service or other users' accounts</Li>
       <Li>Use the Service in a way that violates applicable laws or regulations</Li>
 
-      <H2>8. Intellectual Property</H2>
+      <H2>7. Intellectual Property</H2>
       <P>All content in Mụta Igbo, including lesson data, vocabulary, illustrations, sounds, audio recordings, stories, design, branding, and the Mụta Igbo name, belongs to Mụta Igbo and its contributors. Igbo language content is prepared with cultural respect and care.</P>
 
-      <H2>9. Accuracy of Language Content</H2>
+      <H2>8. Accuracy of Language Content</H2>
       <P>We make reasonable efforts to provide accurate Igbo learning content. Igbo is a tonal language with dialectal variation, and the Service primarily teaches Central Igbo. We do not claim to represent every regional variation. If you notice an issue, contact us at content@mutaigbo.app.</P>
 
-      <H2>10. Availability and Disclaimer</H2>
+      <H2>9. Availability and Disclaimer</H2>
       <P>The Service is provided "as is" and "as available". We do not guarantee that it will be uninterrupted, error-free, or free from technical issues, and we do not guarantee specific educational outcomes.</P>
 
-      <H2>11. Limitation of Liability</H2>
+      <H2>10. Limitation of Liability</H2>
       <P>To the fullest extent permitted by law, Mụta Igbo is not liable for indirect, incidental, special, or consequential damages arising from your use of the Service, including loss of progress data. We work to keep your data safe, but we recommend downloading a copy of your data from the Parent Center from time to time.</P>
 
-      <H2>12. Ending Your Use</H2>
+      <H2>11. Ending Your Use</H2>
       <P>You may stop using the Service and delete your account at any time. We may suspend or end access for accounts that break these Terms or put the Service or other families at risk. We may also change or discontinue the Service; where reasonably possible we will give notice and a chance to download your data first.</P>
 
-      <H2>13. Changes to These Terms</H2>
+      <H2>12. Changes to These Terms</H2>
       <P>We may update these Terms from time to time. For material changes we will notify you in the Service or by email before they take effect where appropriate. Continued use after changes means you accept the updated Terms.</P>
 
-      <H2>14. Contact Us</H2>
+      <H2>13. Contact Us</H2>
       <P>For questions about these Terms, contact us at legal@mutaigbo.app.</P>
     </LegalScreen>
   );
@@ -132,7 +129,7 @@ export function PrivacyScreen({ onBack }: { onBack: () => void }) {
       <P>The Service plays bundled sound effects and native-speaker pronunciation recordings as learning content. These are not recordings of your child. The "Say It Back" activity does not record, store, or transmit any audio, and the Service does not ask for microphone access. If we add voice features in the future, we will explain them clearly and update this policy first.</P>
 
       <H2>Payments</H2>
-      <P>Mụta Igbo is currently free and we do not collect payment information. If we introduce paid plans, payments will be handled by a third-party payment provider and we will update this policy before then.</P>
+      <P>Mụta Igbo is free. We do not collect payment information and we do not sell anything to children or families through the Service.</P>
 
       <H2>Keeping Data Safe</H2>
       <P>Data is sent over encrypted connections, and our systems are set up so that each account can access only its own information. No online service can promise perfect security, so please use a strong, unique password and tell us right away if you suspect a problem.</P>
@@ -156,27 +153,21 @@ export function PrivacyScreen({ onBack }: { onBack: () => void }) {
   );
 }
 
-// ─── BETA ACCESS TERMS ────────────────────────────────────────────────────────
+// ─── FREE ACCESS (native settings row only) ──────────────────────────────────
 export function SubscriptionTermsScreen({ onBack }: { onBack: () => void }) {
   return (
-    <LegalScreen title="Beta Access Terms" onBack={onBack}>
-      <H2>Current Free Beta</H2>
-      <P>The current version of Mụta Igbo is available as a free beta. During this beta period, all available lessons, games, stories, quizzes, and practice activities are unlocked for family testing and feedback.</P>
+    <LegalScreen title="Free Access" onBack={onBack}>
+      <H2>Free for Every Family</H2>
+      <P>Mụta Igbo is free. All lessons, games, stories, quizzes, and practice activities are unlocked for every family.</P>
 
-      <H2>No Current Paid Subscription</H2>
-      <P>This build does not currently charge users, sell a paid subscription, or process in-app purchases. There is no monthly or yearly plan active in the current beta version.</P>
-
-      <H2>Future Paid Features</H2>
-      <P>Mụta Igbo is subscription-ready, and we may introduce paid plans, subscriptions, or in-app purchases in a future version. If paid access is introduced, pricing, renewal terms, cancellation rules, and refund information will be clearly shown before any purchase is made.</P>
-
-      <H2>App Store Processing</H2>
-      <P>If future paid purchases are offered, they will be processed through the Apple App Store or Google Play Store. Mụta Igbo will not directly receive, store, or process payment card details.</P>
+      <H2>No Purchases</H2>
+      <P>The Service does not charge users, sell a subscription, or process in-app purchases, and it does not collect payment details.</P>
 
       <H2>Family Use</H2>
-      <P>Current beta access is intended for personal family learning on your device. Future paid access terms may define household, profile, or platform family-sharing rules.</P>
+      <P>Mụta Igbo is intended for personal family learning under a parent or guardian's supervision.</P>
 
       <H2>Contact Us</H2>
-      <P>For questions about beta access or future subscriptions, contact us at support@mutaigbo.app.</P>
+      <P>For questions, contact us at support@mutaigbo.app.</P>
     </LegalScreen>
   );
 }

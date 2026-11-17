@@ -130,8 +130,8 @@ export default function SettingsScreen({ onBack }: Props) {
   function handleSubscribe() {
     if (isFreeBetaMode()) {
       Alert.alert(
-        '🌟 Free Beta Access',
-        'All available lessons, games, stories, and quizzes are currently unlocked during beta.',
+        '🌟 Free for every family',
+        'Every lesson, story, game, and quiz is unlocked. There is nothing to buy.',
         [{ text: 'Great!' }],
       );
       return;
@@ -324,8 +324,8 @@ export default function SettingsScreen({ onBack }: Props) {
               <Ionicons name="sparkles" size={26} color="#F5A400" />
             </View>
             <View style={s.premiumCopy}>
-              <Text style={s.premiumTitle}>Free Beta Access</Text>
-              <Text style={s.premiumSub}>All available lessons, stories, games, and quizzes are unlocked during beta.</Text>
+              <Text style={s.premiumTitle}>Free for every family</Text>
+              <Text style={s.premiumSub}>Every lesson, story, game, and quiz is unlocked. There is nothing to buy.</Text>
             </View>
           </View>
         ) : !state.isPremium ? (
@@ -334,8 +334,8 @@ export default function SettingsScreen({ onBack }: Props) {
               <Ionicons name="sparkles" size={26} color="#F5A400" />
             </View>
             <View style={s.premiumCopy}>
-              <Text style={s.premiumTitle}>Free Beta Access</Text>
-              <Text style={s.premiumSub}>All available lessons, stories, games, and quizzes are unlocked during beta.</Text>
+              <Text style={s.premiumTitle}>Free for every family</Text>
+              <Text style={s.premiumSub}>Every lesson, story, game, and quiz is unlocked. There is nothing to buy.</Text>
             </View>
             <Text style={s.premiumArrow}>›</Text>
           </TouchableOpacity>
@@ -345,8 +345,8 @@ export default function SettingsScreen({ onBack }: Props) {
               <Ionicons name="checkmark-circle" size={28} color="#19B36B" />
             </View>
             <View style={s.premiumCopy}>
-              <Text style={s.premiumTitle}>Free Beta Access</Text>
-              <Text style={s.premiumSub}>Your family has access to the full beta learning adventure.</Text>
+              <Text style={s.premiumTitle}>Free for every family</Text>
+              <Text style={s.premiumSub}>Your family has full access to every lesson, story, and game.</Text>
             </View>
           </View>
         )}
@@ -702,14 +702,14 @@ export default function SettingsScreen({ onBack }: Props) {
             right={<Text style={s.chevron}>›</Text>}
             onPress={() => setLegalPage('privacy')}
           />
-          {/* Purchase/beta terms are app-store wording; hidden on the free web version. */}
+          {/* Free-access note; hidden on the web version. */}
           {Platform.OS !== 'web' ? (
             <>
               <MiniDivider />
               <SettingRow
                 icon="STAR"
-                label="Beta Access Terms"
-                sub="Current free beta and future purchase details."
+                label="Free Access"
+                sub="Mụta Igbo is free for every family."
                 right={<Text style={s.chevron}>›</Text>}
                 onPress={() => setLegalPage('subscription')}
               />

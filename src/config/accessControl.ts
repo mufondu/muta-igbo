@@ -3,7 +3,7 @@
  * Author: Michael Ufondu
  *
  * Purpose:
- * - Ship beta with all content unlocked.
+ * - Ship free with all content unlocked.
  * - Keep the app subscription-ready without restructuring lessons later.
  * - Switch to subscription mode later by changing ACCESS_MODE and wiring real store entitlements.
  */
@@ -57,12 +57,12 @@ export function canAccessPremiumFeature(
 }
 
 export function getPlanLabel(isPremium: boolean): string {
-  if (ACCESS_MODE === 'free_beta') return 'Free Beta';
+  if (ACCESS_MODE === 'free_beta') return 'Free';
   return isPremium ? 'Premium' : 'Free';
 }
 
 export function getPremiumBadgeLabel(isPremium: boolean): string {
-  if (ACCESS_MODE === 'free_beta') return 'Beta Access';
+  if (ACCESS_MODE === 'free_beta') return 'Free';
   return isPremium ? 'Premium' : 'Free';
 }
 
