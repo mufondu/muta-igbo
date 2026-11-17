@@ -63,6 +63,7 @@ const LEVEL_ICONS: Record<string, any> = {
   '5A': require('../../assets/illustrations/custom/levels/numbers-counting.png'),
   '4A': require('../../assets/illustrations/custom/levels/body-family.png'),
   '3A': require('../../assets/illustrations/custom/levels/animals-nature.png'),
+  'FF': require('../../assets/illustrations/custom/levels/fruits-food.png'),
   '2A': require('../../assets/illustrations/custom/levels/verbs-actions.png'),
   '1A': require('../../assets/illustrations/custom/levels/grammar-language.png'),
   // Everyday Phrasebook: megaphone on the same beige clay-tile frame as the other
